@@ -1,0 +1,12 @@
+Aplication.properties configurações
+https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+
+
+JoinFaces - https://github.com/joinfaces
+
+
+Segurança
+http://projects.spring.io/spring-security/
+
+Criptografia de senha, verificar metodo
+new BCryptPasswordEncoder()

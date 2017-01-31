@@ -1,0 +1,154 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<section class="r42-pagina">
+
+			<!-- execução inicial -->
+			<f:metadata>
+				<f:viewAction action="#{controleConta.listar}"></f:viewAction>
+			</f:metadata>
+
+			<h:form id="frm">
+				<!-- Mensagem Form -->
+				<p:messages id="msg-frm" closable="true"/>
+				
+				<!-- Barra de Ferramentas -->
+				<p:toolbar style="margin-bottom:10px" id="toolbar">
+					<f:facet name="left">
+						<p:commandButton id="bto-novo" 
+										 title="Novo" 
+										 icon="fa fa-file-o"
+ 										 process="@this"	
+										 update="dialogo"			
+										 oncomplete="PF('wgDados').show()"
+										 disabled="#{controleConta.contaSelect == null}"
+										 actionListener="#{controleConta.novoCadastro}">
+										 <p:resetInput target="dialogo"/>
+						</p:commandButton>
+						<p:commandButton id="bto-editar" 
+										 title="Editar" 
+										 icon="fa fa-pencil"
+ 										 process="@this"	
+										 update="dialogo"			
+										 oncomplete="PF('wgDados').show()"
+										 disabled="#{controleConta.contaSelect == null}"
+										 actionListener="#{controleConta.registroSelecionado}">
+										 <p:resetInput target="dialogo"/>
+						</p:commandButton>
+						<p:commandButton id="bto-excluir" 
+										 title="Excluir" 
+										 icon="fa fa-trash"										 
+										 process="@this"	
+										 update="tabela msg-frm toolbar"	
+										 disabled="#{controleConta.contaSelect == null}"
+										 actionListener="#{controleConta.excluir}">
+										<p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão da Conta?"/>
+						</p:commandButton>
+					</f:facet>
+					<f:facet name="right">
+						<p style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px">Cadastro de Contas Contábeis</p>
+					</f:facet>
+				</p:toolbar>
+
+				<!-- Listagem dos dados -->
+				<p:treeTable value="#{controleConta.treeContas}" var="conta" 
+							 id="tabela" 
+							 rows="15" paginator="true" paginatorPosition="top"
+							 selectionMode="single"
+							 selection="#{controleConta.contaSelect}">
+
+					<!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+					<p:ajax event="select" update=":frm:toolbar" />
+        			<p:ajax event="unselect" update=":frm:toolbar" />
+					
+					<!-- Colunas -->
+					<p:column headerText="Chave" style="width:90px">
+						<h:outputText value="#{conta.chave}" />
+					</p:column>					
+					<p:column headerText="ID Conta" style="width:70px">
+						<h:outputText value="#{conta.idConta}" />
+					</p:column>
+					<p:column headerText="Descrição">
+						<h:outputText value="#{conta.descricao}" />
+					</p:column>
+					<p:column headerText="Tipo Conta" style="width:100px">
+						<h:outputText value="#{conta.tipoConta.descricao}" />
+					</p:column>
+					<p:column headerText="Status" style="width:100px">
+						<h:outputText value="#{conta.status.descricao}" />
+					</p:column>
+					<p:column headerText="Natureza" style="width:250px">
+						<h:outputText value="#{conta.natureza.descricao}" />
+					</p:column>
+				</p:treeTable>
+
+				<!-- Dialogo inclusão/alteração -->
+				<p:dialog header="Dados Conta" 
+						  widgetVar="wgDados" 
+						  id="dialogo"
+						  resizable="false" 
+						  modal="true"
+						  width="800"
+						  height="450">
+						  
+					<!-- Mensagem dialogo -->	  
+					<p:messages autoUpdate="true" id="msg-dialogo" closable="true"/>
+						  
+					<!-- Barra de Ferramentas dialogo-->					
+					<p:defaultCommand target="bto-salvar" scope="dialogo"/>  
+					<p:toolbar>		
+						<f:facet name="left">	
+							<p:commandButton id="bto-salvar"
+											 title="Salvar"
+											 icon="fa fa-save" 										  
+											 action="#{controleConta.salvar}"
+											 process="dialogo" 
+											 update="msg-dialogo panel-dados"
+											 oncomplete="if(!args.validationFailed) PF('wgDados').hide()"/>
+						</f:facet>
+					</p:toolbar>
+						  
+					<h:panelGrid class="r42-panel-dados" columns="2" id="panel-dados">
+												
+						<p:outputLabel value="Descrição" for="descricao"/>
+						<p:inputText id="descricao" size="50" maxlength="50"
+						value="#{controleConta.contaEdicao.descricao}" onblur="value=value.toUpperCase()"/>
+						
+						<p:outputLabel value="Tipo Conta" for="tipo-conta"/>
+						<p:selectOneMenu id="tipo-conta" value="#{controleConta.contaEdicao.tipoConta}">
+							<f:selectItem  itemLabel="Selecione"/>
+							<f:selectItems value="#{controleConta.tiposConta}" var="tipoConta"
+										   itemLabel="#{tipoConta.descricao}" itemValue="#{tipoConta}"/>
+						</p:selectOneMenu>	
+
+						<p:outputLabel value="Status" for="status"/>
+						<p:selectOneMenu id="status" value="#{controleConta.contaEdicao.status}">
+							<f:selectItem  itemLabel="Selecione"/>
+							<f:selectItems value="#{controleConta.statusConta}" var="status"
+										   itemLabel="#{status.descricao}" itemValue="#{status}"/>
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Natureza" for="natureza"/>
+						<p:selectOneMenu id="natureza" value="#{controleConta.contaEdicao.natureza}">
+							<f:selectItem  itemLabel="Selecione"/>
+							<f:selectItems value="#{controleConta.naturezas}" var="natureza"
+										   itemLabel="#{natureza.descricao}" itemValue="#{natureza}"/>
+						</p:selectOneMenu>
+												
+						<p:outputLabel value="Conta Pai" for="conta-pai"/>
+						<p:outputLabel id="conta-pai"
+									   value="#{controleConta.contaEdicao.contaPai.idConta}-#{controleConta.contaEdicao.contaPai.descricao}"/>
+						
+					</h:panelGrid>
+						  
+				</p:dialog>
+			</h:form>
+
+		</section>
+	</ui:define>
+</ui:composition>

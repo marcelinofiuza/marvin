@@ -1,0 +1,180 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		 <section class="r42-pagina">
+		 
+            <!-- execução inicial -->
+            <f:metadata>
+                <f:viewAction action="#{controleUsuario.listar}"></f:viewAction>
+            </f:metadata>		 
+			
+			<h:form id="frm">
+                <!-- Mensagem Form -->
+                <p:messages id="msg-frm" closable="true"/>			
+
+                <!-- Barra de Ferramentas -->           
+                <p:toolbar style="margin-bottom:10px" id="toolbar">
+                    <f:facet name="left">
+                        <p:commandButton    id="bto-novo" 
+                                            title="Novo" 
+                                            icon="fa fa-file-o" 
+                                            action="#{controleUsuario.novoCadastro}"
+                                            process="@this" 
+                                            update="dialogo"                    
+                                            oncomplete="PF('wgDados').show()">
+                                            <p:resetInput target="dialogo"/>                                            
+                        </p:commandButton>                  
+                        <p:commandButton    id="bto-editar" 
+                                            title="Editar" 
+                                            icon="fa fa-pencil"
+                                            process="@this" 
+                                            update="dialogo"            
+                                            oncomplete="PF('wgDados').show()"                               
+                                            disabled="#{controleUsuario.usuarioSelect == null}"
+                                            actionListener="#{controleUsuario.editCadastro}">
+                                            <p:resetInput target="dialogo"/>                                            
+                        </p:commandButton>                                      
+                        <p:commandButton    id="bto-excluir" 
+                                            title="Excluir" 
+                                            icon="fa fa-trash" 
+                                            process="@this" 
+                                            disabled="#{controleUsuario.usuarioSelect == null}"
+                                            update="tabela msg-frm toolbar" 
+                                            actionListener="#{controleUsuario.excluir}">
+                                            <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Usuário?"/>                                                
+                        </p:commandButton>    
+                        <span class="ui-separator">
+                            <span class="fa fa-fw fa-ellipsis-v"/>
+                        </span>
+                        <p:commandButton id="bto-bloquear"
+                                            title="Bloquear"
+                                            icon="fa fa-lock"
+                                            disabled="#{controleUsuario.usuarioSelect == null}"
+                                            rendered="#{!controleUsuario.usuarioSelect.bloqueado}"
+                                            process="@this" 
+                                            update="tabela msg-frm toolbar" 
+                                            actionListener="#{controleUsuario.bloqueioDesbloqueio}">
+                                            <p:confirm icon="fa fa-warning" header="Bloqueio/Desbloqueio" message="Confirma o bloqueio do usuario?"/>
+                        </p:commandButton>
+                        <p:commandButton id="bto-desbloqueio"
+                                            title="Desbloquear"
+                                            icon="fa fa-unlock"
+                                            disabled="#{controleUsuario.usuarioSelect == null}"
+                                            rendered="#{controleUsuario.usuarioSelect.bloqueado}"
+                                            process="@this" 
+                                            update="tabela msg-frm toolbar" 
+                                            actionListener="#{controleUsuario.bloqueioDesbloqueio}">
+                                            <p:confirm icon="fa fa-warning" header="Bloqueio/Desbloqueio" message="Confirma o desbloqueio do usuario?"/>
+                        </p:commandButton> 
+                        <p:commandButton    id="bto-editarSenha" 
+                                            title="Alterar Senha" 
+                                            icon="fa fa-empire"
+                                            process="@this" 
+                                            update="dialogo"            
+                                            oncomplete="PF('wgDados').show()"                               
+                                            disabled="#{controleUsuario.usuarioSelect == null}"
+                                            actionListener="#{controleUsuario.editSenha}">
+                                            <p:resetInput target="dialogo"/>                                            
+                        </p:commandButton>                                                                                                                                 
+                    </f:facet>
+                    <f:facet name="right">
+                        <p style="margin-top:5px; margin-bottom:5px; margin-right: 5px">Usuários</p>         
+                    </f:facet>
+                </p:toolbar>
+			
+			     <!-- Listagem dos dados -->
+			     <p:dataTable value="#{controleUsuario.listaUsuarios}" var="usuario"
+                     id="tabela"
+                     reflow="true"
+                     rows="15" paginator="true" paginatorPosition="top"
+                     selection="#{controleUsuario.usuarioSelect}"
+                     selectionMode="single" rowKey="#{usuario.idUsuario}"                     
+                     emptyMessage="Nenhum Usuário Cadastrado">
+			     
+                    <!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+                    <p:ajax event="rowSelect" update=":frm:toolbar"/>
+                    <p:ajax event="rowUnselect" update=":frm:toolbar"/>
+                    			     
+                    <!-- Colunas -->
+                    <p:column headerText="Credencial" width="100" sortBy="#{usuario.credencial}">
+                        <h:outputText value="#{usuario.credencial}"/>
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{usuario.nome}">
+                        <h:outputText value="#{usuario.nome}" />
+                    </p:column>
+                    <p:column headerText="Último Acesso" width="150">
+                        <h:outputText value="#{usuario.ultimoAcesso}"/>
+                    </p:column>
+                    <p:column headerText="Bloqueado" width="80">
+                        <p:selectBooleanCheckbox value="#{usuario.bloqueado}" disabled="true" />
+                    </p:column>
+			     </p:dataTable>
+			     
+			     <!-- Dialogo inclusão/alteração -->
+			     <p:dialog header="Dados Usuário" 
+                           widgetVar="wgDados" 
+                           id="dialogo"
+                           resizable="false" 
+                           modal="true"
+                           width="800"
+                           height="450">
+			     
+                    <!-- Mensagem dialogo -->     
+                    <p:messages autoUpdate="true" id="msg-dialogo" closable="true"/>			     
+
+                    <!-- Barra de Ferramentas dialogo-->                    
+                    <p:defaultCommand target="bto-salvar" scope="dialogo"/>  
+                    <p:toolbar>     
+                        <f:facet name="left">   
+                            <p:commandButton id="bto-salvar"
+                                             title="Salvar"
+                                             icon="fa fa-save"                                           
+                                             action="#{controleUsuario.salvar}"
+                                             process="dialogo" 
+                                             update="msg-dialogo panel-dados"
+                                             oncomplete="if(!args.validationFailed) PF('wgDados').hide()"/>
+                        </f:facet>
+                    </p:toolbar>
+                    
+                    <!-- Dados Dialogo -->
+                    <h:panelGroup id="panel-dados" >
+                    
+                        <h:panelGrid columns="2" class="r42-panel-dados" >                           
+                            <p:outputLabel value="Usuário" for="credencial"/>
+                            <p:inputText id="credencial" size="20" maxlength="20"
+                            value="#{controleUsuario.usuarioEdicao.credencial}" onblur="value=value.toUpperCase()"
+                            disabled="#{!controleUsuario.dados}"/>
+                        
+                            <p:outputLabel value="Nome" for="nome"/>
+                            <p:inputText id="nome" size="50" maxlength="50"
+                            value="#{controleUsuario.usuarioEdicao.nome}" onblur="value=value.toUpperCase()"
+                            disabled="#{!controleUsuario.dados}"/>
+                        </h:panelGrid>
+                                            
+                        <p:panel header="Perfil" class="r42-panel-dados" rendered="#{controleUsuario.dados}">   
+                            <p:pickList id="pickList" value="#{controleUsuario.rolesListModel}" var="role" 
+                                            itemLabel="#{role.descricao}" itemValue="#{role}" 
+                                            converter="roleConverter"/>                                 
+                        </p:panel>
+                        
+                        <h:panelGrid columns="4" class="r42-panel-dados" rendered="#{controleUsuario.senha}">
+                            <h:outputLabel for="senha1" value="Senha:" />
+                            <p:password id="senha1" value="#{controleUsuario.usuarioEdicao.senha}" 
+                            match="senha2" validatorMessage="As senhas não conforem!" label="senha1"/>
+ 
+                            <h:outputLabel for="senha2" value="Confirmar Senha:" />
+                            <p:password id="senha2" value="#{controleUsuario.usuarioEdicao.senha}" label="senha2"/>                         
+                        </h:panelGrid>
+                                                
+                     </h:panelGroup>
+			     </p:dialog>
+			     
+			</h:form>			
+		 </section>
+	</ui:define>	
+</ui:composition>
