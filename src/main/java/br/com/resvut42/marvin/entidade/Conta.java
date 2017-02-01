@@ -45,14 +45,17 @@ public class Conta implements Serializable {
 	@Column(length = 50, nullable = false)
 	private String descricao;
 
+	@NotEmpty
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private TipoConta tipoConta;
 
+	@NotEmpty
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private Status status;
 
+	@NotEmpty
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private Natureza natureza;

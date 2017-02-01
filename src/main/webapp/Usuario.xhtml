@@ -15,7 +15,7 @@
 			
 			<h:form id="frm">
                 <!-- Mensagem Form -->
-                <p:messages id="msg-frm" closable="true"/>			
+                <p:growl id="msg-frm" showDetail="true"/> 	
 
                 <!-- Barra de Ferramentas -->           
                 <p:toolbar style="margin-bottom:10px" id="toolbar">
@@ -123,10 +123,7 @@
                            modal="true"
                            width="800"
                            height="450">
-			     
-                    <!-- Mensagem dialogo -->     
-                    <p:messages autoUpdate="true" id="msg-dialogo" closable="true"/>			     
-
+			          
                     <!-- Barra de Ferramentas dialogo-->                    
                     <p:defaultCommand target="bto-salvar" scope="dialogo"/>  
                     <p:toolbar>     
@@ -136,7 +133,7 @@
                                              icon="fa fa-save"                                           
                                              action="#{controleUsuario.salvar}"
                                              process="dialogo" 
-                                             update="msg-dialogo panel-dados"
+                                             update="panel-dados"
                                              oncomplete="if(!args.validationFailed) PF('wgDados').hide()"/>
                         </f:facet>
                     </p:toolbar>
@@ -144,16 +141,18 @@
                     <!-- Dados Dialogo -->
                     <h:panelGroup id="panel-dados" >
                     
-                        <h:panelGrid columns="2" class="r42-panel-dados" >                           
+                        <h:panelGrid columns="3" class="r42-panel-dados" >                           
                             <p:outputLabel value="Usuário" for="credencial"/>
                             <p:inputText id="credencial" size="20" maxlength="20"
                             value="#{controleUsuario.usuarioEdicao.credencial}" onblur="value=value.toUpperCase()"
                             disabled="#{!controleUsuario.dados}"/>
+                            <p:message display="icon" for="credencial" />
                         
                             <p:outputLabel value="Nome" for="nome"/>
                             <p:inputText id="nome" size="50" maxlength="50"
                             value="#{controleUsuario.usuarioEdicao.nome}" onblur="value=value.toUpperCase()"
                             disabled="#{!controleUsuario.dados}"/>
+                            <p:message display="icon" for="nome" />
                         </h:panelGrid>
                                             
                         <p:panel header="Perfil" class="r42-panel-dados" rendered="#{controleUsuario.dados}">   
@@ -162,13 +161,15 @@
                                             converter="roleConverter"/>                                 
                         </p:panel>
                         
-                        <h:panelGrid columns="4" class="r42-panel-dados" rendered="#{controleUsuario.senha}">
+                        <h:panelGrid columns="3" class="r42-panel-dados" rendered="#{controleUsuario.senha}">
                             <h:outputLabel for="senha1" value="Senha:" />
                             <p:password id="senha1" value="#{controleUsuario.usuarioEdicao.senha}" 
                             match="senha2" validatorMessage="As senhas não conforem!" label="senha1"/>
+                            <p:message display="icon" for="senha1" />
  
                             <h:outputLabel for="senha2" value="Confirmar Senha:" />
-                            <p:password id="senha2" value="#{controleUsuario.usuarioEdicao.senha}" label="senha2"/>                         
+                            <p:password id="senha2" value="#{controleUsuario.usuarioEdicao.senha}" label="senha2"/>
+                            <p:message display="icon" for="senha2" />                         
                         </h:panelGrid>
                                                 
                      </h:panelGroup>

@@ -1,0 +1,278 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<section class="r42-pagina">
+
+			<!-- execução inicial -->
+			<f:metadata>
+				<f:viewAction action="#{controleEmpresa.listar}"></f:viewAction>
+			</f:metadata>
+
+			<h:form id="frm">
+				<!-- Mensagem Form -->
+				<p:growl id="msg-frm" showDetail="true"/>  
+				
+				<!-- Barra de Ferramentas -->
+				<p:toolbar style="margin-bottom:10px" id="toolbar">
+					<f:facet name="left">
+						<p:commandButton id="bto-novo" 
+										 title="Novo" 
+										 icon="fa fa-file-o"
+ 										 process="@this"	
+										 update="dialogo"			
+										 oncomplete="PF('wgDados').show()"
+										 actionListener="#{controleEmpresa.novoCadastro}">
+										 <p:resetInput target="dialogo"/>
+						</p:commandButton>
+						<p:commandButton id="bto-editar" 
+										 title="Editar" 
+										 icon="fa fa-pencil"
+ 										 process="@this"	
+										 update="dialogo"			
+										 oncomplete="PF('wgDados').show()"
+										 disabled="#{controleEmpresa.empresaSelect == null}"
+										 actionListener="#{controleEmpresa.editCadastro}">
+										 <p:resetInput target="dialogo"/>
+						</p:commandButton>
+						<p:commandButton id="bto-excluir" 
+										 title="Excluir" 
+										 icon="fa fa-trash"										 
+										 process="@this"	
+										 update="tabela msg-frm toolbar"	
+										 disabled="#{controleEmpresa.empresaSelect == null}"
+										 actionListener="#{controleEmpresa.excluir}">
+										<p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão da Empresa?"/>
+						</p:commandButton>
+					</f:facet>
+					<f:facet name="right">
+						<p style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px">Cadastro de Empresa</p>
+					</f:facet>
+				</p:toolbar>
+
+				<!-- Listagem dos dados -->
+				<p:dataTable value="#{controleEmpresa.listaEmpresas}" var="empresa" 
+			                 id="tabela"
+			                 reflow="true"
+			                 rows="15" paginator="true" paginatorPosition="top"
+			                 selection="#{controleEmpresa.empresaSelect}"
+			                 selectionMode="single" rowKey="#{empresa.idEmpresa}"
+			                 emptyMessage="Nenhuma Empresa Cadastrada">
+
+					<!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+                    <p:ajax event="rowSelect" update=":frm:toolbar"/>
+                    <p:ajax event="rowUnselect" update=":frm:toolbar"/>
+					
+                    <!-- Colunas -->
+                    <p:column headerText="Código" width="70" sortBy="#{empresa.idEmpresa}">
+                        <h:outputText value="#{empresa.idEmpresa}" />
+                    </p:column>
+                    <p:column headerText="Razõa Social" sortBy="#{empresa.razaoSocial}">
+                        <h:outputText value="#{empresa.razaoSocial}" />
+                    </p:column>
+                    <p:column headerText="Fantasia" width="250">
+                        <h:outputText value="#{empresa.fantasia}" />
+                    </p:column>
+                    <p:column headerText="CNPJ" width="150">
+                        <h:outputText value="#{empresa.cnpj}" />
+                    </p:column>
+                    <p:column headerText="CPF" width="150">
+                        <h:outputText value="#{empresa.cpf}" />
+                    </p:column>     
+				</p:dataTable>
+
+				<!-- Dialogo inclusão/alteração -->
+				<p:dialog header="Dados Conta" 
+						  widgetVar="wgDados" 
+						  id="dialogo"
+						  resizable="false" 
+						  modal="true"
+						  width="800"
+						  height="450">
+						  						  
+					<!-- Barra de Ferramentas dialogo-->					
+					<p:defaultCommand target="bto-salvar" scope="dialogo"/>  
+					<p:toolbar>		
+						<f:facet name="left">	
+							<p:commandButton id="bto-salvar"
+											 title="Salvar"
+											 icon="fa fa-save" 										  
+											 action="#{controleEmpresa.salvar}"
+											 process="dialogo" 
+											 update="tabview-dados"
+											 oncomplete="if(!args.validationFailed) PF('wgDados').hide()"/>
+						</f:facet>
+					</p:toolbar>
+                    <p:tabView id="tabview-dados">
+                        <!-- Aba Empresa -->
+                        <p:tab title="Empresa">
+                            <h:panelGrid columns="3">
+                            
+                                <p:outputLabel value="Razão Social" for="razao-social"/>
+                                <p:inputText id="razao-social" size="60" maxlength="80"
+                                value="#{controleEmpresa.empresaEdicao.razaoSocial}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="razao-social" />
+                                
+                                <p:outputLabel value="Fantasia" for="fantasia"/>
+                                <p:inputText id="fantasia" size="60" maxlength="40"
+                                value="#{controleEmpresa.empresaEdicao.fantasia}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="fantasia"/>
+                                
+                                <p:outputLabel value="CNPJ" for="cnpj"/>
+                                <p:inputMask id="cnpj" size="18" maxlength="18"
+                                value="#{controleEmpresa.empresaEdicao.cnpj}"
+                                mask="99.999.999/9999-99"/>
+                                <p:message display="icon" for="cnpj"/>
+                                
+                                <p:outputLabel value="CPF" for="cpf"/>
+                                <p:inputMask id="cpf" size="14" maxlength="14"
+                                value="#{controleEmpresa.empresaEdicao.cpf}"
+                                mask="999.999.999-99"/>
+                                <p:message display="icon" for="cpf"/>
+                                
+                                <p:outputLabel value="Inscrição Estadual" for="ins-estadual"/>
+                                <p:inputText id="ins-estadual" size="15" maxlength="15"
+                                value="#{controleEmpresa.empresaEdicao.insEstadual}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="ins-estadual"/>
+                                
+                                <p:outputLabel value="Inscrição Municipal" for="ins-municipal"/>
+                                <p:inputText id="ins-municipal" size="15" maxlength="15"
+                                value="#{controleEmpresa.empresaEdicao.insMunicipal}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="ins-municipal"/>
+                                
+                                <p:outputLabel value="Data Abertura" for="data-abertura"/>
+                                <p:calendar id="data-abertura" size="10"
+                                locale="pt_BR"
+                                value="#{controleEmpresa.empresaEdicao.dataAbertura}"
+                                pattern="dd/MM/yyyy" mask="99/99/9999"
+                                showOn="button"/>
+                                <p:message display="icon" for="data-abertura"/>
+                                                    
+                                <p:outputLabel value="Ramo de Atividade" for="ramo-atividade"/>
+                                <p:selectOneMenu id="ramo-atividade" value="#{controleEmpresa.empresaEdicao.ramoAtividade}">
+                                    <f:selectItem  itemLabel="Selecione"/>
+                                    <f:selectItems value="#{controleEmpresa.ramosAtividade}" var="ramoAtividade" 
+                                                   itemLabel="#{ramoAtividade.descricao}" itemValue="#{ramoAtividade}"/>                    
+                                </p:selectOneMenu>
+                                <p:message for="ramo-atividade"/>
+                                
+                                <p:outputLabel value="CNAE" for="cnae"/>
+                                <p:inputMask id="cnae" size="9" maxlength="9"
+                                value="#{controleEmpresa.empresaEdicao.cnae}"
+                                mask="9999-9/99"/>
+                                <p:message display="icon" for="cnae"/>
+            
+                                <p:outputLabel value="Natureza Juridica" for="natureza-juridica"/>
+                                <p:inputMask id="natureza-juridica" size="5" maxlength="5"
+                                value="#{controleEmpresa.empresaEdicao.naturezaJuridica}"
+                                mask="999-9"/>
+                                <p:message display="icon" for="natureza-juridica"/>
+                                
+                            </h:panelGrid>  
+                        </p:tab>                    
+                        <!-- Aba Endereço -->
+                        <p:tab title="Endereço">    
+                            <h:panelGrid columns="3">                       
+                                
+                                <p:outputLabel value="CEP" for="cep"/>
+                                <p:inputMask id="cep" size="10" maxlength="9"
+                                value="#{controleEmpresa.empresaEdicao.endereco.cep}"
+                                mask="99999-999"/>  
+                                <p:message display="icon" for="cep"/>
+                                
+                                <p:outputLabel value="Tipo Logradouro" for="tipo-logradouro"/>
+                                <p:inputText id="tipo-logradouro" size="15" maxlength="15"
+                                value="#{controleEmpresa.empresaEdicao.endereco.tipoLogradouro}"
+                                onblur="value=value.toUpperCase()"/>   
+                                <p:message display="icon" for="tipo-logradouro"/>                         
+    
+                                <p:outputLabel value="Logradouro" for="logradouro"/>
+                                <p:inputText id="logradouro" size="50" maxlength="50"
+                                value="#{controleEmpresa.empresaEdicao.endereco.logradouro}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="logradouro"/>
+    
+                                <p:outputLabel value="Número" for="numero"/>
+                                <p:inputText id="numero" size="10" maxlength="10"
+                                value="#{controleEmpresa.empresaEdicao.endereco.numero}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="numero"/>
+    
+                                <p:outputLabel value="Complemento" for="complemento"/>
+                                <p:inputText id="complemento" size="20" maxlength="20"
+                                value="#{controleEmpresa.empresaEdicao.endereco.complemento}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="complemento"/>
+    
+                                <p:outputLabel value="Bairro" for="bairro"/>
+                                <p:inputText id="bairro" size="40" maxlength="40"
+                                value="#{controleEmpresa.empresaEdicao.endereco.bairro}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="bairro"/>
+    
+                                <p:outputLabel value="Cidade" for="cidade"/>
+                                <p:inputText id="cidade" size="40" maxlength="40"
+                                value="#{controleEmpresa.empresaEdicao.endereco.cidade}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="cidade"/>
+    
+                                <p:outputLabel value="Estado" for="uf"/>
+                                <p:selectOneMenu id="uf" value="#{controleEmpresa.empresaEdicao.endereco.uf}">
+                                    <f:selectItem  itemLabel="Selecione"/>
+                                    <f:selectItems value="#{controleEmpresa.estados}" var="estado" 
+                                                   itemLabel="#{estado.nome}" itemValue="#{estado}"/>                    
+                                </p:selectOneMenu>
+                                <p:message display="icon" for="uf"/>
+
+                            </h:panelGrid>                              
+                        </p:tab>
+                        <!-- Aba Contato -->
+                        <p:tab title="Contato">
+                            <h:panelGrid columns="3">
+                                
+                                <p:outputLabel value="Nome" for="nome"/>
+                                <p:inputText id="nome" size="50" maxlength="50"
+                                value="#{controleEmpresa.empresaEdicao.contato.nomeContato}"
+                                onblur="value=value.toUpperCase()"/>
+                                <p:message display="icon" for="nome"/>
+    
+                                <p:outputLabel value="E-mail" for="email"/>
+                                <p:inputText id="email" size="50" maxlength="100"
+                                value="#{controleEmpresa.empresaEdicao.contato.email}"
+                                onblur="value=value.toLowerCase()"/>
+                                <p:message display="icon" for="email"/>
+    
+                                <p:outputLabel value="Telefone" for="telefone"/>
+                                <p:inputMask id="telefone" size="15" maxlength="15"
+                                value="#{controleEmpresa.empresaEdicao.contato.telefone}"
+                                mask="(99)-9999-9999"/>
+                                <p:message display="icon" for="telefone"/>
+    
+                                <p:outputLabel value="Ramal" for="ramal"/>
+                                <p:inputMask id="ramal" size="5" maxlength="5"
+                                value="#{controleEmpresa.empresaEdicao.contato.ramal}"
+                                mask="9999"/>
+                                <p:message display="icon" for="ramal"/>
+    
+                                <p:outputLabel value="Celular" for="celular"/>
+                                <p:inputMask id="celular" size="15" maxlength="15"
+                                value="#{controleEmpresa.empresaEdicao.contato.celular}"
+                                mask="(99)-99999-9999"/>
+                                <p:message display="icon" for="celular"/>
+                                                                                                                                                                        
+                            </h:panelGrid>
+                        </p:tab>                    
+                    </p:tabView>
+				</p:dialog>
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>

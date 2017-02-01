@@ -19,27 +19,30 @@ public class FacesMessages implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private void add(String message, Severity severity) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		FacesMessage msg = new FacesMessage(message);
+	private void add(String titulo, String message, Severity severity) {
+		
+		FacesContext context = FacesContext.getCurrentInstance();		
+		FacesMessage msg = new FacesMessage();
+		msg.setSummary(titulo);
+		msg.setDetail(message);
 		msg.setSeverity(severity);
-
 		context.addMessage(null, msg);
+		
 	}
 
 	public void info(String message) {
-		add(message, FacesMessage.SEVERITY_INFO);
+		add("sucesso", message, FacesMessage.SEVERITY_INFO);
 	}
 
 	public void warning(String message) {
-		add(message, FacesMessage.SEVERITY_WARN);
+		add("Atenção", message, FacesMessage.SEVERITY_WARN);
 	}
 
 	public void error(String message) {
-		add(message, FacesMessage.SEVERITY_ERROR);
+		add("Erro", message, FacesMessage.SEVERITY_ERROR);
 	}
 
 	public void fatal(String message) {
-		add(message, FacesMessage.SEVERITY_FATAL);
+		add("Erro Fatal", message, FacesMessage.SEVERITY_FATAL);
 	}
 }

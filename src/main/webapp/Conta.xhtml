@@ -15,7 +15,7 @@
 
 			<h:form id="frm">
 				<!-- Mensagem Form -->
-				<p:messages id="msg-frm" closable="true"/>
+				<p:growl id="msg-frm" showDetail="true"/> 
 				
 				<!-- Barra de Ferramentas -->
 				<p:toolbar style="margin-bottom:10px" id="toolbar">
@@ -37,7 +37,7 @@
 										 update="dialogo"			
 										 oncomplete="PF('wgDados').show()"
 										 disabled="#{controleConta.contaSelect == null}"
-										 actionListener="#{controleConta.registroSelecionado}">
+										 actionListener="#{controleConta.editCadastro}">
 										 <p:resetInput target="dialogo"/>
 						</p:commandButton>
 						<p:commandButton id="bto-excluir" 
@@ -96,9 +96,6 @@
 						  width="800"
 						  height="450">
 						  
-					<!-- Mensagem dialogo -->	  
-					<p:messages autoUpdate="true" id="msg-dialogo" closable="true"/>
-						  
 					<!-- Barra de Ferramentas dialogo-->					
 					<p:defaultCommand target="bto-salvar" scope="dialogo"/>  
 					<p:toolbar>		
@@ -108,16 +105,17 @@
 											 icon="fa fa-save" 										  
 											 action="#{controleConta.salvar}"
 											 process="dialogo" 
-											 update="msg-dialogo panel-dados"
+											 update="panel-dados"
 											 oncomplete="if(!args.validationFailed) PF('wgDados').hide()"/>
 						</f:facet>
 					</p:toolbar>
 						  
-					<h:panelGrid class="r42-panel-dados" columns="2" id="panel-dados">
+					<h:panelGrid class="r42-panel-dados" columns="3" id="panel-dados">
 												
 						<p:outputLabel value="Descrição" for="descricao"/>
 						<p:inputText id="descricao" size="50" maxlength="50"
 						value="#{controleConta.contaEdicao.descricao}" onblur="value=value.toUpperCase()"/>
+						<p:message display="icon" for="descricao" />
 						
 						<p:outputLabel value="Tipo Conta" for="tipo-conta"/>
 						<p:selectOneMenu id="tipo-conta" value="#{controleConta.contaEdicao.tipoConta}">
@@ -125,6 +123,7 @@
 							<f:selectItems value="#{controleConta.tiposConta}" var="tipoConta"
 										   itemLabel="#{tipoConta.descricao}" itemValue="#{tipoConta}"/>
 						</p:selectOneMenu>	
+						<p:message display="icon" for="tipo-conta" />
 
 						<p:outputLabel value="Status" for="status"/>
 						<p:selectOneMenu id="status" value="#{controleConta.contaEdicao.status}">
@@ -132,6 +131,7 @@
 							<f:selectItems value="#{controleConta.statusConta}" var="status"
 										   itemLabel="#{status.descricao}" itemValue="#{status}"/>
 						</p:selectOneMenu>
+						<p:message display="icon" for="status" />
 
 						<p:outputLabel value="Natureza" for="natureza"/>
 						<p:selectOneMenu id="natureza" value="#{controleConta.contaEdicao.natureza}">
@@ -139,6 +139,7 @@
 							<f:selectItems value="#{controleConta.naturezas}" var="natureza"
 										   itemLabel="#{natureza.descricao}" itemValue="#{natureza}"/>
 						</p:selectOneMenu>
+						<p:message display="icon" for="natureza" />
 												
 						<p:outputLabel value="Conta Pai" for="conta-pai"/>
 						<p:outputLabel id="conta-pai"

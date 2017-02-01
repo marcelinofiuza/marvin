@@ -1,59 +1,58 @@
 package br.com.resvut42.marvin.controle;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.resvut42.marvin.entidade.Conta;
-import br.com.resvut42.marvin.enums.Natureza;
-import br.com.resvut42.marvin.enums.Status;
-import br.com.resvut42.marvin.enums.TipoConta;
-import br.com.resvut42.marvin.servico.SerConta;
+import br.com.resvut42.marvin.entidade.Empresa;
+import br.com.resvut42.marvin.enums.Estados;
+import br.com.resvut42.marvin.enums.RamoAtividade;
+import br.com.resvut42.marvin.servico.SerEmpresa;
 import br.com.resvut42.marvin.util.FacesMessages;
 
 /****************************************************************************/
-// Classe controle para View da Tela do Plano de contas 
-// Desenvolvido por : Bob-Odin 
-// Criado em 31/01/2017 
+//Classe controle para View da Tela da Empresa
+//Desenvolvido por : Bob-Odin
+//Criado em 01/02/2017 
 /****************************************************************************/
 
 @Named
 @ViewScoped
-public class ControleConta implements Serializable {
+public class ControleEmpresa implements Serializable {
 
 	/****************************************************************************/
 	// Variaveis e Dependências
 	/****************************************************************************/
 	private static final long serialVersionUID = 1L;
-	private TreeNode treeContas;
-	private TreeNode contaSelect;
-	private Conta contaEdicao = new Conta();
+
+	private List<Empresa> listaEmpresas = new ArrayList<Empresa>();
+	private Empresa empresaEdicao = new Empresa();
+	private Empresa empresaSelect;
 
 	@Autowired
-	SerConta serConta;
+	SerEmpresa serEmpresa;
 	@Autowired
-	private FacesMessages mensagens;
+	FacesMessages mensagens;
 
 	/****************************************************************************/
 	// Metodo Salvar
 	/****************************************************************************/
 	public void salvar() {
 		try {
-			serConta.Salvar(contaEdicao);
+			serEmpresa.salvar(empresaEdicao);
 			listar();
-			contaSelect = null;
-			contaEdicao = new Conta();
 			mensagens.info("Registro salvo com sucesso!");
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}
-		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela", "frm:toolbar"));
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
 
 	/****************************************************************************/
@@ -61,87 +60,69 @@ public class ControleConta implements Serializable {
 	/****************************************************************************/
 	public void excluir() {
 		try {
-			Conta contatmp = (Conta) contaSelect.getData();
-			serConta.Excluir(contatmp);
+			serEmpresa.excluir(empresaSelect);
+			empresaSelect = null;
 			listar();
-			contaSelect = null;
-			contaEdicao = new Conta();
 			mensagens.info("Registro excluido com sucesso!");
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}
-		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela", "frm:toolbar"));
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
 
 	/****************************************************************************/
 	// Buscar lista dos dados no banco
 	/****************************************************************************/
 	public void listar() {
-		treeContas = serConta.ListarTodos();
+		listaEmpresas = serEmpresa.ListarTodos();
 	}
 
 	/****************************************************************************/
 	// Preparar objetos para novo cadastro
 	/****************************************************************************/
 	public void novoCadastro() {
-
-		Conta contatmp = (Conta) contaSelect.getData();
-
-		if (contatmp.getTipoConta().equals(TipoConta.ANALITICA)) {
-			contatmp = (Conta) contaSelect.getData();
-			contatmp = contatmp.getContaPai();
-		}
-
-		contaEdicao = new Conta();
-		contaEdicao.setContaPai(contatmp);
-		contaEdicao.setNatureza(contatmp.getNatureza());
-		contaEdicao.setStatus(contatmp.getStatus());
-
+		empresaEdicao = new Empresa();
 	}
 
 	/****************************************************************************/
 	// Atribuir no controle o registro selecionado na tela
 	/****************************************************************************/
 	public void editCadastro() {
-		contaEdicao = (Conta) contaSelect.getData();
+		empresaEdicao = empresaSelect;
 	}
 
 	/****************************************************************************/
 	// -- Lista de opções de enums
 	/****************************************************************************/
-	public TipoConta[] getTiposConta() {
-		return TipoConta.values();
+	public RamoAtividade[] getRamosAtividade() {
+		return RamoAtividade.values();
 	}
-
-	public Status[] getStatusConta() {
-		return Status.values();
-	}
-
-	public Natureza[] getNaturezas() {
-		return Natureza.values();
+	
+	public Estados[] getEstados(){
+		return Estados.values();
 	}
 
 	/****************************************************************************/
 	// Gets e Sets do controle
 	/****************************************************************************/
-	public TreeNode getTreeContas() {
-		return treeContas;
+	public List<Empresa> getListaEmpresas() {
+		return listaEmpresas;
 	}
 
-	public Conta getContaEdicao() {
-		return contaEdicao;
+	public Empresa getEmpresaEdicao() {
+		return empresaEdicao;
 	}
 
-	public void setContaEdicao(Conta contaEdicao) {
-		this.contaEdicao = contaEdicao;
+	public void setEmpresaEdicao(Empresa empresaEdicao) {
+		this.empresaEdicao = empresaEdicao;
 	}
 
-	public TreeNode getContaSelect() {
-		return contaSelect;
+	public Empresa getEmpresaSelect() {
+		return empresaSelect;
 	}
 
-	public void setContaSelect(TreeNode contaSelect) {
-		this.contaSelect = contaSelect;
+	public void setEmpresaSelect(Empresa empresaSelect) {
+		this.empresaSelect = empresaSelect;
 	}
 
 }
