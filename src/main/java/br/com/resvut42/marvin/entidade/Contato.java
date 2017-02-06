@@ -5,18 +5,17 @@ import javax.persistence.Embeddable;
 
 import org.hibernate.validator.constraints.Email;
 
-/****************************************************************************/
-// Entidade Contato para complemento de cadastros diversos
-// Desenvolvido por : Bob-Odin
-// Criado em 01/02/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Entidade Contato @Embeddable de cadastros diversos Desenvolvido por :
+ * 
+ * @author Bob-Odin - 01/02/2017
+ ****************************************************************************/
 @Embeddable
 public class Contato {
 
 	@Column(length = 50)
 	private String nomeContato;
-	
+
 	@Email
 	@Column(length = 100)
 	private String email;
@@ -37,7 +36,7 @@ public class Contato {
 	public void setNomeContato(String nomeContato) {
 		this.nomeContato = nomeContato;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}

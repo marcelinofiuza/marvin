@@ -103,11 +103,11 @@
 											 icon="fa fa-save" 										  
 											 action="#{controleEmpresa.salvar}"
 											 process="dialogo" 
-											 update="tabview-dados"
+											 update="panel-dados"
 											 oncomplete="if(!args.validationFailed) PF('wgDados').hide()"/>
 						</f:facet>
 					</p:toolbar>
-                    <p:tabView id="tabview-dados">
+                    <p:tabView id="panel-dados">
                         <!-- Aba Empresa -->
                         <p:tab title="Empresa">
                             <h:panelGrid columns="3">
@@ -119,7 +119,7 @@
                                 <p:message display="icon" for="razao-social" />
                                 
                                 <p:outputLabel value="Fantasia" for="fantasia"/>
-                                <p:inputText id="fantasia" size="60" maxlength="40"
+                                <p:inputText id="fantasia" size="40" maxlength="40"
                                 value="#{controleEmpresa.empresaEdicao.fantasia}"
                                 onblur="value=value.toUpperCase()"/>
                                 <p:message display="icon" for="fantasia"/>

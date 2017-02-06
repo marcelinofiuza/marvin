@@ -22,12 +22,11 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import br.com.resvut42.marvin.enums.RamoAtividade;
 
-/****************************************************************************/
-//Entidade Empresa 
-//Desenvolvido por : Bob-Odin 
-//Criado em 01/02/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Entidade Empresa Desenvolvido por :
+ * 
+ * @author Bob-Odin - 01/02/2017 /
+ ****************************************************************************/
 @Entity
 public class Empresa implements Serializable {
 

@@ -10,7 +10,7 @@
 		 
             <!-- execução inicial -->
             <f:metadata>
-                <f:viewAction action="#{controleUsuario.listar}"></f:viewAction>
+                <f:viewAction action="#{controleUsuario.listar}"/>
             </f:metadata>		 
 			
 			<h:form id="frm">
@@ -23,7 +23,7 @@
                         <p:commandButton    id="bto-novo" 
                                             title="Novo" 
                                             icon="fa fa-file-o" 
-                                            action="#{controleUsuario.novoCadastro}"
+                                            actionListener="#{controleUsuario.novoCadastro}"
                                             process="@this" 
                                             update="dialogo"                    
                                             oncomplete="PF('wgDados').show()">
@@ -139,42 +139,122 @@
                     </p:toolbar>
                     
                     <!-- Dados Dialogo -->
-                    <h:panelGroup id="panel-dados" >
-                    
-                        <h:panelGrid columns="3" class="r42-panel-dados" >                           
-                            <p:outputLabel value="Usuário" for="credencial"/>
-                            <p:inputText id="credencial" size="20" maxlength="20"
-                            value="#{controleUsuario.usuarioEdicao.credencial}" onblur="value=value.toUpperCase()"
-                            disabled="#{!controleUsuario.dados}"/>
-                            <p:message display="icon" for="credencial" />
-                        
-                            <p:outputLabel value="Nome" for="nome"/>
-                            <p:inputText id="nome" size="50" maxlength="50"
-                            value="#{controleUsuario.usuarioEdicao.nome}" onblur="value=value.toUpperCase()"
-                            disabled="#{!controleUsuario.dados}"/>
-                            <p:message display="icon" for="nome" />
-                        </h:panelGrid>
+                    <p:tabView id="panel-dados" class="r42-panel-dados">
+                        <!-- Aba Dados Usuario -->
+                        <p:tab title="Dados Usuario">
                                             
-                        <p:panel header="Perfil" class="r42-panel-dados" rendered="#{controleUsuario.dados}">   
-                            <p:pickList id="pickList" value="#{controleUsuario.rolesListModel}" var="role" 
-                                            itemLabel="#{role.descricao}" itemValue="#{role}" 
-                                            converter="roleConverter"/>                                 
-                        </p:panel>
+	                        <h:panelGrid columns="3" class="r42-panel-dados" >                           
+	                            <p:outputLabel value="Usuário" for="credencial"/>
+	                            <p:inputText id="credencial" size="20" maxlength="20"
+	                            value="#{controleUsuario.usuarioEdicao.credencial}" onblur="value=value.toUpperCase()"
+	                            disabled="#{!controleUsuario.dados}"/>
+	                            <p:message display="icon" for="credencial" />
+	                        
+	                            <p:outputLabel value="Nome" for="nome"/>
+	                            <p:inputText id="nome" size="50" maxlength="50"
+	                            value="#{controleUsuario.usuarioEdicao.nome}" onblur="value=value.toUpperCase()"
+	                            disabled="#{!controleUsuario.dados}"/>
+	                            <p:message display="icon" for="nome" />
+	                        </h:panelGrid>
                         
-                        <h:panelGrid columns="3" class="r42-panel-dados" rendered="#{controleUsuario.senha}">
-                            <h:outputLabel for="senha1" value="Senha:" />
-                            <p:password id="senha1" value="#{controleUsuario.usuarioEdicao.senha}" 
-                            match="senha2" validatorMessage="As senhas não conforem!" label="senha1"/>
-                            <p:message display="icon" for="senha1" />
- 
-                            <h:outputLabel for="senha2" value="Confirmar Senha:" />
-                            <p:password id="senha2" value="#{controleUsuario.usuarioEdicao.senha}" label="senha2"/>
-                            <p:message display="icon" for="senha2" />                         
-                        </h:panelGrid>
-                                                
-                     </h:panelGroup>
-			     </p:dialog>
-			     
+	                        <h:panelGrid columns="3" class="r42-panel-dados" rendered="#{controleUsuario.senha}">
+	                            <h:outputLabel for="senha1" value="Senha:" />
+	                            <p:password id="senha1" value="#{controleUsuario.usuarioEdicao.senha}" 
+	                            match="senha2" validatorMessage="As senhas não conforem!" label="senha1"/>
+	                            <p:message display="icon" for="senha1" />
+	 
+	                            <h:outputLabel for="senha2" value="Confirmar Senha:" />
+	                            <p:password id="senha2" value="#{controleUsuario.usuarioEdicao.senha}" label="senha2"/>
+	                            <p:message display="icon" for="senha2" />                         
+	                        </h:panelGrid>
+	                        
+                        </p:tab>
+                        
+                        <!-- Aba Perfis -->
+                        <p:tab title="Perfis" rendered="#{controleUsuario.dados}">                        
+	                        
+                            <p:pickList id="pickList" value="#{controleUsuario.rolesListModel}" var="role" 
+	                                    itemLabel="#{role.descricao}" itemValue="#{role}" 
+	                                    converter="roleConverter">  
+                                    
+                                <f:facet name="sourceCaption">Disponível</f:facet>
+                                <f:facet name="targetCaption">Ativado</f:facet>
+                                    
+                            </p:pickList>              	                        
+                        </p:tab>
+                        
+                        <!-- Aba Empresas -->
+                        <p:tab title="Empresas" rendered="#{controleUsuario.dados}">
+                           
+                            <h:panelGrid id="panel-pesquisa" columns="3" class="r42-panel-dados" >                      
+                                
+                                <p:outputLabel value="Empresa" for="empresa"/>
+                                <p:inputText id="empresa" size="60" maxlength="80"
+                                value="#{controleUsuario.empresa.razaoSocial}"
+                                readonly="true"/>
+                                
+                                <p:commandButton icon="fa fa-search" 
+                                                 title="Pesquisar"
+                                                 action="#{pesquisaEmpresa.abrirDialogo}"
+                                                 process="@this"
+                                                 update="@none">
+                                                 
+                                    <p:ajax event="dialogReturn" 
+                                            listener="#{controleUsuario.empresaSelecionada}"
+                                            process="@this"                                             
+                                            update="panel-pesquisa bto-adicionar"/>
+                                            
+                                </p:commandButton>
+                                
+                            </h:panelGrid>
+                            
+                            <p:separator/>
+                            
+                            <p:commandButton id="bto-adicionar"
+                                             title="Adicionar"
+                                             icon="fa fa-plus"  
+                                             update="panel-pesquisa tabelaEmpresa @this"
+                                             disabled="#{controleUsuario.empresa == null}"
+                                             process="@this"
+                                             actionListener="#{controleUsuario.adicionaEmpresa}"/>
+                                                 
+                            <p:commandButton id="bto-remover"
+                                             title="Remover"
+                                             icon="fa fa-minus" 
+                                             update="tabelaEmpresa @this"
+                                             disabled="#{controleUsuario.empresaSelect == null}"
+                                             process="@this"
+                                             actionListener="#{controleUsuario.removeEmpresa}"/>
+
+                            <p:separator/>
+                                             
+                            <p:dataTable value="#{controleUsuario.usuarioEdicao.empresas}" var="empresa"
+                                         id="tabelaEmpresa"
+                                         rows="10" paginator="true" paginatorPosition="top"                                          
+                                         selectionMode="single" rowKey="#{empresa.idEmpresa}"
+                                         selection="#{controleUsuario.empresaSelect}"
+                                         emptyMessage="Nenhuma empresa adicionada">               
+
+                                    <!-- Evento ajax, quando marca/desmarca uma linha -->
+                                    <p:ajax event="rowSelect"   update=":frm:panel-dados:bto-remover"/>
+                                    <p:ajax event="rowUnselect" update=":frm:panel-dados:bto-remover"/>
+                             
+				                    <!-- Colunas -->
+				                    <p:column headerText="Código" width="70">
+				                        <h:outputText value="#{empresa.idEmpresa}" />
+				                    </p:column>
+				                    <p:column headerText="Razõa Social">
+				                        <h:outputText value="#{empresa.razaoSocial}" />
+				                    </p:column>
+				                    <p:column headerText="Fantasia" width="250">
+				                        <h:outputText value="#{empresa.fantasia}" />
+				                    </p:column>
+                             
+                            </p:dataTable>
+                            
+                        </p:tab>                        
+                     </p:tabView>
+			     </p:dialog>			     
 			</h:form>			
 		 </section>
 	</ui:define>	

@@ -7,14 +7,13 @@ import javax.faces.convert.FacesConverter;
 
 import br.com.resvut42.marvin.enums.Role;
 
-/****************************************************************************/
-//Classe de conversão do enum Role
-//Desenvolvido por : Bob-Odin 
-//Criado em 30/01/2017 
-/****************************************************************************/
-
-@FacesConverter(value = "roleConverter") 
-public class RoleConverter implements Converter{
+/****************************************************************************
+ * Classe de conversão do enum Role
+ * 
+ * @author: Bob-Odin - 30/01/2017
+ ****************************************************************************/
+@FacesConverter(value = "roleConverter")
+public class RoleConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -26,7 +25,7 @@ public class RoleConverter implements Converter{
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
 		// TODO Auto-generated method stub
-		Role role =  (Role)value;
+		Role role = (Role) value;
 		return role.toString();
 	}
 

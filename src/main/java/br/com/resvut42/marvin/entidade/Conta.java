@@ -19,15 +19,14 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import br.com.resvut42.marvin.enums.Natureza;
-import br.com.resvut42.marvin.enums.Status;
-import br.com.resvut42.marvin.enums.TipoConta;
+import br.com.resvut42.marvin.enums.AtivaItativa;
+import br.com.resvut42.marvin.enums.AnaliticaSintetica;
 
-/****************************************************************************/
-// Entidade Conta (Plano de Contas)
-// Desenvolvido por : Bob-Odin 
-// Criado em 31/01/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Entidade Conta (Plano de Contas) Desenvolvido por :
+ * 
+ * @author Bob-Odin - 31/01/2017
+ ****************************************************************************/
 @Entity
 public class Conta implements Serializable {
 
@@ -40,7 +39,7 @@ public class Conta implements Serializable {
 	@NotNull
 	@Column(nullable = false)
 	private Integer chave;
-	
+
 	@NotEmpty
 	@Column(length = 50, nullable = false)
 	private String descricao;
@@ -48,12 +47,12 @@ public class Conta implements Serializable {
 	@NotEmpty
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
-	private TipoConta tipoConta;
+	private AnaliticaSintetica tipoConta;
 
 	@NotEmpty
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
-	private Status status;
+	private AtivaItativa status;
 
 	@NotEmpty
 	@Enumerated(EnumType.STRING)
@@ -64,7 +63,7 @@ public class Conta implements Serializable {
 	@JoinColumn(name = "idContaPai")
 	private Conta contaPai;
 
-	@OneToMany(mappedBy = "contaPai", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "contaPai", fetch = FetchType.LAZY)
 	private List<Conta> subConta;
 
 	public Long getIdConta() {
@@ -91,19 +90,19 @@ public class Conta implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public TipoConta getTipoConta() {
+	public AnaliticaSintetica getTipoConta() {
 		return tipoConta;
 	}
 
-	public void setTipoConta(TipoConta tipoConta) {
+	public void setTipoConta(AnaliticaSintetica tipoConta) {
 		this.tipoConta = tipoConta;
 	}
 
-	public Status getStatus() {
+	public AtivaItativa getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(AtivaItativa status) {
 		this.status = status;
 	}
 

@@ -10,33 +10,37 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import br.com.resvut42.marvin.entidade.Empresa;
 import br.com.resvut42.marvin.entidade.Usuario;
 import br.com.resvut42.marvin.entidade.UsuarioRoles;
 import br.com.resvut42.marvin.enums.Role;
 import br.com.resvut42.marvin.servico.SerUsuario;
 import br.com.resvut42.marvin.util.FacesMessages;
 
-/****************************************************************************/
-//Classe controle para View da Tela do Usuario
-//Desenvolvido por : Bob-Odin
-//Criado em 30/01/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Classe controle para View da Tela do Usuario
+ * 
+ * @author: Bob-Odin - 30/01/2017
+ ****************************************************************************/
 @Named
 @ViewScoped
 public class ControleUsuario implements Serializable {
 
-	/****************************************************************************/
-	// Variaveis e Dependências
-	/****************************************************************************/
+	/****************************************************************************
+	 * Variaveis e Dependências
+	 ****************************************************************************/
 	private static final long serialVersionUID = 1L;
 	private List<Usuario> listaUsuarios = new ArrayList<Usuario>();
 	private Usuario usuarioEdicao = new Usuario();
 	private Usuario usuarioSelect;
 	private DualListModel<Role> rolesListModel;
+	private Empresa empresaSelect;
+	private Empresa empresa;
+	private boolean novaEmpresa = false;
 	private boolean dados = false;
 	private boolean senha = false;
 
@@ -45,17 +49,17 @@ public class ControleUsuario implements Serializable {
 	@Autowired
 	private FacesMessages mensagens;
 
-	/****************************************************************************/
-	// Inicialização
-	/****************************************************************************/
+	/****************************************************************************
+	 * Inicialização
+	 ****************************************************************************/
 	@PostConstruct
 	public void inicializacao() {
 		montarST();
 	}
 
-	/****************************************************************************/
-	// Salvar os dados no banco
-	/****************************************************************************/
+	/****************************************************************************
+	 * Salvar os dados no banco
+	 ****************************************************************************/
 	public void salvar() {
 		dados = false;
 		senha = false;
@@ -66,14 +70,15 @@ public class ControleUsuario implements Serializable {
 			mensagens.info("Registro salvo com sucesso!");
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
+			e.printStackTrace();
 		}
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
 
-	/****************************************************************************/
-	// Metodo Excluir
-	/****************************************************************************/
-	public void excluir(){
+	/****************************************************************************
+	 * Excluir dados
+	 ****************************************************************************/
+	public void excluir() {
 		try {
 			serUsuario.excluir(usuarioSelect);
 			usuarioSelect = null;
@@ -84,70 +89,107 @@ public class ControleUsuario implements Serializable {
 		}
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
-	
-	/****************************************************************************/
-	// Buscar lista dos dados no banco
-	/****************************************************************************/
+
+	/****************************************************************************
+	 * Buscar lista dos dados no banco
+	 ****************************************************************************/
 	public void listar() {
 		listaUsuarios = serUsuario.ListarTodos();
 	}
 
-	/****************************************************************************/
-	// Preparar objetos para novo cadastro
-	/****************************************************************************/
+	/****************************************************************************
+	 * Preparar objetos para novo cadastro
+	 ****************************************************************************/
 	public void novoCadastro() {
 		dados = true;
 		senha = true;
+		empresa = null;	
+		novaEmpresa = false;
 		usuarioEdicao = new Usuario();
 		montarST();
 	}
 
-	/****************************************************************************/
-	// Atribuir no controle o registro selecionado na tela
-	/****************************************************************************/
+	/****************************************************************************
+	 * Atribuir no controle o registro selecionado na tela
+	 ****************************************************************************/
 	public void editCadastro() {
 		dados = true;
 		senha = false;
+		empresa = null;	
+		novaEmpresa = false;
 		usuarioEdicao = usuarioSelect;
 		montarST();
 	}
-	
-	/****************************************************************************/
-	// Atribuir no controle o registro selecionado na tela
-	/****************************************************************************/
+
+	/****************************************************************************
+	 * Atribuir no controle o registro selecionado na tela
+	 ****************************************************************************/
 	public void editSenha() {
 		dados = false;
 		senha = true;
+		empresa = null;	
+		novaEmpresa = false;
 		usuarioEdicao = usuarioSelect;
 		montarST();
 	}
-	
-	/****************************************************************************/
-	// Atribuir no controle o registro selecionado na tela
-	/****************************************************************************/
-	public void bloqueioDesbloqueio(){
-		
+
+	/****************************************************************************
+	 * Bloqueia / Desbloqueia registro selecionado na tela
+	 ****************************************************************************/
+	public void bloqueioDesbloqueio() {
+
 		usuarioEdicao = usuarioSelect;
-		
-		if(usuarioEdicao.isBloqueado()){
+
+		if (usuarioEdicao.isBloqueado()) {
 			usuarioEdicao.setBloqueado(false);
-		}else{
+		} else {
 			usuarioEdicao.setBloqueado(true);
 		}
-		
+
 		try {
 			serUsuario.salvar(usuarioEdicao);
-			listar();			
+			listar();
 			mensagens.info("Registro salvo com sucesso!");
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}
-		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));		
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
+
+	/****************************************************************************
+	 * Resgata a empresa selecionada no dialogo
+	 ****************************************************************************/
+	public void empresaSelecionada(SelectEvent event) {
+		empresa = new Empresa();
+		empresa = (Empresa) event.getObject();	
+		novaEmpresa = true;
+	}
+
+	/****************************************************************************
+	 * Adicona empresa seleciona na lista
+	 ****************************************************************************/
+	public void adicionaEmpresa() {
+		if (empresa != null) {
+			usuarioEdicao.addEmpresa(empresa);
+			empresa = null;
+			novaEmpresa = false;
+		}
+	}
+
+	/****************************************************************************
+	 * Remove a empresa seleciona da lista
+	 ****************************************************************************/
+	public void removeEmpresa() {
+		if (empresaSelect != null) {
+			usuarioEdicao.removeEmpresa(empresaSelect);
+			empresaSelect = null;
+		}
+	}
+
 	
-	/****************************************************************************/
-	// -- Montar Source e Target das Roles do usuario
-	/****************************************************************************/
+	/****************************************************************************
+	 * -- Montar Source e Target das Roles do usuario
+	 ****************************************************************************/
 	private void montarST() {
 
 		boolean source;
@@ -182,75 +224,74 @@ public class ControleUsuario implements Serializable {
 		rolesListModel = new DualListModel<Role>(rolesSource, rolesTarget);
 
 	}
-	
-	/****************************************************************************/
-	// -- Recupera as roles selecionadas
-	/****************************************************************************/
+
+	/****************************************************************************
+	 * -- Recupera as roles selecionadas
+	 ****************************************************************************/
 	private void recuperarRoles() {
 
 		List<UsuarioRoles> delUsuarioRoles = new ArrayList<UsuarioRoles>();
-		UsuarioRoles newRole = null;	
+		UsuarioRoles newRole = null;
 
 		List<UsuarioRoles> usuarioRoles = usuarioEdicao.getRoles();
 		List<Role> rolesTarget = rolesListModel.getTarget();
-		
-		//Remover as Roles removida da tela
+
+		// Remover as Roles removida da tela
 		for (UsuarioRoles roleUsuario : usuarioRoles) {
 			boolean encontrou = false;
-			
-			//varre as roles selecionadas
-			for (Role roleTarget : rolesTarget) {				
-				if(roleUsuario.getRole().equals(roleTarget)){
+
+			// varre as roles selecionadas
+			for (Role roleTarget : rolesTarget) {
+				if (roleUsuario.getRole().equals(roleTarget)) {
 					encontrou = true;
 					break;
 				}
 			}
-			
-			//se a role do usuarioEdição, não está na target, remove
-			if(!encontrou){
+
+			// se a role do usuarioEdição, não está na target, remove
+			if (!encontrou) {
 				delUsuarioRoles.add(roleUsuario);
 			}
-			
-		}			
-		//Remove efetivamete as roles
+
+		}
+		// Remove efetivamete as roles
 		for (UsuarioRoles delUsuarioRole : delUsuarioRoles) {
 			usuarioRoles.remove(delUsuarioRole);
 		}
-		
-		
-		
-		//Adicionar as Roles Adicionada na tela
+
+		// Adicionar as Roles Adicionada na tela
 		for (Role roleTarget : rolesTarget) {
-			
-			//Se o usuário não tem nenhuma role
-			if(usuarioRoles.isEmpty()){
-				newRole = new UsuarioRoles();					
-				newRole.setRole(roleTarget);
-				usuarioEdicao.addRole(newRole);				
-			}
-			
-			//Se a role já estiver no usuário, não adiciona
-			boolean add = true;
-			for (UsuarioRoles roleUsuario : usuarioRoles) {				
-				if(roleUsuario.getRole().equals(roleTarget)){
-					add = false;
-					break;
-				}				
-			}
-			
-			if(add){			
+
+			// Se o usuário não tem nenhuma role
+			if (usuarioRoles.isEmpty()) {
 				newRole = new UsuarioRoles();
 				newRole.setRole(roleTarget);
-				usuarioEdicao.addRole(newRole);	
+				usuarioEdicao.addRole(newRole);
 			}
-						
+
+			// Se a role já estiver no usuário, não adiciona
+			boolean add = true;
+			for (UsuarioRoles roleUsuario : usuarioRoles) {
+				if (roleUsuario.getRole().equals(roleTarget)) {
+					add = false;
+					break;
+				}
+			}
+
+			if (add) {
+				newRole = new UsuarioRoles();
+				newRole.setRole(roleTarget);
+				usuarioEdicao.addRole(newRole);
+			}
+
 		}
-		
+
 	}
 
-	/****************************************************************************/
-	// Gets e Sets do controle
-	/****************************************************************************/
+	/****************************************************************************
+	 * Gets e Sets do controle
+	 ****************************************************************************/
+
 	public List<Usuario> getListaUsuarios() {
 		return listaUsuarios;
 	}
@@ -287,4 +328,24 @@ public class ControleUsuario implements Serializable {
 		return senha;
 	}
 
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}
+
+	public Empresa getEmpresaSelect() {
+		return empresaSelect;
+	}
+
+	public void setEmpresaSelect(Empresa empresaSelect) {
+		this.empresaSelect = empresaSelect;
+	}
+
+	public boolean isNovaEmpresa() {
+		return novaEmpresa;
+	}
+	
 }

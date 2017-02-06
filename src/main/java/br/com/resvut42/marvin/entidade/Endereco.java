@@ -5,14 +5,13 @@ import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-import br.com.resvut42.marvin.enums.Estados;
+import br.com.resvut42.marvin.enums.Estado;
 
-/****************************************************************************/
-// Entidade Endereço para complemento de cadastros diversos
-// Desenvolvido por : Bob-Odin 
-// Criado em 01/02/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Entidade Endereço @Embeddable para complemento de cadastros diversos
+ * 
+ * @author Bob-Odin - 01/02/2017 /
+ ****************************************************************************/
 @Embeddable
 public class Endereco {
 
@@ -36,10 +35,10 @@ public class Endereco {
 
 	@Column(length = 40)
 	private String cidade;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(length = 2)
-	private Estados uf;
+	private Estado uf;
 
 	public String getCep() {
 		return cep;
@@ -97,11 +96,11 @@ public class Endereco {
 		this.cidade = cidade;
 	}
 
-	public Estados getUf() {
+	public Estado getUf() {
 		return uf;
 	}
 
-	public void setUf(Estados uf) {
+	public void setUf(Estado uf) {
 		this.uf = uf;
 	}
 

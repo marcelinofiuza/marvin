@@ -15,12 +15,11 @@ import javax.persistence.ManyToOne;
 
 import br.com.resvut42.marvin.enums.Role;
 
-/****************************************************************************/
-// Entidade Usuario Roles (Perfins dos usuários)
-// Desenvolvido por : Bob-Odin
-// Criado em 30/01/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Entidade Usuario Roles (Perfins dos usuários)
+ * 
+ * @author: Bob-Odin - 30/01/2017
+ ****************************************************************************/
 @Entity
 public class UsuarioRoles implements Serializable {
 

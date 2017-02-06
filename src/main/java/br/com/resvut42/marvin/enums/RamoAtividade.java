@@ -1,11 +1,10 @@
 package br.com.resvut42.marvin.enums;
 
-/****************************************************************************/
-// Enumerador Ramo de Atividade da Empresa
-// Desenvolvido por : Bob-Odin 
-// Criado em 01/03/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Enum Ramo de Atividade da Empresa
+ * 
+ * @author Bob-Odin - 31/01/2017
+ ****************************************************************************/
 public enum RamoAtividade {
 
 	AUTO_SERVICO("Auto serviço"), 
@@ -24,4 +23,5 @@ public enum RamoAtividade {
 	public String getDescricao() {
 		return this.descricao;
 	}
+	
 }

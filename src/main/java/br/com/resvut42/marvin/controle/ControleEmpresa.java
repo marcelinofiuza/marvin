@@ -12,7 +12,7 @@ import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.resvut42.marvin.entidade.Empresa;
-import br.com.resvut42.marvin.enums.Estados;
+import br.com.resvut42.marvin.enums.Estado;
 import br.com.resvut42.marvin.enums.RamoAtividade;
 import br.com.resvut42.marvin.servico.SerEmpresa;
 import br.com.resvut42.marvin.util.FacesMessages;
@@ -98,8 +98,8 @@ public class ControleEmpresa implements Serializable {
 		return RamoAtividade.values();
 	}
 	
-	public Estados[] getEstados(){
-		return Estados.values();
+	public Estado[] getEstados(){
+		return Estado.values();
 	}
 
 	/****************************************************************************/

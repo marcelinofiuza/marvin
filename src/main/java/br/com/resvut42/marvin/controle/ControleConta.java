@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.enums.Natureza;
-import br.com.resvut42.marvin.enums.Status;
-import br.com.resvut42.marvin.enums.TipoConta;
+import br.com.resvut42.marvin.enums.AtivaItativa;
+import br.com.resvut42.marvin.enums.AnaliticaSintetica;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -87,7 +87,7 @@ public class ControleConta implements Serializable {
 
 		Conta contatmp = (Conta) contaSelect.getData();
 
-		if (contatmp.getTipoConta().equals(TipoConta.ANALITICA)) {
+		if (contatmp.getTipoConta().equals(AnaliticaSintetica.ANALITICA)) {
 			contatmp = (Conta) contaSelect.getData();
 			contatmp = contatmp.getContaPai();
 		}
@@ -109,12 +109,12 @@ public class ControleConta implements Serializable {
 	/****************************************************************************/
 	// -- Lista de opções de enums
 	/****************************************************************************/
-	public TipoConta[] getTiposConta() {
-		return TipoConta.values();
+	public AnaliticaSintetica[] getTiposConta() {
+		return AnaliticaSintetica.values();
 	}
 
-	public Status[] getStatusConta() {
-		return Status.values();
+	public AtivaItativa[] getStatusConta() {
+		return AtivaItativa.values();
 	}
 
 	public Natureza[] getNaturezas() {

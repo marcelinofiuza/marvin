@@ -1,6 +1,11 @@
 package br.com.resvut42.marvin.enums;
 
-public enum Estados {
+/****************************************************************************
+ * Enum lista de estados com codigo de IBGE
+ * 
+ * @author Bob-Odin - 31/01/2017
+ ****************************************************************************/
+public enum Estado {
 
 	AC(12,"Acre"),
 	AL(27,"Alagoas"),
@@ -33,7 +38,7 @@ public enum Estados {
 	private final int codigoIbge;
 	private final String nome;
 
-	private Estados(int codigoIbge,String nome) {
+	private Estado(int codigoIbge,String nome) {
 		this.codigoIbge = codigoIbge;
 		this.nome = nome;
 	}
