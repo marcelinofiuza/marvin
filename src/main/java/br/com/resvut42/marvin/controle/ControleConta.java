@@ -17,19 +17,18 @@ import br.com.resvut42.marvin.enums.AnaliticaSintetica;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.FacesMessages;
 
-/****************************************************************************/
-// Classe controle para View da Tela do Plano de contas 
-// Desenvolvido por : Bob-Odin 
-// Criado em 31/01/2017 
-/****************************************************************************/
-
+/****************************************************************************
+ * Classe controle para View da Tela do Plano de contas
+ * 
+ * @author: Bob-Odin - 31/01/2017
+ ****************************************************************************/
 @Named
 @ViewScoped
 public class ControleConta implements Serializable {
 
-	/****************************************************************************/
-	// Variaveis e Dependências
-	/****************************************************************************/
+	/****************************************************************************
+	 * Variaveis e Dependências
+	 ****************************************************************************/
 	private static final long serialVersionUID = 1L;
 	private TreeNode treeContas;
 	private TreeNode contaSelect;
@@ -40,9 +39,9 @@ public class ControleConta implements Serializable {
 	@Autowired
 	private FacesMessages mensagens;
 
-	/****************************************************************************/
-	// Metodo Salvar
-	/****************************************************************************/
+	/****************************************************************************
+	 * Metodo Salvar
+	 ****************************************************************************/
 	public void salvar() {
 		try {
 			serConta.Salvar(contaEdicao);
@@ -56,9 +55,9 @@ public class ControleConta implements Serializable {
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela", "frm:toolbar"));
 	}
 
-	/****************************************************************************/
-	// Metodo Excluir
-	/****************************************************************************/
+	/****************************************************************************
+	 * Metodo Excluir
+	 ****************************************************************************/
 	public void excluir() {
 		try {
 			Conta contatmp = (Conta) contaSelect.getData();
@@ -73,16 +72,16 @@ public class ControleConta implements Serializable {
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela", "frm:toolbar"));
 	}
 
-	/****************************************************************************/
-	// Buscar lista dos dados no banco
-	/****************************************************************************/
+	/****************************************************************************
+	 * Buscar lista dos dados no banco
+	 ****************************************************************************/
 	public void listar() {
 		treeContas = serConta.ListarTodos();
 	}
 
-	/****************************************************************************/
-	// Preparar objetos para novo cadastro
-	/****************************************************************************/
+	/****************************************************************************
+	 * Preparar objetos para novo cadastro
+	 ****************************************************************************/
 	public void novoCadastro() {
 
 		Conta contatmp = (Conta) contaSelect.getData();
@@ -99,16 +98,16 @@ public class ControleConta implements Serializable {
 
 	}
 
-	/****************************************************************************/
-	// Atribuir no controle o registro selecionado na tela
-	/****************************************************************************/
+	/****************************************************************************
+	 * Atribuir no controle o registro selecionado na tela
+	 ****************************************************************************/
 	public void editCadastro() {
 		contaEdicao = (Conta) contaSelect.getData();
 	}
 
-	/****************************************************************************/
-	// -- Lista de opções de enums
-	/****************************************************************************/
+	/****************************************************************************
+	 * -- Lista de opções de enums
+	 ****************************************************************************/
 	public AnaliticaSintetica[] getTiposConta() {
 		return AnaliticaSintetica.values();
 	}
@@ -121,9 +120,10 @@ public class ControleConta implements Serializable {
 		return Natureza.values();
 	}
 
-	/****************************************************************************/
-	// Gets e Sets do controle
-	/****************************************************************************/
+	/****************************************************************************
+	 * Gets e Sets do controle
+	 ****************************************************************************/
+
 	public TreeNode getTreeContas() {
 		return treeContas;
 	}

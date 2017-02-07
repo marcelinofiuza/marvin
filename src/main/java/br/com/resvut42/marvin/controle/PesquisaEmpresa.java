@@ -55,7 +55,7 @@ public class PesquisaEmpresa implements Serializable {
 		opcoes.put("width", "800");
 		opcoes.put("height", "450");
 
-		RequestContext.getCurrentInstance().openDialog("pesquisaEmpresa", opcoes, null);
+		RequestContext.getCurrentInstance().openDialog("resources/ajudapesquisa/pesquisaEmpresa", opcoes, null);
 	}
 	
 	/****************************************************************************

@@ -25,21 +25,35 @@
 </h:head>
 
 <h:body>
-
-    <header class="r42-header">
-        <h:link outcome="Inicio.xhtml">
-            <h:graphicImage library="resvut42" name="img/logo.png" />
-        </h:link>            
-    </header>
-    
+ 
+	<p:toolbar styleClass="r42-header">
+	    <f:facet name="left">
+	        <h:link outcome="Inicio.xhtml">
+	            <h:graphicImage library="resvut42" name="img/logo.png" />
+	        </h:link>
+	    </f:facet>
+	    
+	    <f:facet name="right">
+	        <p:outputLabel value="#{controlePrincipal.usuario.nome}"/>  
+	        <h:form>            
+	            <p:menubar> 
+	                <p:submenu icon="fa fa-ra">              
+	                    <p:menuitem value="Senha" />
+	                    <p:menuitem value="Sair" url="logout" process="@this"/>
+	                </p:submenu>                                        
+	            </p:menubar>
+	        </h:form>
+	    </f:facet>    
+	</p:toolbar>
+   
     <ui:insert name="content" />
     
     <!-- Dialogo de confirmação padrão -->
     <ui:include src="/WEB-INF/templates/DialogoConfirmacao.xhtml" />      
     
-	<footer class="r42-footer">
+    <p:panel class="r42-footer">
 	   <p>ResVUT 42 Desenvolvimento</p>
-	</footer>
+	</p:panel>
 	
 </h:body>
 
