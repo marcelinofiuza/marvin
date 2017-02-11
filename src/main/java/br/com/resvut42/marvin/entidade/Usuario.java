@@ -20,6 +20,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -62,9 +63,12 @@ public class Usuario implements Serializable {
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "usuario_empresa", 
-				joinColumns = { @JoinColumn(name = "idUsuario")}, 
-				inverseJoinColumns = {@JoinColumn(name = "idEmpresa")})
+			joinColumns = { @JoinColumn(name = "idUsuario") }, 
+			inverseJoinColumns = { @JoinColumn(name = "idEmpresa") })
 	private Set<Empresa> empresas = new HashSet<Empresa>();
+
+	@Transient
+	private Empresa empresaWork;
 
 	public Long getIdUsuario() {
 		return idUsuario;
@@ -134,11 +138,19 @@ public class Usuario implements Serializable {
 	public void addEmpresa(Empresa empresa) {
 		this.empresas.add(empresa);
 	}
-	
+
 	public void removeEmpresa(Empresa empresa) {
-		this.empresas.remove(empresa);		
+		this.empresas.remove(empresa);
 	}
-	
+
+	public Empresa getEmpresaWork() {
+		return empresaWork;
+	}
+
+	public void setEmpresaWork(Empresa empresaWork) {
+		this.empresaWork = empresaWork;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

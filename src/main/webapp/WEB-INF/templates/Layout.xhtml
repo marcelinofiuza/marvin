@@ -26,24 +26,17 @@
 
 <h:body>
  
-	<p:toolbar styleClass="r42-header">
-	    <f:facet name="left">
+	<p:toolbar id="tbLayout" styleClass="r42-header">
+	    <p:toolbarGroup align="left">
 	        <h:link outcome="Inicio.xhtml">
 	            <h:graphicImage library="resvut42" name="img/logo.png" />
 	        </h:link>
-	    </f:facet>
+	        <p:outputLabel style="font-size:18pt; margin-left:30px"  value="#{controlePrincipal.usuario.empresaWork.fantasia}"/>
+	    </p:toolbarGroup>
 	    
-	    <f:facet name="right">
+	    <p:toolbarGroup align="right">
 	        <p:outputLabel value="#{controlePrincipal.usuario.nome}"/>  
-	        <h:form>            
-	            <p:menubar> 
-	                <p:submenu icon="fa fa-ra">              
-	                    <p:menuitem value="Senha" />
-	                    <p:menuitem value="Sair" url="logout" process="@this"/>
-	                </p:submenu>                                        
-	            </p:menubar>
-	        </h:form>
-	    </f:facet>    
+	    </p:toolbarGroup>
 	</p:toolbar>
    
     <ui:insert name="content" />

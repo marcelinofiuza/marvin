@@ -22,6 +22,7 @@ body {
     bottom: 1px;
     height: 30px;
 }
+
 .r42-footer p{
 	margin: 0px;
 	text-align: center;
@@ -29,14 +30,17 @@ body {
 	font-style: oblique;
 }
 
-/* Configuração Menu */
+/* Configuração Menu / Inicio.xhtml*/
+.r42-menuuser{
+	margin-top: 65px;
+	float: right; 	
+}
+
 .r42-menubar{
-    margin-top: 65px;
-    margin-bottom: 40px;
-    margin-right: 1px;
-    margin-left: 1px;  
+	margin-top: 65px;
+	float: left;
     width: 240px;
-    height: 518px;
+    height: 520px;
     overflow-y: auto;	
 }
 
@@ -46,6 +50,7 @@ body {
     margin-top: 5px;
         
 }
+
 .r42-pagina {
     margin-top: 65px;
     margin-bottom: 40px;
