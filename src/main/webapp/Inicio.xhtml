@@ -13,51 +13,11 @@
                 <!-- Menu usuário -->          
 	            <p:menubar> 
 	                <p:submenu icon="fa fa-ra">              
-	                    <p:menuitem value="empresa" oncomplete="PF('wgDados').show()"/>
 	                    <p:menuitem value="Senha" />
 	                    <p:menuitem value="Sair" url="logout" process="@this"/>
 	                </p:submenu>                                        
 	            </p:menubar>	
-	            
-	            <!-- Dialogo para seleção da empresao -->
-                <p:dialog header="Dados Empresa" 
-                          widgetVar="wgDados" 
-                          id="dialogo"
-                          closable="false"
-                          resizable="false" 
-                          modal="true"
-                          width="800"
-                          height="450">
-                
-                    <!-- Listagem dos dados -->
-                    <p:dataTable class="r42-tabela-selecao"
-                                 value="#{controlePrincipal.usuario.empresas}" var="empresa"
-                                 id="tabela"
-                                 rows="15" 
-                                 paginator="true" paginatorPosition="top"
-                                 emptyMessage="Nenhuma Empresa Encontrada">
-                        
-                        <!-- Botão de Seleção -->            
-                        <p:column headerText="#" width="35">
-                           <p:commandButton icon="fa fa-reply" title="Selecionar" 
-                           action="#{controlePrincipal.selecionarEmpresa(empresa)}"
-                           process="@this"
-                           update="tbLayout"
-                           oncomplete="PF('wgDados').hide()"/>
-                        </p:column>
-                                                
-                        <!-- Colunas -->
-                        <p:column headerText="Razão Social">
-                            <h:outputText value="#{empresa.razaoSocial}" />
-                        </p:column>
-                        <p:column headerText="Fantasia" width="250">
-                            <h:outputText value="#{empresa.fantasia}" />
-                        </p:column>
-                             
-                    </p:dataTable>
-                                               
-                </p:dialog>    
-                
+	                            
 	        </h:form>
 	        
         </aside> 

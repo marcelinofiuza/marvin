@@ -9,8 +9,8 @@ public enum Natureza {
 
 	ATIVO("Ativo"),
 	PASSIVO("Passivo"),
-	DESPESA("Despesas - Devedora de resultado"), 
-	RECEITA("Receita - Credora de resultado");
+	DESPESA("Despesa"), 
+	RECEITA("Receita");
 	
 	private String descricao;
 

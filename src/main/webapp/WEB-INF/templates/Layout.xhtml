@@ -27,14 +27,14 @@
 <h:body>
  
 	<p:toolbar id="tbLayout" styleClass="r42-header">
-	    <p:toolbarGroup align="left">
+	    <p:toolbarGroup align="left" styleClass="r42-hleft">
 	        <h:link outcome="Inicio.xhtml">
 	            <h:graphicImage library="resvut42" name="img/logo.png" />
 	        </h:link>
-	        <p:outputLabel style="font-size:18pt; margin-left:30px"  value="#{controlePrincipal.usuario.empresaWork.fantasia}"/>
+	        <p:outputLabel style="font-size:18pt; margin-left:30px"  value="#{controlePrincipal.empresa.fantasia}"/>
 	    </p:toolbarGroup>
 	    
-	    <p:toolbarGroup align="right">
+	    <p:toolbarGroup align="right" styleClass="r42-hright">
 	        <p:outputLabel value="#{controlePrincipal.usuario.nome}"/>  
 	    </p:toolbarGroup>
 	</p:toolbar>

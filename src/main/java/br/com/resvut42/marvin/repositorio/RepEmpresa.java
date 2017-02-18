@@ -19,5 +19,5 @@ public interface RepEmpresa extends JpaRepository<Empresa, Long> {
 	 * Retornar uma lista de empresas filtrando por Like RazaoSocial e Fantasia
 	 ****************************************************************************/
 	List<Empresa> findByRazaoSocialContainingAndFantasiaContaining(String razaoSocial, String fantasia);
-
+	
 }

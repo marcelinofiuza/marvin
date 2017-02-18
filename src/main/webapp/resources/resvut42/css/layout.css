@@ -1,29 +1,27 @@
 /* BASE */
 body {
-    margin: 0;
-    font-size: 13px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;    
-    background-image: url("#{resource['resvut42/img/background.png']}");  
+	margin: 0;
+	font-size: 13px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background-image: url("#{resource['resvut42/img/background.png']}");
 }
 
 /* Configuração Layout.xhtml */
-.r42-header{
+.r42-header {
+	top: 1px;
+	right: 1px;
+	left: 1px;
+}
+
+.r42-footer {
 	position: fixed;
-    top: 1px;
-    right: 1px;
-    left: 1px;
-    height: 50px;	
+	right: 1px;
+	left: 1px;
+	bottom: 1px;
+	height: 30px;
 }
 
-.r42-footer{
-    position: fixed;
-    right: 1px;
-    left: 1px;
-    bottom: 1px;
-    height: 30px;
-}
-
-.r42-footer p{
+.r42-footer p {
 	margin: 0px;
 	text-align: center;
 	font-size: 14pt;
@@ -31,29 +29,49 @@ body {
 }
 
 /* Configuração Menu / Inicio.xhtml*/
-.r42-menuuser{
-	margin-top: 65px;
-	float: right; 	
+.r42-menuuser {
+	margin-top: 1px;
+	float: right;
 }
 
-.r42-menubar{
-	margin-top: 65px;
+.r42-menubar {
+	margin-top: 1px;
 	float: left;
-    width: 240px;
-    height: 520px;
-    overflow-y: auto;	
+	width: 240px;
+	height: 520px;
+	overflow-y: auto;
 }
 
 /* Configurações Geral para padronização de páginas*/
-.r42-panel-dados{
-    
-    margin-top: 5px;
-        
+.r42-pagina {
+	margin-bottom: 40px;
+	margin-right: 1px;
+	margin-left: 1px;
 }
 
-.r42-pagina {
-    margin-top: 65px;
-    margin-bottom: 40px;
-    margin-right: 1px;
-    margin-left: 1px;       
+.r42-dialogo {
+	width: 60% !important;
+	height: 85% !important;
+	overflow: auto !important;
+}
+
+.r42-panelgrid{
+    margin-top: 5px;	
+}
+
+/**************************/
+/*Configuração para mobile*/
+/**************************/
+@media ( max-width : 960px) {
+	.r42-header {
+		font-size: 10px;
+	}
+	.r42-dialogo {
+		width: 100% !important;
+		height: 100% !important;
+		overflow: auto !important;
+	}
+	.r42-panelgrid input {
+		width: 80%;
+	}
 }

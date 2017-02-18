@@ -164,28 +164,6 @@ public class ControleUsuario implements Serializable {
 		empresa = (Empresa) event.getObject();	
 		novaEmpresa = true;
 	}
-
-	/****************************************************************************
-	 * Adicona empresa seleciona na lista
-	 ****************************************************************************/
-	public void adicionaEmpresa() {
-		if (empresa != null) {
-			usuarioEdicao.addEmpresa(empresa);
-			empresa = null;
-			novaEmpresa = false;
-		}
-	}
-
-	/****************************************************************************
-	 * Remove a empresa seleciona da lista
-	 ****************************************************************************/
-	public void removeEmpresa() {
-		if (empresaSelect != null) {
-			usuarioEdicao.removeEmpresa(empresaSelect);
-			empresaSelect = null;
-		}
-	}
-
 	
 	/****************************************************************************
 	 * -- Montar Source e Target das Roles do usuario

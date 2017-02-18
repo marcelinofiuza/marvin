@@ -6,7 +6,7 @@
 	template="/WEB-INF/templates/Layout.xhtml">
 
 	<ui:define name="content">
-		 <section class="r42-pagina">
+        <section class="r42-pagina">
 		 
             <!-- execução inicial -->
             <f:metadata>
@@ -19,7 +19,7 @@
 
                 <!-- Barra de Ferramentas -->           
                 <p:toolbar style="margin-bottom:10px" id="toolbar">
-                    <f:facet name="left">
+                    <p:toolbarGroup align="left">
                         <p:commandButton    id="bto-novo" 
                                             title="Novo" 
                                             icon="fa fa-file-o" 
@@ -81,20 +81,20 @@
                                             actionListener="#{controleUsuario.editSenha}">
                                             <p:resetInput target="dialogo"/>                                            
                         </p:commandButton>                                                                                                                                 
-                    </f:facet>
-                    <f:facet name="right">
+                    </p:toolbarGroup>
+                    <p:toolbarGroup align="right">
                         <p style="margin-top:5px; margin-bottom:5px; margin-right: 5px">Usuários</p>         
-                    </f:facet>
+                    </p:toolbarGroup>
                 </p:toolbar>
 			
-			     <!-- Listagem dos dados -->
-			     <p:dataTable value="#{controleUsuario.listaUsuarios}" var="usuario"
-                     id="tabela"
-                     reflow="true"
-                     rows="15" paginator="true" paginatorPosition="top"
-                     selection="#{controleUsuario.usuarioSelect}"
-                     selectionMode="single" rowKey="#{usuario.idUsuario}"                     
-                     emptyMessage="Nenhum Usuário Cadastrado">
+                <!-- Listagem dos dados -->
+                <p:dataTable value="#{controleUsuario.listaUsuarios}" var="usuario"
+                             id="tabela"
+                             reflow="true"
+                             rows="15" paginator="true" paginatorPosition="top"
+                             selection="#{controleUsuario.usuarioSelect}"
+                             selectionMode="single" rowKey="#{usuario.idUsuario}"                     
+                             emptyMessage="Nenhum Usuário Cadastrado">
 			     
                     <!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
                     <p:ajax event="rowSelect" update=":frm:toolbar"/>
@@ -108,7 +108,9 @@
                         <h:outputText value="#{usuario.nome}" />
                     </p:column>
                     <p:column headerText="Último Acesso" width="150">
-                        <h:outputText value="#{usuario.ultimoAcesso}"/>
+                        <h:outputText value="#{usuario.ultimoAcesso}" >
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
                     </p:column>
                     <p:column headerText="Bloqueado" width="80">
                         <p:selectBooleanCheckbox value="#{usuario.bloqueado}" disabled="true" />
@@ -116,18 +118,18 @@
 			     </p:dataTable>
 			     
 			     <!-- Dialogo inclusão/alteração -->
-			     <p:dialog header="Dados Usuário" 
+			     <p:dialog styleClass="r42-dialogo"
+			               header="Dados Usuário" 
                            widgetVar="wgDados" 
                            id="dialogo"
-                           resizable="false" 
                            modal="true"
-                           width="800"
-                           height="450">
+                           resizable="false"                   
+                           responsive="true">
 			          
                     <!-- Barra de Ferramentas dialogo-->                    
                     <p:defaultCommand target="bto-salvar" scope="dialogo"/>  
                     <p:toolbar>     
-                        <f:facet name="left">   
+                        <p:toolbarGroup align="left">  
                             <p:commandButton id="bto-salvar"
                                              title="Salvar"
                                              icon="fa fa-save"                                           
@@ -135,124 +137,70 @@
                                              process="dialogo" 
                                              update="panel-dados"
                                              oncomplete="if(!args.validationFailed) PF('wgDados').hide()"/>
-                        </f:facet>
+                        </p:toolbarGroup>
                     </p:toolbar>
                     
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+                    
                     <!-- Dados Dialogo -->
-                    <p:tabView id="panel-dados" class="r42-panel-dados">
+                    <p:tabView id="panel-dados">
                         <!-- Aba Dados Usuario -->
-                        <p:tab title="Dados Usuario">
-                                            
-	                        <h:panelGrid columns="3" class="r42-panel-dados" >                           
+                        <p:tab title="Dados Usuario">                                            
+                            <p:panelGrid columns="2" layout="grid" 
+                                         styleClass="panelgrid-noborder r42-panelgrid"
+                                         columnClasses="ui-grid-col-3, ui-grid-col-9">
+                                                                    
 	                            <p:outputLabel value="Usuário" for="credencial"/>
 	                            <p:inputText id="credencial" size="20" maxlength="20"
-	                            value="#{controleUsuario.usuarioEdicao.credencial}" onblur="value=value.toUpperCase()"
-	                            disabled="#{!controleUsuario.dados}"/>
-	                            <p:message display="icon" for="credencial" />
+	                                         value="#{controleUsuario.usuarioEdicao.credencial}" 
+	                                         onblur="value=value.toUpperCase()"
+	                                         disabled="#{!controleUsuario.dados}"/>
 	                        
 	                            <p:outputLabel value="Nome" for="nome"/>
 	                            <p:inputText id="nome" size="50" maxlength="50"
-	                            value="#{controleUsuario.usuarioEdicao.nome}" onblur="value=value.toUpperCase()"
-	                            disabled="#{!controleUsuario.dados}"/>
-	                            <p:message display="icon" for="nome" />
-	                        </h:panelGrid>
+	                                         value="#{controleUsuario.usuarioEdicao.nome}" 
+	                                         onblur="value=value.toUpperCase()"
+	                                         disabled="#{!controleUsuario.dados}"/>
+	                        </p:panelGrid>
                         
-	                        <h:panelGrid columns="3" class="r42-panel-dados" rendered="#{controleUsuario.senha}">
+                            <p:panelGrid columns="2" layout="grid" 
+                                         styleClass="panelgrid-noborder r42-panelgrid"
+                                         columnClasses="ui-grid-col-3, ui-grid-col-9"
+                                         rendered="#{controleUsuario.senha}">
+                                         
 	                            <h:outputLabel for="senha1" value="Senha:" />
-	                            <p:password id="senha1" value="#{controleUsuario.usuarioEdicao.senha}" 
-	                            match="senha2" validatorMessage="As senhas não conforem!" label="senha1"/>
-	                            <p:message display="icon" for="senha1" />
+	                            <p:password id="senha1" 
+	                                        value="#{controleUsuario.usuarioEdicao.senha}" 
+	                                        match="senha2" 
+	                                        validatorMessage="As senhas não conforem!" 
+	                                        label="senha1"/>	                                        
 	 
 	                            <h:outputLabel for="senha2" value="Confirmar Senha:" />
-	                            <p:password id="senha2" value="#{controleUsuario.usuarioEdicao.senha}" label="senha2"/>
-	                            <p:message display="icon" for="senha2" />                         
-	                        </h:panelGrid>
+	                            <p:password id="senha2" 
+	                                        value="#{controleUsuario.usuarioEdicao.senha}" 
+	                                        label="senha2"/>
+                         
+	                        </p:panelGrid>
 	                        
                         </p:tab>
                         
                         <!-- Aba Perfis -->
                         <p:tab title="Perfis" rendered="#{controleUsuario.dados}">                        
-	                        
-                            <p:pickList id="pickList" value="#{controleUsuario.rolesListModel}" var="role" 
-	                                    itemLabel="#{role.descricao}" itemValue="#{role}" 
-	                                    converter="roleConverter">  
+	                        <div class="ui-fluid">
+                            <p:pickList id="pickList" 
+                                        value="#{controleUsuario.rolesListModel}" var="role" 
+	                                    itemLabel="#{role.descricao}" 
+	                                    itemValue="#{role}" 
+	                                    converter="roleConverter"
+	                                    responsive="true">  
                                     
                                 <f:facet name="sourceCaption">Disponível</f:facet>
                                 <f:facet name="targetCaption">Ativado</f:facet>
                                     
-                            </p:pickList>              	                        
+                            </p:pickList>
+                            </div>              	                        
                         </p:tab>
                         
-                        <!-- Aba Empresas -->
-                        <p:tab title="Empresas" rendered="#{controleUsuario.dados}">
-                           
-                            <h:panelGrid id="panel-pesquisa" columns="3" class="r42-panel-dados" >                      
-                                
-                                <p:outputLabel value="Empresa" for="empresa"/>
-                                <p:inputText id="empresa" size="60" maxlength="80"
-                                value="#{controleUsuario.empresa.razaoSocial}"
-                                readonly="true"/>
-                                
-                                <p:commandButton icon="fa fa-search" 
-                                                 title="Pesquisar"
-                                                 action="#{pesquisaEmpresa.abrirDialogo}"
-                                                 process="@this"
-                                                 update="@none">
-                                                 
-                                    <p:ajax event="dialogReturn" 
-                                            listener="#{controleUsuario.empresaSelecionada}"
-                                            process="@this"                                             
-                                            update="panel-pesquisa bto-adicionar"/>
-                                            
-                                </p:commandButton>
-                                
-                            </h:panelGrid>
-                            
-                            <p:separator/>
-                            
-                            <p:commandButton id="bto-adicionar"
-                                             title="Adicionar"
-                                             icon="fa fa-plus"  
-                                             update="panel-pesquisa tabelaEmpresa @this"
-                                             disabled="#{controleUsuario.empresa == null}"
-                                             process="@this"
-                                             actionListener="#{controleUsuario.adicionaEmpresa}"/>
-                                                 
-                            <p:commandButton id="bto-remover"
-                                             title="Remover"
-                                             icon="fa fa-minus" 
-                                             update="tabelaEmpresa @this"
-                                             disabled="#{controleUsuario.empresaSelect == null}"
-                                             process="@this"
-                                             actionListener="#{controleUsuario.removeEmpresa}"/>
-
-                            <p:separator/>
-                                             
-                            <p:dataTable value="#{controleUsuario.usuarioEdicao.empresas}" var="empresa"
-                                         id="tabelaEmpresa"
-                                         rows="10" paginator="true" paginatorPosition="top"                                          
-                                         selectionMode="single" rowKey="#{empresa.idEmpresa}"
-                                         selection="#{controleUsuario.empresaSelect}"
-                                         emptyMessage="Nenhuma empresa adicionada">               
-
-                                    <!-- Evento ajax, quando marca/desmarca uma linha -->
-                                    <p:ajax event="rowSelect"   update=":frm:panel-dados:bto-remover"/>
-                                    <p:ajax event="rowUnselect" update=":frm:panel-dados:bto-remover"/>
-                             
-				                    <!-- Colunas -->
-				                    <p:column headerText="Código" width="70">
-				                        <h:outputText value="#{empresa.idEmpresa}" />
-				                    </p:column>
-				                    <p:column headerText="Razõa Social">
-				                        <h:outputText value="#{empresa.razaoSocial}" />
-				                    </p:column>
-				                    <p:column headerText="Fantasia" width="250">
-				                        <h:outputText value="#{empresa.fantasia}" />
-				                    </p:column>
-                             
-                            </p:dataTable>
-                            
-                        </p:tab>                        
                      </p:tabView>
 			     </p:dialog>			     
 			</h:form>			

@@ -3,9 +3,7 @@ package br.com.resvut42.marvin.entidade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,12 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -60,15 +55,6 @@ public class Usuario implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "idUsuario")
 	private List<UsuarioRoles> roles = new ArrayList<UsuarioRoles>();
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "usuario_empresa", 
-			joinColumns = { @JoinColumn(name = "idUsuario") }, 
-			inverseJoinColumns = { @JoinColumn(name = "idEmpresa") })
-	private Set<Empresa> empresas = new HashSet<Empresa>();
-
-	@Transient
-	private Empresa empresaWork;
 
 	public Long getIdUsuario() {
 		return idUsuario;
@@ -125,30 +111,6 @@ public class Usuario implements Serializable {
 	public void addRole(UsuarioRoles role) {
 		this.roles.add(role);
 		role.setUsuario(this);
-	}
-
-	public Set<Empresa> getEmpresas() {
-		return empresas;
-	}
-
-	public void setEmpresas(Set<Empresa> empresas) {
-		this.empresas = empresas;
-	}
-
-	public void addEmpresa(Empresa empresa) {
-		this.empresas.add(empresa);
-	}
-
-	public void removeEmpresa(Empresa empresa) {
-		this.empresas.remove(empresa);
-	}
-
-	public Empresa getEmpresaWork() {
-		return empresaWork;
-	}
-
-	public void setEmpresaWork(Empresa empresaWork) {
-		this.empresaWork = empresaWork;
 	}
 
 	@Override
