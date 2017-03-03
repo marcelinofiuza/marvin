@@ -55,7 +55,7 @@ public class SerEmpresa {
 	/****************************************************************************
 	 * Metodo para Listar todos os registros
 	 ****************************************************************************/
-	public List<Empresa> ListarTodos() {
+	public List<Empresa> listarTodos() {
 		return repEmpresa.findAll();
 	}
 

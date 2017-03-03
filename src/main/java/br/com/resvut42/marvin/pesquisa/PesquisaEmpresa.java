@@ -1,4 +1,4 @@
-package br.com.resvut42.marvin.controle;
+package br.com.resvut42.marvin.pesquisa;
 
 import java.io.Serializable;
 import java.util.ArrayList;

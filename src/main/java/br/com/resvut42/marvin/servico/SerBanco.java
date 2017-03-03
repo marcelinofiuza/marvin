@@ -5,57 +5,50 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.resvut42.marvin.entidade.Usuario;
-import br.com.resvut42.marvin.repositorio.RepUsuario;
+import br.com.resvut42.marvin.entidade.Banco;
+import br.com.resvut42.marvin.repositorio.RepBanco;
 
 /****************************************************************************
- * Classe Serviço Regras de negócio do Usuário Desenvolvido por :
+ * Classe Serviço Regras de negócio do Banco Desenvolvido por :
  * 
- * @author Bob-Odin - 30/01/2017
+ * @author Bob-Odin - 01/03/2017
  ****************************************************************************/
 @Service
-public class SerUsuario {
+public class SerBanco {
 
 	/****************************************************************************
 	 * Variaveis e Dependências
 	 ****************************************************************************/
 	@Autowired
-	RepUsuario repUsuario;
+	RepBanco repBanco;
 
 	/****************************************************************************
-	 * Validar e salvar o Usuário
+	 * Metodo para Validar e salvar
 	 ****************************************************************************/
-	public void salvar(Usuario usuario) throws Exception {
-		try {					
-			repUsuario.save(usuario);
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
-
-	/****************************************************************************
-	 * Validar e excluir o Usuário
-	 ****************************************************************************/
-	public void excluir(Usuario usuario) throws Exception {
+	public void salvar(Banco banco) throws Exception {
 		try {
-			repUsuario.delete(usuario);
+			repBanco.save(banco);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
 	}
 
 	/****************************************************************************
-	 * Retorna lista de todos os usuários
+	 * Metodo para Validar e excluir
 	 ****************************************************************************/
-	public List<Usuario> listarTodos() {
-		return repUsuario.findAll();
+	public void excluir(Banco banco) throws Exception {
+		try {
+			repBanco.delete(banco);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 
 	/****************************************************************************
-	 * Retorna o Usuário pela credencial
+	 * Metodo para Listar todos os registros
 	 ****************************************************************************/
-	public Usuario buscarPorCredencial(String credencial) {
-		return repUsuario.findByCredencial(credencial);
+	public List<Banco> listarTodos() {
+		return repBanco.findAll();
 	}
 
 }

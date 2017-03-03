@@ -1,99 +1,78 @@
 package br.com.resvut42.marvin.controle;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import br.com.resvut42.marvin.entidade.Empresa;
+import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.enums.Estado;
-import br.com.resvut42.marvin.enums.RamoAtividade;
-import br.com.resvut42.marvin.servico.SerEmpresa;
+import br.com.resvut42.marvin.enums.Febraban;
+import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.util.FacesMessages;
 
 /****************************************************************************
- * Classe controle para View da Tela da Empresa
+ * Classe controle para View da Tela do Banco
  * 
- * @author: Bob-Odin - 01/02/2017
+ * @author: Bob-Odin - 02/03/2017
  ****************************************************************************/
-
 @Named
 @ViewScoped
-public class ControleEmpresa implements Serializable {
+public class ControleBanco implements Serializable {
 
 	/****************************************************************************
 	 * Variaveis e Dependências
 	 ****************************************************************************/
 	private static final long serialVersionUID = 1L;
-
-	private Empresa empresaEdicao;
+	private List<Banco> listaBancos = new ArrayList<Banco>();
+	private Banco bancoEdicao = new Banco();
 
 	@Autowired
-	SerEmpresa serEmpresa;
+	SerBanco serBanco;
 	@Autowired
-	FacesMessages mensagens;
+	private FacesMessages mensagens;
 
 	/****************************************************************************
-	 * Metodo Salvar
+	 * Salvar os dados no banco
 	 ****************************************************************************/
 	public void salvar() {
-		
 		try {
-			
-			serEmpresa.salvar(empresaEdicao);
+			serBanco.salvar(bancoEdicao);
+			listar();
 			mensagens.info("Registro salvo com sucesso!");
-			
-			//Atualiza memória
-			atualizaSessao();
-			
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
-		}		
-		
-		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm"));	
-		
+			e.printStackTrace();
+		}
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
 
 	/****************************************************************************
 	 * Buscar lista dos dados no banco
 	 ****************************************************************************/
-	public void buscar(){
-						
-		List<Empresa> listaEmpresas = serEmpresa.listarTodos();
-		if(!listaEmpresas.isEmpty()){
-			empresaEdicao = listaEmpresas.get(0);
-		}else{
-			empresaEdicao = new Empresa();
-		}
-		
-		RequestContext.getCurrentInstance().execute("PF('wgDados').show();");		
-		
+	public void listar() {
+		listaBancos = serBanco.listarTodos();
 	}
 
 	/****************************************************************************
-	 * Atualiza a sessão com os novos dados da empresa
-	 ****************************************************************************/	
-	private void atualizaSessao(){
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession httpSessao = attr.getRequest().getSession(true); // true == allow create	
-		httpSessao.setAttribute("EMPRESA", empresaEdicao);
+	 * Preparar objetos para novo cadastro
+	 ****************************************************************************/
+	public void novoCadastro() {
+		bancoEdicao = new Banco();
 	}
-	
 
 	/****************************************************************************
 	 * -- Lista de opções de enums
 	 ****************************************************************************/
 	
-	public RamoAtividade[] getRamosAtividade() {
-		return RamoAtividade.values();
+	public Febraban[] getFebraban() {
+		return Febraban.values();
 	}
 
 	public Estado[] getEstados() {
@@ -104,12 +83,16 @@ public class ControleEmpresa implements Serializable {
 	 * Gets e Sets do controle
 	 ****************************************************************************/
 
-	public Empresa getEmpresaEdicao() {
-		return empresaEdicao;
+	public List<Banco> getListaBancos() {
+		return listaBancos;
 	}
 
-	public void setEmpresaEdicao(Empresa empresaEdicao) {
-		this.empresaEdicao = empresaEdicao;
+	public Banco getBancoEdicao() {
+		return bancoEdicao;
+	}
+
+	public void setBancoEdicao(Banco bancoEdicao) {
+		this.bancoEdicao = bancoEdicao;
 	}
 
 }

@@ -44,7 +44,7 @@ public class ControleConta implements Serializable {
 	 ****************************************************************************/
 	public void salvar() {
 		try {
-			serConta.Salvar(contaEdicao);
+			serConta.salvar(contaEdicao);
 			listar();
 			contaSelect = null;
 			contaEdicao = new Conta();
@@ -61,7 +61,7 @@ public class ControleConta implements Serializable {
 	public void excluir() {
 		try {
 			Conta contatmp = (Conta) contaSelect.getData();
-			serConta.Excluir(contatmp);
+			serConta.excluir(contatmp);
 			listar();
 			contaSelect = null;
 			contaEdicao = new Conta();
@@ -76,7 +76,7 @@ public class ControleConta implements Serializable {
 	 * Buscar lista dos dados no banco
 	 ****************************************************************************/
 	public void listar() {
-		treeContas = serConta.ListarTodos();
+		treeContas = serConta.listarTodos();
 	}
 
 	/****************************************************************************

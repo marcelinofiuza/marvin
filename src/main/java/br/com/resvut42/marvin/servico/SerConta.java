@@ -32,7 +32,7 @@ public class SerConta {
 	/****************************************************************************
 	 * Validar e salvar a Conta
 	 ****************************************************************************/
-	public void Salvar(Conta conta) throws Exception {
+	public void salvar(Conta conta) throws Exception {
 		try {
 			// Se está inserindoo nova conta
 			// adiciona a conta, como conta filho
@@ -52,7 +52,7 @@ public class SerConta {
 	/****************************************************************************
 	 * Validar e Excluir a Conta
 	 ****************************************************************************/
-	public void Excluir(Conta conta) throws Exception {
+	public void excluir(Conta conta) throws Exception {
 		try {
 			repConta.delete(conta);
 		} catch (Exception e) {
@@ -63,7 +63,7 @@ public class SerConta {
 	/****************************************************************************
 	 * Retorna a lista em forma de Árvore das Contas
 	 ****************************************************************************/
-	public TreeNode ListarTodos() {
+	public TreeNode listarTodos() {
 
 		List<Conta> listaConta = repConta.buscarContaRaiz();
 

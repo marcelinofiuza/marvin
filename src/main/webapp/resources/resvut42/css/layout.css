@@ -49,6 +49,19 @@ body {
 	margin-left: 1px;
 }
 
+.r42-toolbar {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.r42-toolbar-right p {
+    margin-top:5px; 
+    margin-bottom:5px; 
+    margin-right: 5px
+}
+
+
+
 .r42-dialogo {
 	width: 60% !important;
 	height: 85% !important;
@@ -73,5 +86,5 @@ body {
 	}
 	.r42-panelgrid input {
 		width: 80%;
-	}
+	}	
 }
