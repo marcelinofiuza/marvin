@@ -3,7 +3,7 @@ body {
 	margin: 0;
 	font-size: 13px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	background-image: url("#{resource['resvut42/img/background.png']}");
+	background-image: url("#{resource['resvut42/img/backgroundTamagu.png']}");
 }
 
 /* Configuração Layout.xhtml */

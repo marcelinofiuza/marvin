@@ -13,7 +13,7 @@
         <link rel="icon" href="#{resource['resvut42/img/favicon.ico']}" type="image/x-icon"/>       
     </f:facet>
 
-    <title>Marvin</title>
+    <title>ADMCON - Login</title>
 
     <h:outputStylesheet library="resvut42" name="css/r42Login.css" />      
   
@@ -25,14 +25,11 @@
     
         <h:panelGrid class="r42-PanelLogin">
 
-            <h:outputText value="Usuário: "/>
-            <input type="text" name="username"/><br/>
+            <h:outputText class="textoUsuarioSenha" value="Usuário: "/>
+            <input class="usuarioSenha" type="text" name="username"/><br/>
                         
-            <h:outputText value="Senha: " for="password"/>
-            <input type="password" name="password"/>      
-        
-            <p></p>    
-            <input type="submit" value="Acessar"/>
+            <h:outputText class="textoUsuarioSenha" value="Senha: " for="password"/>
+            <input class="usuarioSenha" type="password" name="password"/> <input class="acessar" type="submit" value="OK"/>
                 
         </h:panelGrid>
 
