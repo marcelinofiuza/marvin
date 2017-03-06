@@ -29,7 +29,26 @@
                                             update="dialogo"                    
                                             oncomplete="PF('wgDados').show()">
                                             <p:resetInput target="dialogo"/>      
-                        </p:commandButton> 	               
+                        </p:commandButton> 	 
+                        <p:commandButton    id="bto-editar" 
+                                            title="Editar" 
+                                            icon="fa fa-pencil"
+                                            process="@this" 
+                                            update="dialogo"            
+                                            oncomplete="PF('wgDados').show()"                               
+                                            disabled="#{controleBanco.bancoSelect == null}"
+                                            actionListener="#{controleBanco.editCadastro}">
+                                            <p:resetInput target="dialogo"/>                                            
+                        </p:commandButton> 
+                        <p:commandButton    id="bto-excluir" 
+                                            title="Excluir" 
+                                            icon="fa fa-trash" 
+                                            process="@this" 
+                                            disabled="#{controleBanco.bancoSelect == null}"
+                                            update="tabela msg-frm toolbar" 
+                                            actionListener="#{controleBanco.excluir}">
+                                            <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Banco?"/>                                                
+                        </p:commandButton>                                                                        
 	               </p:toolbarGroup>
 	               
 	               <p:toolbarGroup align="right" styleClass="r42-toolbar-right">
@@ -42,8 +61,10 @@
 	                        id="tabela"
 	                        reflow="true"
 	                        rows="15" paginator="true" paginatorPosition="top"
+                            selection="#{controleBanco.bancoSelect}"
+                            selectionMode="single" rowKey="#{banco.idBanco}"    	                        
 	                        emptyMessage="Nenhum Banco Cadastrado">
-	           
+	                               	           
 	               <!-- Colunas -->
 	               <p:column headerText="Id" width="50">
 	                   <h:outputText value="#{banco.idBanco}"/>
@@ -129,6 +150,7 @@
                         
                         <!-- Aba Endereço -->
                         <p:tab title="Endereço">    
+                            
                             <p:panelGrid columns="2" layout="grid" 
                                          styleClass="panelgrid-noborder r42-panelgrid"
                                          columnClasses="ui-grid-col-3, ui-grid-col-9">                   
@@ -169,15 +191,96 @@
                                              onblur="value=value.toUpperCase()"/>
     
                                 <p:outputLabel value="Estado" for="uf"/>
-                                <p:selectOneMenu style="width: 80%" id="uf" value="#{controleBanco.bancoEdicao.endereco.uf}">
+                                <p:selectOneMenu id="uf" value="#{controleBanco.bancoEdicao.endereco.uf}">
                                     <f:selectItem  itemLabel="Selecione"/>
-                                    <f:selectItems style="width: 80%" value="#{controleBanco.estados}" var="estado" 
+                                    <f:selectItems value="#{controleBanco.estados}" var="estado" 
                                                    itemLabel="#{estado.nome}" itemValue="#{estado}"/>                    
                                 </p:selectOneMenu>
 
                             </p:panelGrid>                              
                         </p:tab>
-                                                
+                        
+                        <!-- Aba Contatos -->
+                        <p:tab title="Contatos">
+                            
+	                        <p:panelGrid id="panelContato"
+	                                     columns="2" layout="grid"                                          
+	                                     styleClass="panelgrid-noborder r42-panelgrid"
+	                                     columnClasses="ui-grid-col-3, ui-grid-col-9">
+	                                             
+	                            <p:outputLabel value="Nome" for="nome"/>
+	                            <p:inputText id="nome" size="50" maxlength="50"
+	                                         value="#{controleBanco.contatosBanco.contato.nomeContato}"
+	                                         onblur="value=value.toUpperCase()"/>                                             
+	
+	                            <p:outputLabel value="E-mail" for="email"/>
+	                            <p:inputText id="email" size="50" maxlength="50"
+	                                         value="#{controleBanco.contatosBanco.contato.email}"
+	                                         onblur="value=value.toLowerCase()"/>   
+	                                                 
+	                            <p:outputLabel value="Telefone" for="telefone"/>
+	                            <p:inputMask id="telefone" size="15" maxlength="15"
+	                                         value="#{controleBanco.contatosBanco.contato.telefone}"
+	                                         mask="(99)-9999-9999"/>                                                                                       
+	                                
+	                            <p:outputLabel value="Ramal" for="ramal"/>
+	                            <p:inputText id="ramal" size="5" maxlength="5"
+	                                         value="#{controleBanco.contatosBanco.contato.ramal}"
+	                                         onblur="value=value.toUpperCase()"/>                                 
+	
+	                            <p:outputLabel value="Celular" for="celular"/>
+	                            <p:inputMask id="celular" size="15" maxlength="15"
+	                                         value="#{controleBanco.contatosBanco.contato.celular}"
+	                                         mask="(99)-99999-9999"/>   
+	
+	                            <p:commandButton id="bto-add"
+	                                             title="Adicionar"
+	                                             icon="fa fa-plus"   
+	                                             value="Adicionar"                                        
+	                                             action="#{controleBanco.addContato}"
+	                                             process="panelContato" 
+	                                             update="frm:panel-dados:panelContato frm:panel-dados:tabContatos"/>
+	                                                                                                                                  
+	                        </p:panelGrid> 
+                                                            
+                            <!-- Listagem dos dados -->
+                            <p:dataTable value="#{controleBanco.listaContatosBanco}" var="c"
+                                         id="tabContatos"
+                                         reflow="true"
+                                         rows="5" paginator="true" paginatorPosition="top"
+                                         selection="#{controleBanco.contatosBanco}"
+                                         selectionMode="single" rowKey="#{c.idContato}"    
+                                         emptyMessage="Nenhum Contato Cadastrado">
+                                         
+                                                               
+                                <!-- Evento ajax, para doubleClick na lista de contatos -->
+                                <p:ajax event="rowDblselect" update="frm:panel-dados:panelContato frm:panel-dados:tabContatos"/>
+                                                                                        
+                                <!-- Colunas -->
+                                <p:column headerText="Nome" width="200">
+                                    <h:outputText value="#{c.contato.nomeContato}"/>
+                                </p:column>                                         
+                                <p:column headerText="E-mail">
+                                    <h:outputText value="#{c.contato.email}"/>
+                                </p:column>                                         
+                                <p:column headerText="Telefone" width="130">
+                                    <h:outputText value="#{c.contato.telefone}"/>
+                                </p:column>                                        
+                                <p:column headerText="Ramal" width="50">
+                                    <h:outputText value="#{c.contato.ramal}"/>
+                                </p:column>                                        
+                                <p:column headerText="Celular" width="130">
+                                    <h:outputText value="#{c.contato.celular}"/>
+                                </p:column>                                                                        
+                                <p:column headerText="#" width="35">
+                                    <p:commandButton icon="fa fa-trash" title="Remover" 
+                                                     action="#{controleBanco.removeContato(c)}"
+                                                     process="@this"
+                                                     update="frm:panel-dados:panelContato frm:panel-dados:tabContatos"/>
+                                </p:column>
+                                                                         
+                            </p:dataTable>                           
+                        </p:tab>                                     
                     </p:tabView>                                       
                 </p:dialog>	           
 	        </h:form>        

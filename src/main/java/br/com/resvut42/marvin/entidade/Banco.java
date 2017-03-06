@@ -64,7 +64,7 @@ public class Banco implements Serializable {
 	private Conta conta;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "idContato")
+	@JoinColumn(name = "idBanco")
 	private List<ContatosBanco> contatos = new ArrayList<ContatosBanco>();
 
 	public Long getIdBanco() {
@@ -138,6 +138,12 @@ public class Banco implements Serializable {
 	public void setContatos(List<ContatosBanco> contatos) {
 		this.contatos = contatos;
 	}
+	
+	public void addContato(ContatosBanco contato){
+		contato.setBanco(this);
+		this.contatos.add(contato);
+	}
+	
 
 	@Override
 	public int hashCode() {
