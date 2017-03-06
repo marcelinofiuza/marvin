@@ -25,7 +25,7 @@
 	<!-- Tema do primefaces utilizado -->
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
-		<param-value>dark-hive</param-value>
+		<param-value>aristo</param-value>
 	</context-param>
 	<context-param>
 		<param-name>primefaces.FONT_AWESOME</param-name>
