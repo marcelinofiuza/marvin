@@ -64,7 +64,11 @@
                             selection="#{controleBanco.bancoSelect}"
                             selectionMode="single" rowKey="#{banco.idBanco}"    	                        
 	                        emptyMessage="Nenhum Banco Cadastrado">
-	                               	           
+	                              
+                   <!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+                   <p:ajax event="rowSelect" update=":frm:toolbar"/>
+                   <p:ajax event="rowUnselect" update=":frm:toolbar"/>
+                    	                               	           
 	               <!-- Colunas -->
 	               <p:column headerText="Id" width="50">
 	                   <h:outputText value="#{banco.idBanco}"/>
@@ -248,13 +252,14 @@
                                          id="tabContatos"
                                          reflow="true"
                                          rows="5" paginator="true" paginatorPosition="top"
-                                         selection="#{controleBanco.contatosBanco}"
-                                         selectionMode="single" rowKey="#{c.idContato}"    
+                                         selection="#{controleBanco.contatosBanco}"                                         
+                                         selectionMode="single" rowKey="#{c.idContato}"   
                                          emptyMessage="Nenhum Contato Cadastrado">
                                          
                                                                
                                 <!-- Evento ajax, para doubleClick na lista de contatos -->
-                                <p:ajax event="rowDblselect" update="frm:panel-dados:panelContato frm:panel-dados:tabContatos"/>
+                                <p:ajax event="rowSelect"   update="frm:panel-dados:panelContato frm:panel-dados:tabContatos"/>
+                                <p:ajax event="rowUnselect" update="frm:panel-dados:panelContato frm:panel-dados:tabContatos" listener="#{controleBanco.limpaContato}"/>
                                                                                         
                                 <!-- Colunas -->
                                 <p:column headerText="Nome" width="200">
@@ -276,7 +281,7 @@
                                     <p:commandButton icon="fa fa-trash" title="Remover" 
                                                      action="#{controleBanco.removeContato(c)}"
                                                      process="@this"
-                                                     update="frm:panel-dados:panelContato frm:panel-dados:tabContatos"/>
+                                                     update="frm:panel-dados:panelContato frm:panel-dados:tabContatos"/>                                                   
                                 </p:column>
                                                                          
                             </p:dataTable>                           

@@ -101,7 +101,7 @@ public class ControleBanco implements Serializable {
 	/****************************************************************************
 	 * Adiconar o contato a lista de contatos
 	 ****************************************************************************/
-	public void addContato() {
+	public void addContato() {		
 		contatosBanco.setBanco(bancoEdicao);
 		listaContatosBanco.add(contatosBanco);
 		contatosBanco = new ContatosBanco();
@@ -114,6 +114,13 @@ public class ControleBanco implements Serializable {
 		listaContatosBanco.remove(contato);		
 	}
 
+	/****************************************************************************
+	 * Limpa contato
+	 ****************************************************************************/
+	public void limpaContato() {
+		contatosBanco = new ContatosBanco();		
+	}
+	
 	/****************************************************************************
 	 * -- Lista de opções de enums
 	 ****************************************************************************/
