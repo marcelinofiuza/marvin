@@ -31,7 +31,7 @@ public class ContatosBanco implements Serializable {
 
 	@Embedded
 	private Contato contato = new Contato();
-
+	
 	public Long getIdContato() {
 		return idContato;
 	}

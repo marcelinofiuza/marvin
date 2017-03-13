@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+    <meta charset="UTF-8" />    
+    <title>Pesquisa Conta Contábil</title>
+
+    <h:outputStylesheet library="resvut42" name="css/ajudapesquisa.css" />     
+    
+</h:head>
+    
+<h:body>   
+    <h:form>
+    
+        <!-- Listagem dos dados -->
+        <p:treeTable class="r42-tabela-selecao"
+                     value="#{pesquisaConta.treeContas}" var="conta"
+                     id="tabela"
+                     rows="15" 
+                     paginator="true" paginatorPosition="top"
+                     emptyMessage="Nenhuma Conta Encontrada">
+                                    
+            <!-- Colunas -->
+            <p:column headerText="Chave" style="width:10%">
+                <h:outputText value="#{conta.chave}" />
+            </p:column>
+            
+            <!-- Botão de Seleção -->            
+            <p:column headerText="#" width="5%">
+               <p:commandButton icon="fa fa-reply" 
+                                title="Selecionar" 
+                                action="#{pesquisaConta.selecionar(conta)}"
+                                process="@this"
+                                rendered="#{(conta.tipoConta.descricao=='Analítica')}"
+                                disabled="#{(conta.status.descricao=='Inativa')}" />
+            </p:column>            
+                             
+            <p:column headerText="ID Conta" style="width:10%">
+                <h:outputText value="#{conta.idConta}" />
+            </p:column>
+            <p:column headerText="Descrição" style="width:45%">
+                <h:outputText value="#{conta.descricao}" />
+            </p:column>
+            <p:column headerText="Tipo Conta" style="width:15%">
+                <h:outputText value="#{conta.tipoConta.descricao}" />
+            </p:column>
+            <p:column headerText="Status" style="width:15%">
+                <h:outputText value="#{conta.status.descricao}" />
+            </p:column>        
+        
+        </p:treeTable>
+        
+    </h:form>
+</h:body>
+    
+</html>

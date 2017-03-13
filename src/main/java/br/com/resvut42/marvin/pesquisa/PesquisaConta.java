@@ -1,55 +1,53 @@
 package br.com.resvut42.marvin.pesquisa;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.resvut42.marvin.entidade.Empresa;
-import br.com.resvut42.marvin.servico.SerEmpresa;
+import br.com.resvut42.marvin.entidade.Conta;
+import br.com.resvut42.marvin.servico.SerConta;
 
 /****************************************************************************
- * Classe controle para View de Pesquisa de Empresas
+ * Classe controle para View de Pesquisa de Conta Contábil
  * 
- * @author: Bob-Odin - 03/02/2017
+ * @author: Bob-Odin - 11/03/2017
  ****************************************************************************/
 @Named
 @ViewScoped
-public class PesquisaEmpresa implements Serializable {
+public class PesquisaConta implements Serializable {
 
 	/****************************************************************************
 	 * Variaveis e Dependências
 	 ****************************************************************************/
 	private static final long serialVersionUID = 1L;
-	private List<Empresa> listaEmpresas = new ArrayList<Empresa>();
-	private String razaoSocial = "";
-	private String fantasia = "";
-
+	private TreeNode treeContas;
+	
 	@Autowired
-	SerEmpresa serEmpresa;
+	SerConta serConta;
 
 	/****************************************************************************
-	 * Buscar lista de empresas
+	 * Buscar lista dos dados no banco
 	 ****************************************************************************/
-	public void listarEmpresas() {
-		listaEmpresas = new ArrayList<Empresa>();
-		listaEmpresas = serEmpresa.listarRazaoSocialOuFantasia(razaoSocial, fantasia);
-	}
-	
+	@PostConstruct
+	public void listar() {
+		treeContas = serConta.listarTodos();
+	}	
+
 	/****************************************************************************
 	 * Retorna o registro selecionado na lista
 	 ****************************************************************************/	
-	public void selecionar(Empresa empresa){
-		RequestContext.getCurrentInstance().closeDialog(empresa);
+	public void selecionar(Conta conta){
+		RequestContext.getCurrentInstance().closeDialog(conta);
 	}
-
+	
 	/****************************************************************************
 	 * Abre o xhtml em forma de dialogo
 	 ****************************************************************************/	
@@ -62,31 +60,15 @@ public class PesquisaEmpresa implements Serializable {
 		opcoes.put("width", "800");
 		opcoes.put("height", "450");
 
-		RequestContext.getCurrentInstance().openDialog("resources/ajudapesquisa/pesquisaEmpresa", opcoes, null);
+		RequestContext.getCurrentInstance().openDialog("resources/ajudapesquisa/pesquisaConta", opcoes, null);
 	}
 	
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
 
-	public List<Empresa> getListaEmpresas() {
-		return listaEmpresas;
-	}
-
-	public String getRazaoSocial() {
-		return razaoSocial;
-	}
-
-	public void setRazaoSocial(String razaoSocial) {
-		this.razaoSocial = razaoSocial;
-	}
-
-	public String getFantasia() {
-		return fantasia;
-	}
-
-	public void setFantasia(String fantasia) {
-		this.fantasia = fantasia;
+	public TreeNode getTreeContas() {
+		return treeContas;
 	}
 
 }
