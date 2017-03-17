@@ -25,12 +25,12 @@
                      emptyMessage="Nenhuma Conta Encontrada">
                                     
             <!-- Colunas -->
-            <p:column headerText="Chave" style="width:10%">
+            <p:column headerText="Chave" style="width:15%">
                 <h:outputText value="#{conta.chave}" />
             </p:column>
             
             <!-- Botão de Seleção -->            
-            <p:column headerText="#" width="5%">
+            <p:column headerText="#" width="10%">
                <p:commandButton icon="fa fa-reply" 
                                 title="Selecionar" 
                                 action="#{pesquisaConta.selecionar(conta)}"
@@ -42,15 +42,9 @@
             <p:column headerText="ID Conta" style="width:10%">
                 <h:outputText value="#{conta.idConta}" />
             </p:column>
-            <p:column headerText="Descrição" style="width:45%">
+            <p:column headerText="Descrição" style="width:65%">
                 <h:outputText value="#{conta.descricao}" />
             </p:column>
-            <p:column headerText="Tipo Conta" style="width:15%">
-                <h:outputText value="#{conta.tipoConta.descricao}" />
-            </p:column>
-            <p:column headerText="Status" style="width:15%">
-                <h:outputText value="#{conta.status.descricao}" />
-            </p:column>        
         
         </p:treeTable>
         

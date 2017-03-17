@@ -40,7 +40,7 @@ public class PesquisaEmpresa implements Serializable {
 	 ****************************************************************************/
 	public void listarEmpresas() {
 		listaEmpresas = new ArrayList<Empresa>();
-		listaEmpresas = serEmpresa.listarRazaoSocialOuFantasia(razaoSocial, fantasia);
+		listaEmpresas = serEmpresa.listarPorRazaoSocialOuFantasia(razaoSocial, fantasia);
 	}
 	
 	/****************************************************************************

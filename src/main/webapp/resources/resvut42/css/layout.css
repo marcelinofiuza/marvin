@@ -60,8 +60,6 @@ body {
     margin-right: 5px
 }
 
-
-
 .r42-dialogo {
 	width: 80% !important;
 	height: 90% !important;
@@ -72,6 +70,12 @@ body {
     margin-top: 5px;	
 }
 
+.r42-dashboard{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
 /**************************/
 /*Configuração para mobile*/
 /**************************/

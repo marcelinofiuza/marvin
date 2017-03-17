@@ -94,6 +94,13 @@
             <scope>compile</scope>
         </dependency>
         -->
+
+        <!-- Ler arquivo DBF -->                        
+		<dependency>
+		    <groupId>org.jamel.dbf</groupId>
+		    <artifactId>dbf-reader</artifactId>
+		    <version>0.0.3</version>
+		</dependency>
                         
 	</dependencies>
 

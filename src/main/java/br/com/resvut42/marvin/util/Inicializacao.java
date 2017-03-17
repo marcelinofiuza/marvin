@@ -13,6 +13,11 @@ import br.com.resvut42.marvin.entidade.UsuarioRoles;
 import br.com.resvut42.marvin.enums.Role;
 import br.com.resvut42.marvin.servico.SerUsuario;
 
+/****************************************************************************
+ * Classe de Inicialização (executa processos quando o sistema é inicializado)
+ * 
+ * @author: Bob-Odin - 30/01/2017
+ ****************************************************************************/
 @Component
 public class Inicializacao {
 

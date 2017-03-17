@@ -30,6 +30,17 @@ public class SerConta {
 	private TreeNode raiz;
 
 	/****************************************************************************
+	 * Retorna se existe alguma conta cadastrada
+	 ****************************************************************************/	
+	public boolean exiteConta(){
+		if(repConta.count() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/****************************************************************************
 	 * Validar e salvar a Conta
 	 ****************************************************************************/
 	public void salvar(Conta conta) throws Exception {
@@ -38,8 +49,10 @@ public class SerConta {
 			// adiciona a conta, como conta filho
 			// processo bidirecional
 			if (conta.getIdConta() == null) {
-				conta.getContaPai().getSubConta().add(conta);
-				conta.setChave(conta.getContaPai().getSubConta().size());
+				if (conta.getContaPai() != null) {
+					conta.getContaPai().getSubConta().add(conta);
+					conta.setChave(conta.getContaPai().getSubConta().size());
+				}
 			}
 
 			repConta.save(conta);
@@ -55,6 +68,17 @@ public class SerConta {
 	public void excluir(Conta conta) throws Exception {
 		try {
 			repConta.delete(conta);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	/****************************************************************************
+	 * Validar e Excluir todas as contas
+	 ****************************************************************************/
+	public void excluirTodas() throws Exception {
+		try {
+			repConta.deleteAll();
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -79,6 +103,13 @@ public class SerConta {
 		return raiz;
 	}
 
+	/****************************************************************************
+	 * Retorna uma conta pela Reduzida
+	 ****************************************************************************/
+	public Conta buscarPorReduzida(String reduzida) {
+		return repConta.findByReduzida(reduzida);
+	}
+
 	/****************************************************************************/
 	//
 	//
@@ -98,6 +129,7 @@ public class SerConta {
 		conta.setTipoConta(AnaliticaSintetica.SINTETICA);
 		conta.setStatus(AtivaItativa.ATIVA);
 		conta.setNatureza(Natureza.ATIVO);
+		conta.setReduzida("1");
 		conta.setContaPai(null);
 		listaConta.add(conta);
 
@@ -107,6 +139,7 @@ public class SerConta {
 		conta.setTipoConta(AnaliticaSintetica.SINTETICA);
 		conta.setStatus(AtivaItativa.ATIVA);
 		conta.setNatureza(Natureza.PASSIVO);
+		conta.setReduzida("2");
 		conta.setContaPai(null);
 		listaConta.add(conta);
 
@@ -116,6 +149,7 @@ public class SerConta {
 		conta.setTipoConta(AnaliticaSintetica.SINTETICA);
 		conta.setStatus(AtivaItativa.ATIVA);
 		conta.setNatureza(Natureza.DESPESA);
+		conta.setReduzida("3");
 		conta.setContaPai(null);
 		listaConta.add(conta);
 
@@ -125,6 +159,7 @@ public class SerConta {
 		conta.setTipoConta(AnaliticaSintetica.SINTETICA);
 		conta.setStatus(AtivaItativa.ATIVA);
 		conta.setNatureza(Natureza.RECEITA);
+		conta.setReduzida("4");
 		conta.setContaPai(null);
 		listaConta.add(conta);
 

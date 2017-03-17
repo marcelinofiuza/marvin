@@ -40,6 +40,9 @@ public class Conta implements Serializable {
 	@Column(nullable = false)
 	private Integer chave;
 
+	@Column(length = 10)
+	private String reduzida;
+
 	@NotEmpty
 	@Column(length = 50, nullable = false)
 	private String descricao;
@@ -77,6 +80,14 @@ public class Conta implements Serializable {
 
 	public void setChave(Integer chave) {
 		this.chave = chave;
+	}
+
+	public String getReduzida() {
+		return reduzida;
+	}
+
+	public void setReduzida(String reduzida) {
+		this.reduzida = reduzida;
 	}
 
 	public String getDescricao() {

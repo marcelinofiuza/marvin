@@ -123,6 +123,11 @@
 								             value="#{controleConta.contaEdicao.descricao}" 
 								             onblur="value=value.toUpperCase()"/>
 								
+								<p:outputLabel value="Reduzida" for="reduzida"/>
+								<p:inputText id="reduzida" size="10" maxlength="10"
+								             value="#{controleConta.contaEdicao.reduzida}"
+								             onblur="value=value.toUpperCase()"/>
+								
 								<p:outputLabel value="Tipo Conta" for="tipo-conta"/>
 								<p:selectOneMenu id="tipo-conta" value="#{controleConta.contaEdicao.tipoConta}">
 		                            <f:selectItem  itemLabel="Selecione"/>
