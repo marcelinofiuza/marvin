@@ -66,6 +66,12 @@ body {
 	overflow: auto !important;
 }
 
+.r42-dialogo2 {
+    width: 60% !important;
+    height: 70% !important;
+    overflow: auto !important;
+}
+
 .r42-panelgrid{
     margin-top: 5px;	
 }
@@ -88,6 +94,11 @@ body {
 		height: 100% !important;
 		overflow: auto !important;
 	}
+    .r42-dialogo2 {
+        width: 100% !important;
+        height: 100% !important;
+        overflow: auto !important;
+    }	
 	.r42-panelgrid input {
 		width: 80%;
 	}	

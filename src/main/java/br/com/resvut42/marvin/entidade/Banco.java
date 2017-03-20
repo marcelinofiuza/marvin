@@ -65,7 +65,11 @@ public class Banco implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "idBanco")
-	private List<ContatosBanco> contatos = new ArrayList<ContatosBanco>();
+	private List<BancoContatos> contatos = new ArrayList<BancoContatos>();
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "idSaldo")
+	private List<BancoSaldo> saldos = new ArrayList<BancoSaldo>();
 
 	public Long getIdBanco() {
 		return idBanco;
@@ -131,19 +135,31 @@ public class Banco implements Serializable {
 		this.conta = conta;
 	}
 
-	public List<ContatosBanco> getContatos() {
+	public List<BancoContatos> getContatos() {
 		return contatos;
 	}
 
-	public void setContatos(List<ContatosBanco> contatos) {
+	public void setContatos(List<BancoContatos> contatos) {
 		this.contatos = contatos;
 	}
-	
-	public void addContato(ContatosBanco contato){
+
+	public void addContato(BancoContatos contato) {
 		contato.setBanco(this);
 		this.contatos.add(contato);
 	}
-	
+
+	public List<BancoSaldo> getSaldos() {
+		return saldos;
+	}
+
+	public void setSaldos(List<BancoSaldo> saldos) {
+		this.saldos = saldos;
+	}
+
+	public void addSaldo(BancoSaldo saldoBanco) {
+		saldoBanco.setBanco(this);
+		this.saldos.add(saldoBanco);
+	}
 
 	@Override
 	public int hashCode() {

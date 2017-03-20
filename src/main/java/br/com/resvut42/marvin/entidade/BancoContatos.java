@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
  * @author Bob-Odin - 01/03/2017 /
  ****************************************************************************/
 @Entity
-public class ContatosBanco implements Serializable {
+public class BancoContatos implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,9 +70,9 @@ public class ContatosBanco implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof ContatosBanco))
+		if (!(obj instanceof BancoContatos))
 			return false;
-		ContatosBanco other = (ContatosBanco) obj;
+		BancoContatos other = (BancoContatos) obj;
 		if (idContato == null) {
 			if (other.idContato != null)
 				return false;

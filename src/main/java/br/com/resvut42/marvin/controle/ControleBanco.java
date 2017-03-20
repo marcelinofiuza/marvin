@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Conta;
-import br.com.resvut42.marvin.entidade.ContatosBanco;
+import br.com.resvut42.marvin.entidade.BancoContatos;
+import br.com.resvut42.marvin.entidade.BancoSaldo;
 import br.com.resvut42.marvin.enums.Estado;
 import br.com.resvut42.marvin.enums.Febraban;
 import br.com.resvut42.marvin.servico.SerBanco;
@@ -40,48 +41,50 @@ public class ControleBanco implements Serializable {
 	private Banco bancoEdicao = new Banco();
 	private Banco bancoSelect;
 	private Conta conta;
-	
+
 	private final long newItem = 90000;
-	private ContatosBanco contatosBanco = new ContatosBanco();	
-	private Set<ContatosBanco> listaContatosBanco;	
+	private BancoContatos bancoContatos = new BancoContatos();
+	private Set<BancoContatos> listaBancoContatos;
+	private Set<BancoSaldo> listaBancoSaldo;
+	private BancoSaldo saldoEdicao;
 	private long idItmContato;
 
 	@Autowired
 	SerBanco serBanco;
 	@Autowired
 	private FacesMessages mensagens;
-	
+
 	/****************************************************************************
 	 * Reseta as variaveis para inclusão ou alteração
-	 ****************************************************************************/	
+	 ****************************************************************************/
 	@PostConstruct
-	public void preparaTela(){
+	public void preparaTela() {
 		idItmContato = newItem;
-		listaContatosBanco = new HashSet<ContatosBanco>();
-		limpaContato();		
-	}	
-	
+		listaBancoContatos = new HashSet<BancoContatos>();
+		limpaContato();
+	}
+
 	/****************************************************************************
 	 * Limpa contato
 	 ****************************************************************************/
 	public void limpaContato() {
-		contatosBanco = new ContatosBanco();
+		bancoContatos = new BancoContatos();
 	}
-	
+
 	/****************************************************************************
 	 * Salvar os dados no banco
 	 ****************************************************************************/
 	public void salvar() {
-		try {			
-			for (ContatosBanco contatosBanco : listaContatosBanco) {
-				if(contatosBanco.getIdContato() > newItem){
+		try {
+			for (BancoContatos contatosBanco : listaBancoContatos) {
+				if (contatosBanco.getIdContato() > newItem) {
 					contatosBanco.setIdContato(null);
 				}
-			}			
+			}
 			bancoEdicao.setConta(conta);
 			bancoEdicao.getContatos().clear();
-			bancoEdicao.getContatos().addAll(listaContatosBanco);
-			serBanco.salvar(bancoEdicao);			
+			bancoEdicao.getContatos().addAll(listaBancoContatos);
+			serBanco.salvar(bancoEdicao);
 			listar();
 			mensagens.info("Registro salvo com sucesso!");
 		} catch (Exception e) {
@@ -109,21 +112,31 @@ public class ControleBanco implements Serializable {
 	/****************************************************************************
 	 * Atribuir no controle o registro selecionado na tela
 	 ****************************************************************************/
-	public void editCadastro() {		
+	public void editCadastro() {
 		preparaTela();
 		bancoEdicao = bancoSelect;
 		conta = bancoEdicao.getConta();
-		listaContatosBanco.clear();
-		listaContatosBanco.addAll(bancoEdicao.getContatos());
+		listaBancoContatos.clear();
+		listaBancoContatos.addAll(bancoEdicao.getContatos());
+	}
+
+	/****************************************************************************
+	 * Atribuir no controle o registro selecionado na tela de periodo
+	 ****************************************************************************/	
+	public void editPeriodo(){
+		listaBancoContatos = new HashSet<BancoContatos>();
+		if(!bancoEdicao.getSaldos().isEmpty()){
+			listaBancoSaldo.addAll(bancoEdicao.getSaldos());
+		}
 	}
 
 	/****************************************************************************
 	 * Buscar lista dos dados no banco
 	 ****************************************************************************/
 	public void listar() {
-		preparaTela();			
+		preparaTela();
 		bancoSelect = null;
-		listaBancos = serBanco.listarTodos();		
+		listaBancos = serBanco.listarTodos();
 	}
 
 	/****************************************************************************
@@ -135,18 +148,25 @@ public class ControleBanco implements Serializable {
 	}
 
 	/****************************************************************************
+	 * Adicionar novo periodo
+	 ****************************************************************************/
+	public void novoPeriodo() {
+		saldoEdicao = new BancoSaldo();
+	}
+	
+	/****************************************************************************
 	 * Adiconar o contato a lista de contatos
 	 ****************************************************************************/
-	public void addContato() {	
-		if(contatosBanco.getContato().getNomeContato().isEmpty()){
-			mensagens.error("Nome do contato é obrigatório!");		
-		}else{						
-			if(contatosBanco.getIdContato() == null){
-				idItmContato ++;
-				contatosBanco.setIdContato(idItmContato);			
+	public void addContato() {
+		if (bancoContatos.getContato().getNomeContato().isEmpty()) {
+			mensagens.error("Nome do contato é obrigatório!");
+		} else {
+			if (bancoContatos.getIdContato() == null) {
+				idItmContato++;
+				bancoContatos.setIdContato(idItmContato);
 			}
-			contatosBanco.setBanco(bancoEdicao);	
-			listaContatosBanco.add(contatosBanco);
+			bancoContatos.setBanco(bancoEdicao);
+			listaBancoContatos.add(bancoContatos);
 			limpaContato();
 		}
 	}
@@ -154,8 +174,8 @@ public class ControleBanco implements Serializable {
 	/****************************************************************************
 	 * Remover contato
 	 ****************************************************************************/
-	public void removeContato(ContatosBanco contato) {
-		listaContatosBanco.remove(contato);
+	public void removeContato(BancoContatos contato) {
+		listaBancoContatos.remove(contato);
 		limpaContato();
 	}
 
@@ -164,9 +184,9 @@ public class ControleBanco implements Serializable {
 	 ****************************************************************************/
 	public void contaSelecionada(SelectEvent event) {
 		conta = new Conta();
-		conta = (Conta) event.getObject();	
-	}	
-	
+		conta = (Conta) event.getObject();
+	}
+
 	/****************************************************************************
 	 * -- Lista de opções de enums
 	 ****************************************************************************/
@@ -203,23 +223,31 @@ public class ControleBanco implements Serializable {
 		this.bancoSelect = bancoSelect;
 	}
 
-	public ContatosBanco getContatosBanco() {		
-		if(contatosBanco == null){
-			contatosBanco = new ContatosBanco();
-		}		
-		return contatosBanco;
+	public BancoContatos getBancoContatos() {
+		if (bancoContatos == null) {
+			bancoContatos = new BancoContatos();
+		}
+		return bancoContatos;
 	}
 
-	public void setContatosBanco(ContatosBanco contatosBanco) {
-		this.contatosBanco = contatosBanco;
+	public void setBancoContatos(BancoContatos bancoContatos) {
+		this.bancoContatos = bancoContatos;
 	}
 
-	public Set<ContatosBanco> getListaContatosBanco() {
-		return listaContatosBanco;
+	public Set<BancoContatos> getListaBancoContatos() {
+		return listaBancoContatos;
 	}
 
-	public void setListaContatosBanco(Set<ContatosBanco> listaContatosBanco) {
-		this.listaContatosBanco = listaContatosBanco;
+	public void setListaBancoContatos(Set<BancoContatos> listaBancoContatos) {
+		this.listaBancoContatos = listaBancoContatos;
+	}
+
+	public Set<BancoSaldo> getListaBancoSaldo() {
+		return listaBancoSaldo;
+	}
+
+	public void setListaBancoSaldo(Set<BancoSaldo> listaBancoSaldo) {
+		this.listaBancoSaldo = listaBancoSaldo;
 	}
 
 	public Conta getConta() {
@@ -230,4 +258,12 @@ public class ControleBanco implements Serializable {
 		this.conta = conta;
 	}
 
+	public BancoSaldo getSaldoEdicao() {
+		return saldoEdicao;
+	}
+
+	public void setSaldoEdicao(BancoSaldo saldoEdicao) {
+		this.saldoEdicao = saldoEdicao;
+	}
+	
 }

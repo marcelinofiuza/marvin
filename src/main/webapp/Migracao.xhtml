@@ -7,7 +7,7 @@
 
     <ui:define name="content">
         <section class="r42-pagina">
-            <h:form>
+            <h:form id="frm">
                 <!-- Mensagem Form -->
                 <p:growl id="msg-frm" showDetail="true" autoUpdate="true"/> 
                   
@@ -25,7 +25,8 @@
                                          value="Migrar Conta"
                                          process="@this"   
                                          disabled="#{controleMigracao.contaMigrada}"                                      
-                                         actionListener="#{controleMigracao.migrarConta}"/>
+                                         actionListener="#{controleMigracao.migrarConta}"
+                                         update="board"/>
 
                         <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
                     </p:panel>                    
