@@ -1,8 +1,10 @@
 package br.com.resvut42.marvin.controle;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.entidade.BancoContatos;
-import br.com.resvut42.marvin.entidade.BancoSaldo;
+import br.com.resvut42.marvin.entidade.BancoPeriodo;
 import br.com.resvut42.marvin.enums.Estado;
 import br.com.resvut42.marvin.enums.Febraban;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.util.FacesMessages;
+import br.com.resvut42.marvin.util.R42Data;
 
 /****************************************************************************
  * Classe controle para View da Tela do Banco
@@ -37,17 +40,21 @@ public class ControleBanco implements Serializable {
 	 * Variaveis e Dependências
 	 ****************************************************************************/
 	private static final long serialVersionUID = 1L;
+
 	private List<Banco> listaBancos = new ArrayList<Banco>();
 	private Banco bancoEdicao = new Banco();
 	private Banco bancoSelect;
+
 	private Conta conta;
 
 	private final long newItem = 90000;
 	private BancoContatos bancoContatos = new BancoContatos();
 	private Set<BancoContatos> listaBancoContatos;
-	private Set<BancoSaldo> listaBancoSaldo;
-	private BancoSaldo saldoEdicao;
 	private long idItmContato;
+
+	private List<BancoPeriodo> listaBancoPeriodo;
+	private BancoPeriodo bancoPeriodo;
+	private boolean periodoValido;
 
 	@Autowired
 	SerBanco serBanco;
@@ -121,16 +128,6 @@ public class ControleBanco implements Serializable {
 	}
 
 	/****************************************************************************
-	 * Atribuir no controle o registro selecionado na tela de periodo
-	 ****************************************************************************/	
-	public void editPeriodo(){
-		listaBancoContatos = new HashSet<BancoContatos>();
-		if(!bancoEdicao.getSaldos().isEmpty()){
-			listaBancoSaldo.addAll(bancoEdicao.getSaldos());
-		}
-	}
-
-	/****************************************************************************
 	 * Buscar lista dos dados no banco
 	 ****************************************************************************/
 	public void listar() {
@@ -147,13 +144,6 @@ public class ControleBanco implements Serializable {
 		bancoEdicao = new Banco();
 	}
 
-	/****************************************************************************
-	 * Adicionar novo periodo
-	 ****************************************************************************/
-	public void novoPeriodo() {
-		saldoEdicao = new BancoSaldo();
-	}
-	
 	/****************************************************************************
 	 * Adiconar o contato a lista de contatos
 	 ****************************************************************************/
@@ -187,6 +177,112 @@ public class ControleBanco implements Serializable {
 		conta = (Conta) event.getObject();
 	}
 
+	/****************************************************************************
+	 * Atribuir no controle o registro selecionado na tela de periodo
+	 ****************************************************************************/
+	public void editPeriodo() {
+		listaBancoPeriodo = new ArrayList<>();
+		if (!bancoSelect.getPeriodos().isEmpty()) {
+			listaBancoPeriodo.addAll(bancoSelect.getPeriodos());
+		}
+	}
+
+	/****************************************************************************
+	 * Adicionar novo periodo em branco
+	 ****************************************************************************/
+	public void novoPeriodo() {
+		bancoPeriodo = new BancoPeriodo();
+		bancoPeriodo.setBanco(bancoSelect);
+		if (listaBancoPeriodo.isEmpty()) {
+			bancoPeriodo.setAbertura(true);
+		} else {
+			bancoPeriodo.setAbertura(false);
+			int l = listaBancoPeriodo.size() - 1;
+			Date ultData = listaBancoPeriodo.get(l).getDataFinal();
+			bancoPeriodo.setDataInicio(R42Data.adicionaDias(ultData, 1));
+		}
+	}
+
+	/****************************************************************************
+	 * Adicionar periodo na lista de periodos
+	 ****************************************************************************/
+	public void adicionaPeriodo() {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		periodoValido = true;
+		// Se a data inicial for mairo que a final - erro
+		if (R42Data.inicialMaiorFinal(bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
+			periodoValido = false;
+			mensagens.error("Data Final menor que Data Inicial!");
+		} else {
+			for (BancoPeriodo itemPeriodo : listaBancoPeriodo) {
+				if (R42Data.conflitoPeriodos(itemPeriodo.getDataInicio(), itemPeriodo.getDataFinal(),
+						bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
+					periodoValido = false;
+
+					mensagens.error("Periodo informado está em conflito entre "
+							+ sdf.format(itemPeriodo.getDataInicio().getTime()) + " e "
+							+ sdf.format(itemPeriodo.getDataFinal().getTime()));
+					break;
+				}
+				;
+			}
+		}
+
+		if (periodoValido) {
+			listaBancoPeriodo.add(bancoPeriodo);
+			RequestContext.getCurrentInstance().execute("PF('wgDadosPeriodo').hide();");
+		}
+	}
+	
+	/****************************************************************************
+	 * Remove um periodo da lista de periodos
+	 ****************************************************************************/
+	public void removePeriodo(BancoPeriodo bancoPeriodo) {		
+		for (int i = 0; i < this.listaBancoPeriodo.size(); i++) {
+			BancoPeriodo bPeriodo = this.listaBancoPeriodo.get(i);
+			if(bPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio())==0){
+				this.listaBancoPeriodo.remove(i);		
+			}			
+		}		
+	}	
+	
+	/****************************************************************************
+	 * Fecha um periodo da lista de periodos
+	 ****************************************************************************/
+	public void fechaPeriodo(BancoPeriodo bancoPeriodo) {
+		for (BancoPeriodo regPeriodo : this.listaBancoPeriodo) {
+			if(regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio())==0){
+				regPeriodo.setFechado(true);
+			}
+		}		
+	}	
+	
+	/****************************************************************************
+	 * Abre um periodo da lista de periodos
+	 ****************************************************************************/
+	public void abrePeriodo(BancoPeriodo bancoPeriodo) {
+		for (BancoPeriodo regPeriodo : this.listaBancoPeriodo) {
+			if(regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio())==0){
+				regPeriodo.setFechado(false);
+			}
+		}		
+	}
+	
+	/****************************************************************************
+	 * Salvar os periodos do banco
+	 ****************************************************************************/
+	public void salvaPeriodos() {
+		try {
+			bancoSelect.setPeriodo(listaBancoPeriodo);
+			serBanco.salvar(bancoSelect);
+			listar();
+			mensagens.info("Registro salvo com sucesso!");
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+			e.printStackTrace();
+		}
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
+	}	
 	/****************************************************************************
 	 * -- Lista de opções de enums
 	 ****************************************************************************/
@@ -242,14 +338,6 @@ public class ControleBanco implements Serializable {
 		this.listaBancoContatos = listaBancoContatos;
 	}
 
-	public Set<BancoSaldo> getListaBancoSaldo() {
-		return listaBancoSaldo;
-	}
-
-	public void setListaBancoSaldo(Set<BancoSaldo> listaBancoSaldo) {
-		this.listaBancoSaldo = listaBancoSaldo;
-	}
-
 	public Conta getConta() {
 		return conta;
 	}
@@ -258,12 +346,52 @@ public class ControleBanco implements Serializable {
 		this.conta = conta;
 	}
 
-	public BancoSaldo getSaldoEdicao() {
-		return saldoEdicao;
+	public List<BancoPeriodo> getListaBancoPeriodo() {
+		return listaBancoPeriodo;
 	}
 
-	public void setSaldoEdicao(BancoSaldo saldoEdicao) {
-		this.saldoEdicao = saldoEdicao;
+	public void setListaBancoPeriodo(List<BancoPeriodo> listaBancoPeriodo) {
+		this.listaBancoPeriodo = listaBancoPeriodo;
+	}
+
+	public BancoPeriodo getBancoPeriodo() {
+		return bancoPeriodo;
+	}
+
+	public void setBancoPeriodo(BancoPeriodo bancoPeriodo) {
+		this.bancoPeriodo = bancoPeriodo;
+	}
+
+	public boolean isPeriodoValido() {
+		return periodoValido;
+	}
+
+	public int getUltimoPeriodo() {
+		
+		if(listaBancoPeriodo.isEmpty()){
+			return 0;
+		}else{
+			return this.listaBancoPeriodo.size() - 1;
+		}
+
 	}
 	
+	public int getUltimoFechado() {
+		
+		int ultimo = -1;
+				
+		if(!listaBancoPeriodo.isEmpty()){
+			for (int i = 0; i < listaBancoPeriodo.size(); i++) {				
+				BancoPeriodo bancoPeriodo = listaBancoPeriodo.get(i);
+				if(bancoPeriodo.isFechado()){
+					ultimo = i;
+				}else{
+					break;
+				}				
+			}			
+		}
+
+		return ultimo;
+		
+	}	
 }

@@ -19,18 +19,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 /****************************************************************************
- * Entidade Saldo Banco, para gravação de saldos e fechamento contabil
+ * Entidade Periodo Banco, para gravação de saldos e fechamento contabil
  * 
  * @author Bob-Odin - 18/03/2017
  ****************************************************************************/
 @Entity
-public class BancoSaldo implements Serializable {
+public class BancoPeriodo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long idSaldo;
+	private Long idPeriodo;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "idBanco")
@@ -58,15 +58,21 @@ public class BancoSaldo implements Serializable {
 	private BigDecimal saldoFinal;
 
 	private boolean abertura;
-	
+
 	private boolean fechado;
 
-	public long getIdSaldo() {
-		return idSaldo;
+	public BancoPeriodo() {
+		this.saldoInicial = new BigDecimal(0);
+		this.credito = new BigDecimal(0);
+		this.debito = new BigDecimal(0);
 	}
 
-	public void setIdSaldo(long idSaldo) {
-		this.idSaldo = idSaldo;
+	public long getIdPeriodo() {
+		return idPeriodo;
+	}
+
+	public void setIdPeriodo(long idPeriodo) {
+		this.idPeriodo = idPeriodo;
 	}
 
 	public Banco getBanco() {
@@ -143,7 +149,7 @@ public class BancoSaldo implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (idSaldo ^ (idSaldo >>> 32));
+		result = prime * result + (int) (idPeriodo ^ (idPeriodo >>> 32));
 		return result;
 	}
 
@@ -153,10 +159,10 @@ public class BancoSaldo implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof BancoSaldo))
+		if (!(obj instanceof BancoPeriodo))
 			return false;
-		BancoSaldo other = (BancoSaldo) obj;
-		if (idSaldo != other.idSaldo)
+		BancoPeriodo other = (BancoPeriodo) obj;
+		if (idPeriodo != other.idPeriodo)
 			return false;
 		return true;
 	}

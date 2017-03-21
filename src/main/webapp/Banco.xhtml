@@ -1,6 +1,9 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:p="http://primefaces.org/ui"
-	template="/WEB-INF/templates/Layout.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+	            xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	            xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	            xmlns:p="http://primefaces.org/ui"
+	            template="/WEB-INF/templates/Layout.xhtml">
 
 	<ui:define name="content">
 		<section class="r42-pagina">
@@ -52,10 +55,11 @@
                                             title="Periodo Movimentação" 
                                             icon="fa fa-calendar" 
                                             process="@this" 
-                                            update="dialogo"
+                                            update="dialogoPeriodo tabPeriodo"
                                             oncomplete="PF('wgPeriodo').show()" 
                                             disabled="#{controleBanco.bancoSelect == null}"
                                             actionListener="#{controleBanco.editPeriodo}">
+                                            <p:resetInput target="dialogoPeriodo" />
                         </p:commandButton>                       						
 					</p:toolbarGroup>
 
@@ -336,7 +340,7 @@
 				
 				<!-- Dialogo Periodo de Movimentação -->
                 <p:dialog styleClass="r42-dialogo" 
-                          header="Dados Periodo" 
+                          header="Período de Movimentação" 
                           widgetVar="wgPeriodo" 
                           id="dialogoPeriodo" 
                           modal="true" 
@@ -344,8 +348,10 @@
                           responsive="true">
                                                     
                     <!-- Barra de Ferramentas dialogo-->
-                    <p:defaultCommand target="btoPer-novo" scope="dialogo" />
-                    <p:toolbar>
+                    <p:defaultCommand target="btoPer-novo" scope="dialogoPeriodo" />
+                    <p:toolbar styleClass="r42-toolbar" 
+                               id = "toolbarPeriodo">
+                               
                         <p:toolbarGroup align="left">
 	                        <p:commandButton    id="btoPer-novo" 
 	                                            title="Novo" 
@@ -356,67 +362,102 @@
 	                                            oncomplete="PF('wgDadosPeriodo').show()">
 	                                            <p:resetInput target="dialogoDadosPeriodo" />
 	                        </p:commandButton>
+                            <p:commandButton id="btoPer-salvar" 
+                                             title="Salvar" 
+                                             icon="fa fa-save" 
+                                             action="#{controleBanco.salvaPeriodos}" 
+                                             process="@this"
+                                             oncomplete="PF('wgPeriodo').hide()" />	                        
 	                   </p:toolbarGroup>
+	                   
                     </p:toolbar>
                                                                         
                     <p:messages id="msgPeriodo" showDetail="false" autoUpdate="true" closable="true" />
                            
-                    <!-- Listagem dos dados -->
-                    <p:dataTable value="#{controleBanco.listaBancoSaldo}" 
-                                 var="saldo" 
-                                 id="tabSaldo" 
+                    <!-- Listagem dos dados do periodo-->
+                    <p:dataTable value="#{controleBanco.listaBancoPeriodo}" 
+                                 var="periodo" 
+                                 rowIndexVar="rowId"
+                                 id="tabPeriodo" 
                                  reflow="true" 
-                                 rows="12"
+                                 rows="11"
                                  paginator="true" 
                                  paginatorPosition="top"  
                                  emptyMessage="Nenhum Periodo Existente">
                                  
 	                    <!-- Colunas -->
-	                    <p:column headerText="Data Inicial" width="50">
-	                        <h:outputText value="#{saldo.dataInicio}">
+	                    <p:column headerText="Data Inicial" width="80">
+	                        <h:outputText value="#{periodo.dataInicio}">
                                 <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>                                
 	                        </h:outputText>
 	                    </p:column>                                 
-	                    <p:column headerText="Data Final" width="50">
-	                        <h:outputText value="#{saldo.dataFinal}">
+	                    <p:column headerText="Data Final" width="80">
+	                        <h:outputText value="#{periodo.dataFinal}">
                                 <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
 	                        </h:outputText>
 	                    </p:column>                      
-	                    <p:column headerText="Saldo Inicial" width="50">
-	                        <h:outputText value="#{saldo.saldoInicial}">
+	                    <p:column headerText="Saldo Inicial">
+	                        <h:outputText value="#{periodo.saldoInicial}" style="float: right">
                                 <f:convertNumber type="currency" />
 	                        </h:outputText>	                        
 	                    </p:column> 
-	                    <p:column headerText="Débito" width="50">
-	                        <h:outputText value="#{saldo.debito}">
+	                    <p:column headerText="Débito">
+	                        <h:outputText value="#{periodo.debito}" style="float: right">
                                 <f:convertNumber type="currency" />
 	                        </h:outputText>
 	                    </p:column> 
-	                    <p:column headerText="Crédito" width="50">
-	                        <h:outputText value="#{saldo.credito}">
+	                    <p:column headerText="Crédito">
+	                        <h:outputText value="#{periodo.credito}" style="float: right">
                                 <f:convertNumber type="currency" />	                        
-	                        </h:outputText>
+	                        </h:outputText> 
 	                    </p:column> 
-	                    <p:column headerText="Saldo Final" width="50">
-                            <h:outputText value="#{saldo.saldoFinal}">
+	                    <p:column headerText="Saldo Final">
+                            <h:outputText value="#{periodo.saldoFinal}" style="float: right">
                                 <f:convertNumber type="currency" />                         
                             </h:outputText>                            
 	                    </p:column> 
-	                    <p:column headerText="Fechado" width="50">
-	                        <p:selectBooleanCheckbox value="#{saldo.fechado}" disabled="true" />
+	                    <p:column headerText="Fechado" width="60">
+	                        <p:selectBooleanCheckbox value="#{periodo.fechado}" disabled="true" />
+	                    </p:column>
+                                                                          	                    
+	                    <p:column headerText="#" width="85">
+                            <p:commandButton icon="fa fa-trash" 
+                                             title="Remover" 
+                                             action="#{controleBanco.removePeriodo(periodo)}" 
+                                             process="@this"
+                                             update="tabPeriodo" 
+                                             rendered="#{rowId == controleBanco.ultimoPeriodo}"
+                                             disabled="#{periodo.fechado}"/>
+                                                           
+                            <p:commandButton icon="fa fa-lock" 
+                                             title="Fechar"
+                                             action="#{controleBanco.fechaPeriodo(periodo)}"   
+                                             process="@this"
+                                             update="tabPeriodo" 
+                                             rendered="#{!periodo.fechado}"
+                                             disabled="#{(rowId-1) != controleBanco.ultimoFechado}"/>
+                                             
+                            <p:commandButton icon="fa fa-unlock" 
+                                             title="Abrir"  
+                                             action="#{controleBanco.abrePeriodo(periodo)}"   
+                                             process="@this"
+                                             update="tabPeriodo" 
+                                             rendered="#{periodo.fechado}"
+                                             disabled="#{rowId != controleBanco.ultimoFechado}"/>
 	                    </p:column>
                                                                                                                                      
                     </p:dataTable>
                 </p:dialog>
                 
                 <!-- Dialogo Periodo de Movimentação -->
-                <p:dialog styleClass="r42-dialogo2" 
-                          header="Periodo" 
+                <p:dialog header="Dados Periodo" 
                           widgetVar="wgDadosPeriodo" 
                           id="dialogoDadosPeriodo" 
                           modal="true" 
                           resizable="false"
                           responsive="true">
+                          
+                    <p:defaultCommand target="btoPer-ok" scope="dialogoDadosPeriodo" />
                           
                     <p:panelGrid id="panelPeriodo" 
                                  columns="2" 
@@ -424,13 +465,39 @@
                                  styleClass="panelgrid-noborder r42-panelgrid"
                                  columnClasses="ui-grid-col-3, ui-grid-col-9">
 
-                        <p:outputLabel value="Data Inicial" for="dataInicial" />
+                        <p:outputLabel value="Data Inicial" for="dataInicial"/>
                         <p:calendar id="dataInicial" size="10"
                                     locale="pt_BR"
-                                    value="#{controleBanco.saldoEdicao.dataInicio}"
+                                    value="#{controleBanco.bancoPeriodo.dataInicio}"
                                     pattern="dd/MM/yyyy" mask="99/99/9999"
-                                    showOn="button"/>
-                                                                    
+                                    showOn="button"
+                                    required="true"
+                                    disabled="#{!controleBanco.bancoPeriodo.abertura}"/>
+
+                        <p:outputLabel value="Data Final" for="dataFinal"/>
+                        <p:calendar id="dataFinal" size="10"
+                                    locale="pt_BR"
+                                    value="#{controleBanco.bancoPeriodo.dataFinal}"
+                                    pattern="dd/MM/yyyy" mask="99/99/9999"
+                                    showOn="button"
+                                    required="true"/>
+                                    
+                        <p:outputLabel value="Saldo Inicial" for="saldoInicial"
+                                       rendered="#{controleBanco.bancoPeriodo.abertura}"/>
+                        <p:inputNumber id="saldoInicial" size="20"
+                                       value="#{controleBanco.bancoPeriodo.saldoInicial}"
+                                       decimalSeparator=","
+                                       thousandSeparator="."
+                                       rendered="#{controleBanco.bancoPeriodo.abertura}">                                       
+                                       <f:convertNumber pattern="#0,00" />
+                        </p:inputNumber>
+                        <p:commandButton id="btoPer-ok" 
+                                         title="Ok" 
+                                         icon="fa fa-check" 
+                                         actionListener="#{controleBanco.adicionaPeriodo}"
+                                         process="dialogoDadosPeriodo" 
+                                         update="tabPeriodo"/> 
+      
                     </p:panelGrid>  
                 </p:dialog>                
 			</h:form>

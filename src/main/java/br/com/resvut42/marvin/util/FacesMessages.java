@@ -30,15 +30,15 @@ public class FacesMessages implements Serializable {
 	}
 
 	public void info(String message) {
-		add("sucesso", message, FacesMessage.SEVERITY_INFO);
+		add(message, "sucesso", FacesMessage.SEVERITY_INFO);
 	}
 
 	public void warning(String message) {
-		add("Atenção", message, FacesMessage.SEVERITY_WARN);
+		add(message, "Atenção", FacesMessage.SEVERITY_WARN);
 	}
 
 	public void error(String message) {
-		add("Erro", message, FacesMessage.SEVERITY_ERROR);
+		add(message, "Erro", FacesMessage.SEVERITY_ERROR);
 	}
 
 	public void fatal(String message) {
