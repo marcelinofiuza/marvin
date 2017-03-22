@@ -11,8 +11,6 @@ import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.resvut42.marvin.entidade.Conta;
-import br.com.resvut42.marvin.enums.Natureza;
-import br.com.resvut42.marvin.enums.AtivaItativa;
 import br.com.resvut42.marvin.enums.AnaliticaSintetica;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.FacesMessages;
@@ -103,21 +101,6 @@ public class ControleConta implements Serializable {
 	 ****************************************************************************/
 	public void editCadastro() {
 		contaEdicao = (Conta) contaSelect.getData();
-	}
-
-	/****************************************************************************
-	 * -- Lista de opções de enums
-	 ****************************************************************************/
-	public AnaliticaSintetica[] getTiposConta() {
-		return AnaliticaSintetica.values();
-	}
-
-	public AtivaItativa[] getStatusConta() {
-		return AtivaItativa.values();
-	}
-
-	public Natureza[] getNaturezas() {
-		return Natureza.values();
 	}
 
 	/****************************************************************************

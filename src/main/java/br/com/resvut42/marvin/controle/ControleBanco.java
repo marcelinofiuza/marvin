@@ -1,7 +1,6 @@
 package br.com.resvut42.marvin.controle;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -21,8 +20,6 @@ import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.entidade.BancoContatos;
 import br.com.resvut42.marvin.entidade.BancoPeriodo;
-import br.com.resvut42.marvin.enums.Estado;
-import br.com.resvut42.marvin.enums.Febraban;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.util.FacesMessages;
 import br.com.resvut42.marvin.util.R42Data;
@@ -190,7 +187,6 @@ public class ControleBanco implements Serializable {
 	 * Adicionar periodo na lista de periodos
 	 ****************************************************************************/
 	public void adicionaPeriodo() {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		periodoValido = true;
 		// Se a data inicial for mairo que a final - erro
 		if (R42Data.inicialMaiorFinal(bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
@@ -202,9 +198,10 @@ public class ControleBanco implements Serializable {
 						bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
 					periodoValido = false;
 
-					mensagens.error("Periodo informado está em conflito entre "
-							+ sdf.format(itemPeriodo.getDataInicio().getTime()) + " e "
-							+ sdf.format(itemPeriodo.getDataFinal().getTime()));
+					mensagens.error("Periodo informado está em conflito entre " +
+							R42Data.dataToString(itemPeriodo.getDataInicio())
+							+ " e " +
+							R42Data.dataToString(itemPeriodo.getDataFinal()));
 					break;
 				}
 				;
@@ -266,17 +263,6 @@ public class ControleBanco implements Serializable {
 		}
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
 	}	
-	/****************************************************************************
-	 * -- Lista de opções de enums
-	 ****************************************************************************/
-
-	public Febraban[] getFebraban() {
-		return Febraban.values();
-	}
-
-	public Estado[] getEstados() {
-		return Estado.values();
-	}
 
 	/****************************************************************************
 	 * Gets e Sets do controle

@@ -131,21 +131,21 @@
 								<p:outputLabel value="Tipo Conta" for="tipo-conta"/>
 								<p:selectOneMenu id="tipo-conta" value="#{controleConta.contaEdicao.tipoConta}">
 		                            <f:selectItem  itemLabel="Selecione"/>
-									<f:selectItems value="#{controleConta.tiposConta}" var="tipoConta"
+									<f:selectItems value="#{controleEnums.tiposConta}" var="tipoConta"
 												   itemLabel="#{tipoConta.descricao}" itemValue="#{tipoConta}"/>
 								</p:selectOneMenu>	
 		
 								<p:outputLabel value="Status" for="status"/>
 								<p:selectOneMenu id="status" value="#{controleConta.contaEdicao.status}">
 									<f:selectItem  itemLabel="Selecione"/>
-									<f:selectItems value="#{controleConta.statusConta}" var="status"
+									<f:selectItems value="#{controleEnums.statusConta}" var="status"
 												   itemLabel="#{status.descricao}" itemValue="#{status}"/>
 								</p:selectOneMenu>
 		
 								<p:outputLabel value="Natureza" for="natureza"/>
 								<p:selectOneMenu id="natureza" value="#{controleConta.contaEdicao.natureza}">
 									<f:selectItem  itemLabel="Selecione"/>
-									<f:selectItems value="#{controleConta.naturezas}" var="natureza"
+									<f:selectItems value="#{controleEnums.naturezas}" var="natureza"
 												   itemLabel="#{natureza.descricao}" itemValue="#{natureza}"/>
 								</p:selectOneMenu>
 														

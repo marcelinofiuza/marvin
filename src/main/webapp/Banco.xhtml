@@ -140,7 +140,7 @@
 								<p:outputLabel value="Febraban" for="febraban" />
 								<p:selectOneMenu id="febraban" value="#{controleBanco.bancoEdicao.febraban}">
 									<f:selectItem itemLabel="Selecione" />
-									<f:selectItems value="#{controleBanco.febraban}" 
+									<f:selectItems value="#{controleEnums.febraban}" 
 									               var="febraban" 
 									               itemLabel="#{febraban.nome}" 
 									               itemValue="#{febraban}" />
@@ -187,8 +187,7 @@
                                     <p:spacer width="10"/>                                                                         
                                     <p:inputText id="contaDescricao" size="50"
                                                  value="#{controleBanco.conta.descricao}"
-                                                 readonly="true"/>
-                                
+                                                 readonly="true"/>                                
                                 </p:column>
 							</p:panelGrid>
 						</p:tab>
@@ -238,7 +237,7 @@
 								<p:outputLabel value="Estado" for="uf" />
 								<p:selectOneMenu id="uf" value="#{controleBanco.bancoEdicao.endereco.uf}">
 									<f:selectItem itemLabel="Selecione" />
-									<f:selectItems value="#{controleBanco.estados}" 
+									<f:selectItems value="#{controleEnums.estados}" 
 									               var="estado" 
 									               itemLabel="#{estado.nome}" 
 									               itemValue="#{estado}" />

@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
+import br.com.resvut42.marvin.util.R42Data;
+
 /****************************************************************************
  * Entidade Periodo Banco, para gravação de saldos e fechamento contabil
  * 
@@ -89,6 +91,10 @@ public class BancoPeriodo implements Serializable {
 
 	public void setDataInicio(Date dataInicio) {
 		this.dataInicio = dataInicio;
+	}
+
+	public String getDataPeriodo() {
+		return R42Data.dataToString(dataInicio) + " - " + R42Data.dataToString(dataFinal);
 	}
 
 	public Date getDataFinal() {

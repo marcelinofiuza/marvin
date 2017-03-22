@@ -1,5 +1,6 @@
 package br.com.resvut42.marvin.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -77,4 +78,11 @@ public class R42Data {
 		return c.getTime();				
 	}
 
+	/****************************************************************************
+	 * Transforma Data em String (dd/MM/yyyy) 
+	 ****************************************************************************/	
+	public static String dataToString(Date data){
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		return sdf.format(data.getTime());
+	}
 }
