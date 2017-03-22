@@ -19,10 +19,10 @@
                 
                 <p:dashboard id="board" styleClass="r42-dashboard" model="#{controleMigracao.model}" >
                                     
-                    <p:panel id="conta" header="Conta Contabil">
+                    <p:panel id="conta" header="Contas Contábeis">
                         <p:commandButton id="bto-conta"
-                                         title="Migrar Conta"
-                                         value="Migrar Conta"
+                                         title="Migrar Contas"
+                                         value="Migrar Contas"
                                          process="@this"   
                                          disabled="#{controleMigracao.contaMigrada}"                                      
                                          actionListener="#{controleMigracao.migrarConta}"
@@ -30,7 +30,19 @@
 
                         <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
                     </p:panel>                    
-                
+
+                    <p:panel id="banco" header="Bancos">
+                        <p:commandButton id="bto-banco"
+                                         title="Migrar Bancos"
+                                         value="Migrar Bancos"
+                                         process="@this"   
+                                         disabled="#{controleMigracao.bancoMigrado}"                                      
+                                         actionListener="#{controleMigracao.migrarBanco}"
+                                         update="board"/>
+
+                        <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
+                    </p:panel>
+                                    
                 </p:dashboard>  
                 
                 <!-- Dialogo de Aguarde -->

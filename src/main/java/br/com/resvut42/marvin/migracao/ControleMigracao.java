@@ -12,6 +12,7 @@ import org.primefaces.model.DefaultDashboardColumn;
 import org.primefaces.model.DefaultDashboardModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -29,16 +30,22 @@ public class ControleMigracao implements Serializable {
 	 ****************************************************************************/
 	private static final long serialVersionUID = 1L;
 	private DashboardModel model;
-	
+
 	private boolean contaMigrada;
+	private boolean bancoMigrado;
 
 	@Autowired
 	private SerConta serConta;
-	
 	@Autowired
-	private FacesMessages mensagens;
+	private SerBanco serBanco;
+
 	@Autowired
 	MigrarConta migrarConta;
+	@Autowired
+	MigrarBanco migrarBanco;
+
+	@Autowired
+	private FacesMessages mensagens;
 
 	/****************************************************************************
 	 * Inicialização
@@ -51,33 +58,48 @@ public class ControleMigracao implements Serializable {
 		// DashboardColumn column3 = new DefaultDashboardColumn();
 
 		column1.addWidget("conta");
-		// column1.addWidget("finance");
+		column1.addWidget("banco");
 
 		// column2.addWidget("");
 		// column2.addWidget("");
-		
+
 		// column3.addWidget("");
 
 		model.addColumn(column1);
 		// model.addColumn(column2);
 		// model.addColumn(column3);
-		
-		//Verica se efetua a migração
+
+		// Verica se efetua a migração
 		contaMigrada = serConta.exiteConta();
-		
+		bancoMigrado = serBanco.exiteBanco();
+
 	}
 
 	/****************************************************************************
-	 * Executa a importação da conta
+	 * Executa a importação das contas
 	 ****************************************************************************/
 	public void migrarConta() {
 		try {
 			migrarConta.executar();
-			mensagens.info("Migração das Contas efetuada com sucesso!");		
+			mensagens.info("Migração das Contas efetuada com sucesso!");
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}
-		
+
+		init();
+	}
+
+	/****************************************************************************
+	 * Executa a importação dos bancos
+	 ****************************************************************************/
+	public void migrarBanco() {
+		try {
+			migrarBanco.executar();
+			mensagens.info("Migração dos Bancos efetuada com sucesso!");
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+		}
+
 		init();
 	}
 
@@ -91,5 +113,10 @@ public class ControleMigracao implements Serializable {
 
 	public boolean isContaMigrada() {
 		return contaMigrada;
-	}	
+	}
+
+	public boolean isBancoMigrado() {
+		return bancoMigrado;
+	}
+
 }

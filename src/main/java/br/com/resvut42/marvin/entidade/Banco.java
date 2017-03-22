@@ -36,6 +36,9 @@ public class Banco implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long idBanco;
 
+	@Column(length = 10)
+	private String idMigracao;
+
 	@Enumerated(EnumType.STRING)
 	@Column(length = 5)
 	private Febraban febraban;
@@ -77,6 +80,14 @@ public class Banco implements Serializable {
 
 	public void setIdBanco(Long idBanco) {
 		this.idBanco = idBanco;
+	}
+
+	public String getIdMigracao() {
+		return idMigracao;
+	}
+
+	public void setIdMigracao(String idMigracao) {
+		this.idMigracao = idMigracao;
 	}
 
 	public Febraban getFebraban() {
@@ -146,6 +157,13 @@ public class Banco implements Serializable {
 	public void addContato(BancoContatos contato) {
 		contato.setBanco(this);
 		this.contatos.add(contato);
+	}
+	
+	public void addContato(Contato contato){
+		BancoContatos bc = new BancoContatos();
+		bc.setIdContato(null);
+		bc.setContato(contato);		
+		addContato(bc);
 	}
 
 	public List<BancoPeriodo> getPeriodos() {

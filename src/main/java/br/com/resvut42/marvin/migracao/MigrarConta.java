@@ -50,8 +50,6 @@ public class MigrarConta {
 
 			if (!registro.isEmpty()) {
 
-				serConta.excluirTodas();
-
 				for (int i = 0; i < 5; i++) {
 					
 					int nivel = i + 1;

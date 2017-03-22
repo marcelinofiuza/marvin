@@ -48,9 +48,8 @@ public class ControleBanco implements Serializable {
 	private Conta conta;
 
 	private final long newItem = 90000;
-	private BancoContatos bancoContatos = new BancoContatos();
+	private long nextItem = newItem;
 	private Set<BancoContatos> listaBancoContatos;
-	private long idItmContato;
 
 	private List<BancoPeriodo> listaBancoPeriodo;
 	private BancoPeriodo bancoPeriodo;
@@ -66,16 +65,7 @@ public class ControleBanco implements Serializable {
 	 ****************************************************************************/
 	@PostConstruct
 	public void preparaTela() {
-		idItmContato = newItem;
 		listaBancoContatos = new HashSet<BancoContatos>();
-		limpaContato();
-	}
-
-	/****************************************************************************
-	 * Limpa contato
-	 ****************************************************************************/
-	public void limpaContato() {
-		bancoContatos = new BancoContatos();
 	}
 
 	/****************************************************************************
@@ -148,17 +138,11 @@ public class ControleBanco implements Serializable {
 	 * Adiconar o contato a lista de contatos
 	 ****************************************************************************/
 	public void addContato() {
-		if (bancoContatos.getContato().getNomeContato().isEmpty()) {
-			mensagens.error("Nome do contato é obrigatório!");
-		} else {
-			if (bancoContatos.getIdContato() == null) {
-				idItmContato++;
-				bancoContatos.setIdContato(idItmContato);
-			}
-			bancoContatos.setBanco(bancoEdicao);
-			listaBancoContatos.add(bancoContatos);
-			limpaContato();
-		}
+		nextItem++;
+		BancoContatos bancoContatos = new BancoContatos();
+		bancoContatos.setBanco(bancoEdicao);
+		bancoContatos.setIdContato(nextItem);
+		listaBancoContatos.add(bancoContatos);
 	}
 
 	/****************************************************************************
@@ -166,7 +150,6 @@ public class ControleBanco implements Serializable {
 	 ****************************************************************************/
 	public void removeContato(BancoContatos contato) {
 		listaBancoContatos.remove(contato);
-		limpaContato();
 	}
 
 	/****************************************************************************
@@ -319,17 +302,6 @@ public class ControleBanco implements Serializable {
 		this.bancoSelect = bancoSelect;
 	}
 
-	public BancoContatos getBancoContatos() {
-		if (bancoContatos == null) {
-			bancoContatos = new BancoContatos();
-		}
-		return bancoContatos;
-	}
-
-	public void setBancoContatos(BancoContatos bancoContatos) {
-		this.bancoContatos = bancoContatos;
-	}
-
 	public Set<BancoContatos> getListaBancoContatos() {
 		return listaBancoContatos;
 	}
@@ -366,20 +338,16 @@ public class ControleBanco implements Serializable {
 		return periodoValido;
 	}
 
-	public int getUltimoPeriodo() {
-		
+	public int getUltimoPeriodo() {		
 		if(listaBancoPeriodo.isEmpty()){
 			return 0;
 		}else{
 			return this.listaBancoPeriodo.size() - 1;
 		}
-
 	}
 	
 	public int getUltimoFechado() {
-		
 		int ultimo = -1;
-				
 		if(!listaBancoPeriodo.isEmpty()){
 			for (int i = 0; i < listaBancoPeriodo.size(); i++) {				
 				BancoPeriodo bancoPeriodo = listaBancoPeriodo.get(i);
@@ -390,8 +358,6 @@ public class ControleBanco implements Serializable {
 				}				
 			}			
 		}
-
 		return ultimo;
-		
 	}	
 }

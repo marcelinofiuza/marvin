@@ -23,6 +23,17 @@ public class SerBanco {
 	RepBanco repBanco;
 
 	/****************************************************************************
+	 * Retorna se existe algum banco cadastro
+	 ****************************************************************************/
+	public boolean exiteBanco() {
+		if (repBanco.count() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/****************************************************************************
 	 * Metodo para Validar e salvar
 	 ****************************************************************************/
 	public void salvar(Banco banco) throws Exception {
