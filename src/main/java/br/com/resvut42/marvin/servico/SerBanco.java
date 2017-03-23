@@ -85,14 +85,12 @@ public class SerBanco {
 		return bancoPeriodos;		
 	}
 	
-	private boolean comparaData(Date inicio, Date fim, String ordem){
-		
+	private boolean comparaData(Date inicio, Date fim, String ordem){		
 		if(ordem.equalsIgnoreCase("D")){
 			return(inicio.compareTo(fim) < 0);
 		}else{
 			return(inicio.compareTo(fim) > 0);
-		}
-				
+		}			
 	}
 	
 }

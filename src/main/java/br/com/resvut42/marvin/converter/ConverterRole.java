@@ -12,8 +12,8 @@ import br.com.resvut42.marvin.enums.Role;
  * 
  * @author: Bob-Odin - 30/01/2017
  ****************************************************************************/
-@FacesConverter(value = "roleConverter")
-public class RoleConverter implements Converter {
+@FacesConverter(value = "converterRole")
+public class ConverterRole implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {

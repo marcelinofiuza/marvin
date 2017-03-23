@@ -8,8 +8,7 @@
 	<ui:define name="content">
 		<section class="r42-pagina">
             
-            <h:form id="frm">
-            
+            <h:form id="frm">            
                 <!-- Mensagem Form -->
                 <p:growl id="msg-frm" showDetail="true"/>  
                             
@@ -23,7 +22,7 @@
                           resizable="false"                   
                           responsive="true">                
 
-                    <p:panelGrid id="panelPesquisa"
+                    <p:panelGrid id="panelSelecao"
                                  columns="2" 
                                  layout="grid" 
                                  styleClass="panelgrid-noborder r42-panelgrid"
@@ -34,8 +33,7 @@
                             <p:inputText id="banco" 
                                          size="10"
                                          value="#{controleBancoLcto.banco.idBanco}"
-                                         readonly="true"
-                                         required="true"/>
+                                         readonly="true"/>
                                          
                             <p:commandButton icon="fa fa-search" 
                                              title="Pesquisar"
@@ -46,7 +44,7 @@
                                 <p:ajax event="dialogReturn" 
                                         listener="#{controleBancoLcto.bancoSelecionado}"
                                         process="@this"                                             
-                                        update="panelPesquisa"/>
+                                        update="panelSelecao"/>
                                             
                             </p:commandButton>                                
                         </p:column>
@@ -57,8 +55,9 @@
                                      readonly="true"/>
                                                              
                         <p:outputLabel value="Periodo" for="periodos"/>
-                        <p:selectOneMenu id="periodos" value="#{controleBancoLcto.bancoPeriodo}" required="true">
-                            <f:selectItems value="#{controleBancoLcto.banco.periodos}" 
+                        <p:selectOneMenu id="periodos" value="#{controleBancoLcto.bancoPeriodo}"
+                                         converter="converterPeriodo">
+                            <f:selectItems value="#{controleBancoLcto.listaPeriodo}" 
                                            var="periodo" 
                                            itemLabel="#{periodo.dataPeriodo}" 
                                            itemValue="#{periodo}"/>
@@ -67,16 +66,66 @@
                         <p:column>
                             <p:commandButton icon="fa fa-check" 
                                              title="Ok"
-                                             process="@this"/>                        
+                                             process="panelSelecao"                                             
+                                             update="toolbar tabela"
+                                             action="#{controleBancoLcto.confirmaBanco}"
+                                             disabled="#{controleBancoLcto.banco == null}"/>                        
 
                             <p:commandButton icon="fa fa-close" 
                                              title="Sair"
                                              process="@this"
+                                             ajax="false"
                                              action="Inicio.xhmtl?faces-redirect=true"/>
                         </p:column>                        
                         
                     </p:panelGrid>                        
                 </p:dialog>
+                
+                <p:toolbar styleClass="r42-toolbar" id="toolbar">
+	                <p:toolbarGroup align="left">
+                        <p:commandButton    id="bto-novo" 
+                                            title="Novo" 
+                                            icon="fa fa-file-o">
+                        </p:commandButton>	                
+	                </p:toolbarGroup>
+	                
+                    <p:toolbarGroup align="right"  >
+                        <p:outputLabel value="#{controleBancoLcto.banco.idBanco}."/>
+                        <p:outputLabel value="#{controleBancoLcto.banco.descricao}"/>
+                        <p:spacer height="10" title="Periodo"/>
+                        <p:outputLabel value="Periodo: #{controleBancoLcto.bancoPeriodo.dataPeriodo}"/>
+                        
+                        <p:commandButton    id="bto-troca" 
+                                            title="Selecionar Banco" 
+                                            icon="fa fa-refresh"
+                                            oncomplete="PF('wgSelecaoBanco').show();"/>                        
+                    </p:toolbarGroup>	                
+                </p:toolbar>
+                
+                <!-- Listagem dos dados -->
+                <p:dataTable value="#{controleBancoLcto.bancoPeriodo.lancamentos}" 
+                             var="lancamento" 
+                             id="tabela" 
+                             reflow="true" 
+                             rows="15" 
+                             paginator="true"
+                             paginatorPosition="top" 
+                             emptyMessage="Nenhum Lançamento encontrado">
+                             
+                    <!-- Colunas -->
+                    <p:column headerText="Data">
+                        <h:outputText value="#{lancamento.dataLcto}" />
+                    </p:column>                             
+                    <p:column headerText="Documento">
+                        <h:outputText value="#{lancamento.documento}" />
+                    </p:column>                          
+                    <p:column headerText="Conta">
+                        <h:outputText value="#{lancamento.conta.descricao}" />
+                    </p:column>                                          
+                    <p:column headerText="Valor">
+                        <h:outputText value="#{lancamento.valor}" />
+                    </p:column>                                 
+                </p:dataTable>                
             </h:form>
 		</section>
 	</ui:define>

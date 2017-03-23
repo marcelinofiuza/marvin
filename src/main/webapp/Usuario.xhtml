@@ -83,7 +83,7 @@
                         </p:commandButton>                                                                                                                                 
                     </p:toolbarGroup>
                     <p:toolbarGroup align="right" styleClass="r42-toolbar-right">
-                        <p>Usuários</p>         
+                        <p:outputLabel value="Usuários" />         
                     </p:toolbarGroup>
                 </p:toolbar>
 			
@@ -191,7 +191,7 @@
                                         value="#{controleUsuario.rolesListModel}" var="role" 
 	                                    itemLabel="#{role.descricao}" 
 	                                    itemValue="#{role}" 
-	                                    converter="roleConverter"
+	                                    converter="converterRole"
 	                                    responsive="true">  
                                     
                                 <f:facet name="sourceCaption">Disponível</f:facet>

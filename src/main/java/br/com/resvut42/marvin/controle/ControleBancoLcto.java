@@ -1,6 +1,8 @@
 package br.com.resvut42.marvin.controle;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -30,10 +32,11 @@ public class ControleBancoLcto implements Serializable {
 
 	private Banco banco;
 	private BancoPeriodo bancoPeriodo;
+	private List<BancoPeriodo> listaPeriodo = new ArrayList<>();
 
 	@Autowired
 	SerBanco serBanco;
-	
+
 	/****************************************************************************
 	 * Inicialização
 	 ****************************************************************************/
@@ -48,7 +51,14 @@ public class ControleBancoLcto implements Serializable {
 	public void bancoSelecionado(SelectEvent event) {
 		banco = new Banco();
 		banco = (Banco) event.getObject();
-		banco.setPeriodo(serBanco.ordenaPeriodo(banco.getPeriodos(), "D"));
+		listaPeriodo = serBanco.ordenaPeriodo(banco.getPeriodos(), "D");
+	}
+
+	/****************************************************************************
+	 * Efetua a confirmação do banco e periodo selecionado
+	 ****************************************************************************/
+	public void confirmaBanco() {
+		RequestContext.getCurrentInstance().execute("PF('wgSelecaoBanco').hide();");
 	}
 
 	/****************************************************************************
@@ -69,6 +79,10 @@ public class ControleBancoLcto implements Serializable {
 
 	public void setBancoPeriodo(BancoPeriodo bancoPeriodo) {
 		this.bancoPeriodo = bancoPeriodo;
+	}
+
+	public List<BancoPeriodo> getListaPeriodo() {
+		return listaPeriodo;
 	}
 
 }

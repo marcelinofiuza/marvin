@@ -64,7 +64,7 @@
 					</p:toolbarGroup>
 
 					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
-						<p>Bancos</p>
+						<p:outputLabel value="Bancos"/>
 					</p:toolbarGroup>
 				</p:toolbar>
 
@@ -174,7 +174,7 @@
 
                                     <p:commandButton icon="fa fa-search" 
                                                      title="Pesquisar"
-                                                     action="#{pesquisaConta.abrirDialogo}"
+                                                     action="#{pesquisaConta.abrirDialogo('pesquisaConta')}"
                                                      process="@this"
                                                      update="@none">
                                                  

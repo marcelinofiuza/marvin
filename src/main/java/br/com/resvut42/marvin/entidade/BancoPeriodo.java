@@ -2,15 +2,19 @@ package br.com.resvut42.marvin.entidade;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -63,6 +67,10 @@ public class BancoPeriodo implements Serializable {
 
 	private boolean fechado;
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "idPeriodo")
+	private List<BancoLcto> lancamentos = new ArrayList<BancoLcto>();
+
 	public BancoPeriodo() {
 		this.saldoInicial = new BigDecimal(0);
 		this.credito = new BigDecimal(0);
@@ -73,7 +81,7 @@ public class BancoPeriodo implements Serializable {
 		return idPeriodo;
 	}
 
-	public void setIdPeriodo(long idPeriodo) {
+	public void setIdPeriodo(Long idPeriodo) {
 		this.idPeriodo = idPeriodo;
 	}
 
@@ -149,6 +157,14 @@ public class BancoPeriodo implements Serializable {
 
 	public void setFechado(boolean fechado) {
 		this.fechado = fechado;
+	}
+
+	public List<BancoLcto> getLancamentos() {
+		return lancamentos;
+	}
+
+	public void setLancamentos(List<BancoLcto> lancamentos) {
+		this.lancamentos = lancamentos;
 	}
 
 	@Override
