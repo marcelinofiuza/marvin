@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -72,6 +73,7 @@ public class Banco implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "idBanco")
+	@OrderBy("dataInicio")
 	private List<BancoPeriodo> periodos = new ArrayList<BancoPeriodo>();
 
 	public Long getIdBanco() {
@@ -170,10 +172,19 @@ public class Banco implements Serializable {
 		return periodos;
 	}
 
-	public void setPeriodo(List<BancoPeriodo> periodos) {
+	public void setPeriodos(List<BancoPeriodo> periodos) {
 		this.periodos = periodos;
 	}
 
+	public BancoPeriodo getPeriodo(Long idPeriodo){		
+		for (BancoPeriodo bancoPeriodo : periodos) {
+			if(bancoPeriodo.getIdPeriodo() == idPeriodo){
+				return bancoPeriodo;
+			}
+		}
+		return null;
+	}
+	
 	public void addSaldo(BancoPeriodo periodo) {
 		periodo.setBanco(this);
 		this.periodos.add(periodo);

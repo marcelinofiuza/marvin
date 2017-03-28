@@ -1,12 +1,13 @@
 package br.com.resvut42.marvin.servico;
 
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.resvut42.marvin.entidade.Banco;
+import br.com.resvut42.marvin.entidade.BancoLcto;
 import br.com.resvut42.marvin.entidade.BancoPeriodo;
 import br.com.resvut42.marvin.repositorio.RepBanco;
 
@@ -60,37 +61,37 @@ public class SerBanco {
 	/****************************************************************************
 	 * Metodo para Listar todos os registros
 	 ****************************************************************************/
+	public Banco buscarPorId(Long id) {
+		return repBanco.findOne(id);
+	}
+
+	/****************************************************************************
+	 * Metodo para Listar todos os registros
+	 ****************************************************************************/
 	public List<Banco> listarTodos() {
 		return repBanco.findAll();
 	}
 
 	/****************************************************************************
-	 * Ordena lista de Periodos pela data
-	 * @param ordem - C-Crescente(default) e D-Decrescente
+	 * Metodo para montar os saldos dos lançamentos
 	 ****************************************************************************/
-	public List<BancoPeriodo> ordenaPeriodo(List<BancoPeriodo> bancoPeriodos, String ordem){
-		
-        for (int i = 0; i < bancoPeriodos.size(); i++) {
-            for (int j = i; j < bancoPeriodos.size(); j++) {
+	public void montaSaldo(Banco banco) {
 
-                if (comparaData(bancoPeriodos.get(i).getDataInicio(), bancoPeriodos.get(j).getDataFinal(), ordem)) {
-                    BancoPeriodo temp = bancoPeriodos.get(j);
-                    bancoPeriodos.set(j, bancoPeriodos.get(i));
-                    bancoPeriodos.set(i, temp);
-                }
-                
-            }
-        }		
-		
-		return bancoPeriodos;		
+		BigDecimal saldoInicial = banco.getPeriodos().get(0).getSaldoInicial();
+
+		for (BancoPeriodo periodo : banco.getPeriodos()) {
+
+			// //Aqui fazer a verificação de periodo já fechado
+			// if(periodo.isFechado()){
+			// saldoInicial = periodo.getSaldoFinal();
+			// }
+
+			for (BancoLcto lancamento : periodo.getLancamentos()) {
+				BigDecimal saldo = saldoInicial.add(lancamento.getValorLctoConvertido());
+				lancamento.setSaldo(saldo);
+				saldoInicial = saldo;
+			}
+		}
 	}
-	
-	private boolean comparaData(Date inicio, Date fim, String ordem){		
-		if(ordem.equalsIgnoreCase("D")){
-			return(inicio.compareTo(fim) < 0);
-		}else{
-			return(inicio.compareTo(fim) > 0);
-		}			
-	}
-	
+
 }

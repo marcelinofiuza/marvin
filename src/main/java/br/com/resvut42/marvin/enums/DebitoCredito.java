@@ -7,13 +7,13 @@ package br.com.resvut42.marvin.enums;
  ****************************************************************************/
 public enum DebitoCredito {
 	
-	DEBITO("Débito",-1),	
-	CREDITO("Crédito",1);
+	DEBITO("Débito",-1.0),	
+	CREDITO("Crédito",1.0);
 
 	private String descricao;
-	private int multiplicador;
+	private Double multiplicador;
 
-	DebitoCredito(String descricao, int multiplicador) {
+	DebitoCredito(String descricao, Double multiplicador) {
 		this.descricao = descricao;
 		this.multiplicador = multiplicador;
 	}
@@ -22,7 +22,7 @@ public enum DebitoCredito {
 		return this.descricao;
 	}
 	
-	public int getMultiplicador(){
+	public Double getMultiplicador(){		
 		return multiplicador;
 	}
 	

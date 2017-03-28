@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -67,8 +68,9 @@ public class BancoPeriodo implements Serializable {
 
 	private boolean fechado;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY )
 	@JoinColumn(name = "idPeriodo")
+	@OrderBy("dataLcto")
 	private List<BancoLcto> lancamentos = new ArrayList<BancoLcto>();
 
 	public BancoPeriodo() {
@@ -165,6 +167,10 @@ public class BancoPeriodo implements Serializable {
 
 	public void setLancamentos(List<BancoLcto> lancamentos) {
 		this.lancamentos = lancamentos;
+	}
+	
+	public void addLancamento(BancoLcto bancoLcto){
+		this.lancamentos.add(bancoLcto);
 	}
 
 	@Override

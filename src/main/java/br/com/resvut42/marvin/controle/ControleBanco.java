@@ -253,7 +253,7 @@ public class ControleBanco implements Serializable {
 	 ****************************************************************************/
 	public void salvaPeriodos() {
 		try {
-			bancoSelect.setPeriodo(listaBancoPeriodo);
+			bancoSelect.setPeriodos(listaBancoPeriodo);
 			serBanco.salvar(bancoSelect);
 			listar();
 			mensagens.info("Registro salvo com sucesso!");
