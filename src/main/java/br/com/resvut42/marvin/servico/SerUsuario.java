@@ -26,7 +26,7 @@ public class SerUsuario {
 	 * Validar e salvar o Usuário
 	 ****************************************************************************/
 	public void salvar(Usuario usuario) throws Exception {
-		try {
+		try {					
 			repUsuario.save(usuario);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -47,7 +47,7 @@ public class SerUsuario {
 	/****************************************************************************
 	 * Retorna lista de todos os usuários
 	 ****************************************************************************/
-	public List<Usuario> ListarTodos() {
+	public List<Usuario> listarTodos() {
 		return repUsuario.findAll();
 	}
 

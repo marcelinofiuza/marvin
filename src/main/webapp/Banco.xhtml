@@ -1,0 +1,505 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+	            xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	            xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	            xmlns:p="http://primefaces.org/ui"
+	            template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<section class="r42-pagina">
+
+			<!-- execução inicial -->
+			<f:metadata>
+				<f:viewAction action="#{controleBanco.listar}" />
+			</f:metadata>
+
+			<h:form id="frm">
+				<!-- Mensagem form -->
+				<p:growl id="msg-frm" showDetail="true" />
+
+				<!-- Barra Ferramentas -->
+				<p:toolbar styleClass="r42-toolbar" id="toolbar">
+					<p:toolbarGroup align="left">
+						<p:commandButton    id="bto-novo" 
+											title="Novo" 
+											icon="fa fa-file-o" 
+											actionListener="#{controleBanco.novoCadastro}"
+											process="@this" 
+											update="dialogo" 
+											oncomplete="PF('wgDados').show()">
+											<p:resetInput target="dialogo" />
+						</p:commandButton>
+						<p:commandButton    id="bto-editar" 
+						                    title="Editar" 
+						                    icon="fa fa-pencil" 
+						                    process="@this" 
+						                    update="dialogo"
+							                oncomplete="PF('wgDados').show()" 
+							                disabled="#{controleBanco.bancoSelect == null}"
+							                actionListener="#{controleBanco.editCadastro}">
+							                <p:resetInput target="dialogo" />
+						</p:commandButton>
+						<p:commandButton    id="bto-excluir" 
+						                    title="Excluir" 
+						                    icon="fa fa-trash" 
+						                    process="@this"
+							                disabled="#{controleBanco.bancoSelect == null}" 
+							                update="tabela msg-frm toolbar"
+							                actionListener="#{controleBanco.excluir}">
+							                <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Banco?" />
+						</p:commandButton>
+                        <span class="ui-separator">
+                            <span class="fa fa-fw fa-ellipsis-v"/>
+                        </span>
+                        <p:commandButton    id="bto-periodo" 
+                                            title="Periodo Movimentação" 
+                                            icon="fa fa-calendar" 
+                                            process="@this" 
+                                            update="dialogoPeriodo tabPeriodo"
+                                            oncomplete="PF('wgPeriodo').show()" 
+                                            disabled="#{controleBanco.bancoSelect == null}"
+                                            actionListener="#{controleBanco.editPeriodo}">
+                                            <p:resetInput target="dialogoPeriodo" />
+                        </p:commandButton>                       						
+					</p:toolbarGroup>
+
+					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
+						<p:outputLabel value="Bancos"/>
+					</p:toolbarGroup>
+				</p:toolbar>
+
+				<!-- Listagem dos dados -->
+				<p:dataTable value="#{controleBanco.listaBancos}" 
+				             var="banco" 
+				             id="tabela" 
+				             reflow="true" 
+				             rows="15" paginator="true"
+					         paginatorPosition="top" 
+					         selection="#{controleBanco.bancoSelect}" 
+					         selectionMode="single" rowKey="#{banco.idBanco}"
+					         emptyMessage="Nenhum Banco Cadastrado">
+
+					<!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+					<p:ajax event="rowSelect" update=":frm:toolbar" />
+					<p:ajax event="rowUnselect" update=":frm:toolbar" />
+
+					<!-- Colunas -->
+					<p:column headerText="Id" width="50">
+						<h:outputText value="#{banco.idBanco}" />
+					</p:column>
+					<p:column headerText="Descrilção">
+						<h:outputText value="#{banco.descricao}" />
+					</p:column>
+					<p:column headerText="Agência" width="100">
+						<h:outputText value="#{banco.agencia}" />
+					</p:column>
+					<p:column headerText="Nome" width="300">
+						<h:outputText value="#{banco.nomeAgencia}" />
+					</p:column>
+					<p:column headerText="N° Conta" width="100">
+						<h:outputText value="#{banco.numeroConta}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<!-- Dialogo inclusão/alteração -->
+				<p:dialog styleClass="r42-dialogo" 
+				          header="Dados Banco" 
+				          widgetVar="wgDados" 
+				          id="dialogo" 
+				          modal="true" 
+				          resizable="false"
+					      responsive="true">
+
+					<!-- Barra de Ferramentas dialogo-->
+					<p:defaultCommand target="bto-salvar" scope="dialogo" />
+					<p:toolbar>
+						<p:toolbarGroup align="left">
+							<p:commandButton id="bto-salvar" 
+							                 title="Salvar" 
+							                 icon="fa fa-save" 
+							                 action="#{controleBanco.salvar}" 
+							                 process="dialogo"
+								             update="panel-dados" 
+								             oncomplete="if(!args.validationFailed) PF('wgDados').hide()" />
+						</p:toolbarGroup>
+					</p:toolbar>
+
+					<p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+
+					<!-- Dados Dialogo -->
+					<p:tabView id="panel-dados">
+
+						<!-- Aba Dados Banco -->
+						<p:tab title="Dados Banco">
+							<p:panelGrid columns="2" 
+							             layout="grid" 
+							             styleClass="panelgrid-noborder r42-panelgrid"
+								         columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Febraban" for="febraban" />
+								<p:selectOneMenu id="febraban" value="#{controleBanco.bancoEdicao.febraban}">
+									<f:selectItem itemLabel="Selecione" />
+									<f:selectItems value="#{controleEnums.febraban}" 
+									               var="febraban" 
+									               itemLabel="#{febraban.nome}" 
+									               itemValue="#{febraban}" />
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Descrição" for="descricao" />
+								<p:inputText id="descricao" size="50" maxlength="50" 
+								             value="#{controleBanco.bancoEdicao.descricao}"
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Agência" for="agencia" />
+								<p:inputText id="agencia" size="10" maxlength="15" 
+								             value="#{controleBanco.bancoEdicao.agencia}"
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Nome Agência" for="nomeAgencia" />
+								<p:inputText id="nomeAgencia" size="30" maxlength="30" 
+								             value="#{controleBanco.bancoEdicao.nomeAgencia}"
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="N° Conta" for="numeroConta" />
+								<p:inputText id="numeroConta" size="15" maxlength="15" 
+								             value="#{controleBanco.bancoEdicao.numeroConta}"
+									         onblur="value=value.toUpperCase()" />
+
+                                <p:outputLabel value="Conta Contábil" for="conta" />                                
+                                <p:column>                                
+	                                <p:inputText id="conta" size="10"
+	                                             value="#{controleBanco.conta.idConta}"
+	                                             readonly="true"/>
+
+                                    <p:commandButton icon="fa fa-search" 
+                                                     title="Pesquisar"
+                                                     action="#{pesquisaConta.abrirDialogo('pesquisaConta')}"
+                                                     process="@this"
+                                                     update="@none">
+                                                 
+                                        <p:ajax event="dialogReturn" 
+                                                listener="#{controleBanco.contaSelecionada}"
+                                                process="@this"                                             
+                                                update="conta contaDescricao"/>
+                                            
+                                    </p:commandButton>
+                                    <p:spacer width="10"/>                                                                         
+                                    <p:inputText id="contaDescricao" size="50"
+                                                 value="#{controleBanco.conta.descricao}"
+                                                 readonly="true"/>                                
+                                </p:column>
+							</p:panelGrid>
+						</p:tab>
+
+						<!-- Aba Endereço -->
+						<p:tab title="Endereço">
+
+							<p:panelGrid columns="2" 
+							             layout="grid" 
+							             styleClass="panelgrid-noborder r42-panelgrid"
+								         columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="CEP" for="cep" />
+								<p:inputMask id="cep" size="10" maxlength="9" 
+								             value="#{controleBanco.bancoEdicao.endereco.cep}" 
+								             mask="99999-999" />
+
+								<p:outputLabel value="Tipo Logradouro" for="tipo-logradouro" />
+								<p:inputText id="tipo-logradouro" size="15" maxlength="15"
+									         value="#{controleBanco.bancoEdicao.endereco.tipoLogradouro}" 
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Logradouro" for="logradouro" />
+								<p:inputText id="logradouro" size="50" maxlength="50" 
+								             value="#{controleBanco.bancoEdicao.endereco.logradouro}"
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Número" for="numero" />
+								<p:inputText id="numero" size="10" maxlength="10" value="#{controleBanco.bancoEdicao.endereco.numero}"
+									onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Complemento" for="complemento" />
+								<p:inputText id="complemento" size="20" maxlength="20" 
+								             value="#{controleBanco.bancoEdicao.endereco.complemento}"
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Bairro" for="bairro" />
+								<p:inputText id="bairro" size="40" maxlength="40" 
+								             value="#{controleBanco.bancoEdicao.endereco.bairro}"
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Cidade" for="cidade" />
+								<p:inputText id="cidade" size="40" maxlength="40" 
+								             value="#{controleBanco.bancoEdicao.endereco.cidade}"
+									         onblur="value=value.toUpperCase()" />
+
+								<p:outputLabel value="Estado" for="uf" />
+								<p:selectOneMenu id="uf" value="#{controleBanco.bancoEdicao.endereco.uf}">
+									<f:selectItem itemLabel="Selecione" />
+									<f:selectItems value="#{controleEnums.estados}" 
+									               var="estado" 
+									               itemLabel="#{estado.nome}" 
+									               itemValue="#{estado}" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+						</p:tab>
+
+						<!-- Aba Contatos -->
+						<p:tab title="Contatos">
+
+	       					<p:commandButton id="bto-add" 
+								             title="Novo" 
+								             icon="fa fa-plus" 
+									         action="#{controleBanco.addContato}" 
+									         process="@this" 
+									         update="tabContatos" />
+
+
+							<!-- Listagem dos dados -->
+							<p:dataTable value="#{controleBanco.listaBancoContatos}" 
+							             var="c" 
+							             id="tabContatos" 
+							             reflow="true" 
+							             rows="3"
+								         paginator="true" 
+								         paginatorPosition="top" 
+								         emptyMessage="Nenhum Contato Cadastrado">
+
+								<!-- Colunas -->
+						        <p:column width="20">
+						            <p:rowToggler />
+						        </p:column>								
+								<p:column headerText="Nome" width="200">
+									<h:outputText value="#{c.contato.nomeContato}" />
+								</p:column>
+								<p:column headerText="E-mail">
+									<h:outputText value="#{c.contato.email}" />
+								</p:column>
+								<p:column headerText="Telefone" width="130">
+									<h:outputText value="#{c.contato.telefone}" />
+								</p:column>
+								<p:column headerText="Ramal" width="50">
+									<h:outputText value="#{c.contato.ramal}" />
+								</p:column>
+								<p:column headerText="Celular" width="130">
+									<h:outputText value="#{c.contato.celular}" />
+								</p:column>
+								<p:column headerText="#" width="35">
+									<p:commandButton icon="fa fa-trash" 
+									                 title="Remover" 
+									                 action="#{controleBanco.removeContato(c)}" 
+									                 process="@this"
+										             update="tabContatos" />
+								</p:column>
+
+                                <p:rowExpansion>
+		                            <p:panelGrid id="rowExp" 
+		                                         columns="2" 
+		                                         layout="grid" 
+		                                         styleClass="panelgrid-noborder r42-panelgrid"
+		                                         columnClasses="ui-grid-col-3, ui-grid-col-9">
+		
+		                                <p:outputLabel value="Nome" for="nome" />
+		                                <p:inputText id="nome" size="50" maxlength="50" 
+		                                             value="#{c.contato.nomeContato}"
+		                                             onblur="value=value.toUpperCase()" />
+		
+		                                <p:outputLabel value="E-mail" for="email" />
+		                                <p:inputText id="email" size="50" maxlength="50" 
+		                                             value="#{c.contato.email}"
+		                                             onblur="value=value.toLowerCase()" />
+		
+		                                <p:outputLabel value="Telefone" for="telefone" />
+		                                <p:inputMask id="telefone" size="15" maxlength="15" 
+		                                             value="#{c.contato.telefone}"
+		                                             mask="(99)-9999-9999" />
+		
+		                                <p:outputLabel value="Ramal" for="ramal" />
+		                                <p:inputText id="ramal" size="5" maxlength="5" 
+		                                             value="#{c.contato.ramal}"
+		                                             onblur="value=value.toUpperCase()" />
+		
+		                                <p:outputLabel value="Celular" for="celular" />
+		                                <p:inputMask id="celular" size="15" maxlength="15" 
+		                                             value="#{c.contato.celular}"
+		                                             mask="(99)-99999-9999" />
+				
+	                                    <p:commandButton icon="fa fa-check"  
+	                                                     title="ok"  
+	                                                     process="tabContatos"
+	                                                     update="tabContatos" />				
+		                            </p:panelGrid> 
+                                </p:rowExpansion>                                
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>
+				</p:dialog>
+				
+				<!-- Dialogo Periodo de Movimentação -->
+                <p:dialog styleClass="r42-dialogo" 
+                          header="Período de Movimentação" 
+                          widgetVar="wgPeriodo" 
+                          id="dialogoPeriodo" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+                                                    
+                    <!-- Barra de Ferramentas dialogo-->
+                    <p:defaultCommand target="btoPer-novo" scope="dialogoPeriodo" />
+                    <p:toolbar styleClass="r42-toolbar" 
+                               id = "toolbarPeriodo">
+                               
+                        <p:toolbarGroup align="left">
+	                        <p:commandButton    id="btoPer-novo" 
+	                                            title="Novo" 
+	                                            icon="fa fa-file-o" 
+	                                            actionListener="#{controleBanco.novoPeriodo}"
+	                                            process="@this" 
+	                                            update="dialogoDadosPeriodo" 
+	                                            oncomplete="PF('wgDadosPeriodo').show()">
+	                                            <p:resetInput target="dialogoDadosPeriodo" />
+	                        </p:commandButton>
+                            <p:commandButton id="btoPer-salvar" 
+                                             title="Salvar" 
+                                             icon="fa fa-save" 
+                                             action="#{controleBanco.salvaPeriodos}" 
+                                             process="@this"
+                                             oncomplete="PF('wgPeriodo').hide()" />	                        
+	                   </p:toolbarGroup>
+	                   
+                    </p:toolbar>
+                                                                        
+                    <p:messages id="msgPeriodo" showDetail="false" autoUpdate="true" closable="true" />
+                           
+                    <!-- Listagem dos dados do periodo-->
+                    <p:dataTable value="#{controleBanco.listaBancoPeriodo}" 
+                                 var="periodo" 
+                                 rowIndexVar="rowId"
+                                 id="tabPeriodo" 
+                                 reflow="true" 
+                                 rows="11"
+                                 paginator="true" 
+                                 paginatorPosition="top"  
+                                 emptyMessage="Nenhum Periodo Existente">
+                                 
+	                    <!-- Colunas -->
+	                    <p:column headerText="Data Inicial" width="80">
+	                        <h:outputText value="#{periodo.dataInicio}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>                                
+	                        </h:outputText>
+	                    </p:column>                                 
+	                    <p:column headerText="Data Final" width="80">
+	                        <h:outputText value="#{periodo.dataFinal}">
+                                <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	                        </h:outputText>
+	                    </p:column>                      
+	                    <p:column headerText="Saldo Inicial">
+	                        <h:outputText value="#{periodo.saldoInicial}" style="float: right">
+                                <f:convertNumber type="currency" />
+	                        </h:outputText>	                        
+	                    </p:column> 
+	                    <p:column headerText="Débito">
+	                        <h:outputText value="#{periodo.debito}" style="float: right">
+                                <f:convertNumber type="currency" />
+	                        </h:outputText>
+	                    </p:column> 
+	                    <p:column headerText="Crédito">
+	                        <h:outputText value="#{periodo.credito}" style="float: right">
+                                <f:convertNumber type="currency" />	                        
+	                        </h:outputText> 
+	                    </p:column> 
+	                    <p:column headerText="Saldo Final">
+                            <h:outputText value="#{periodo.saldoFinal}" style="float: right">
+                                <f:convertNumber type="currency" />                         
+                            </h:outputText>                            
+	                    </p:column> 
+	                    <p:column headerText="Fechado" width="60">
+	                        <p:selectBooleanCheckbox value="#{periodo.fechado}" disabled="true" />
+	                    </p:column>
+                                                                          	                    
+	                    <p:column headerText="#" width="85">
+                            <p:commandButton icon="fa fa-trash" 
+                                             title="Remover" 
+                                             action="#{controleBanco.removePeriodo(periodo)}" 
+                                             process="@this"
+                                             update="tabPeriodo" 
+                                             rendered="#{rowId == controleBanco.ultimoPeriodo}"
+                                             disabled="#{periodo.fechado}"/>
+                                                           
+                            <p:commandButton icon="fa fa-lock" 
+                                             title="Fechar"
+                                             action="#{controleBanco.fechaPeriodo(periodo)}"   
+                                             process="@this"
+                                             update="tabPeriodo" 
+                                             rendered="#{!periodo.fechado}"
+                                             disabled="#{(rowId-1) != controleBanco.ultimoFechado}"/>
+                                             
+                            <p:commandButton icon="fa fa-unlock" 
+                                             title="Abrir"  
+                                             action="#{controleBanco.abrePeriodo(periodo)}"   
+                                             process="@this"
+                                             update="tabPeriodo" 
+                                             rendered="#{periodo.fechado}"
+                                             disabled="#{rowId != controleBanco.ultimoFechado}"/>
+	                    </p:column>
+                                                                                                                                     
+                    </p:dataTable>
+                </p:dialog>
+                
+                <!-- Dialogo Periodo de Movimentação -->
+                <p:dialog header="Dados Periodo" 
+                          widgetVar="wgDadosPeriodo" 
+                          id="dialogoDadosPeriodo" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+                          
+                    <p:defaultCommand target="btoPer-ok" scope="dialogoDadosPeriodo" />
+                          
+                    <p:panelGrid id="panelPeriodo" 
+                                 columns="2" 
+                                 layout="grid" 
+                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+                        <p:outputLabel value="Data Inicial" for="dataInicial"/>
+                        <p:calendar id="dataInicial" size="10"
+                                    locale="pt_BR"
+                                    value="#{controleBanco.bancoPeriodo.dataInicio}"
+                                    pattern="dd/MM/yyyy" mask="99/99/9999"
+                                    showOn="button"
+                                    required="true"
+                                    disabled="#{!controleBanco.bancoPeriodo.abertura}"/>
+
+                        <p:outputLabel value="Data Final" for="dataFinal"/>
+                        <p:calendar id="dataFinal" size="10"
+                                    locale="pt_BR"
+                                    value="#{controleBanco.bancoPeriodo.dataFinal}"
+                                    pattern="dd/MM/yyyy" mask="99/99/9999"
+                                    showOn="button"
+                                    required="true"/>
+                                    
+                        <p:outputLabel value="Saldo Inicial" for="saldoInicial"
+                                       rendered="#{controleBanco.bancoPeriodo.abertura}"/>
+                        <p:inputNumber id="saldoInicial" size="20"
+                                       value="#{controleBanco.bancoPeriodo.saldoInicial}"
+                                       decimalSeparator=","
+                                       thousandSeparator="."
+                                       rendered="#{controleBanco.bancoPeriodo.abertura}">                                       
+                                       <f:convertNumber pattern="#0,00" />
+                        </p:inputNumber>
+                        <p:commandButton id="btoPer-ok" 
+                                         title="Ok" 
+                                         icon="fa fa-check" 
+                                         actionListener="#{controleBanco.adicionaPeriodo}"
+                                         process="dialogoDadosPeriodo" 
+                                         update="tabPeriodo"/> 
+      
+                    </p:panelGrid>  
+                </p:dialog>                
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>

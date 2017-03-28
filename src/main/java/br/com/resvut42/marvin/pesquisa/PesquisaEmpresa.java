@@ -1,15 +1,12 @@
-package br.com.resvut42.marvin.controle;
+package br.com.resvut42.marvin.pesquisa;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
-import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.resvut42.marvin.entidade.Empresa;
@@ -22,8 +19,8 @@ import br.com.resvut42.marvin.servico.SerEmpresa;
  ****************************************************************************/
 @Named
 @ViewScoped
-public class PesquisaEmpresa implements Serializable {
-
+public class PesquisaEmpresa extends AbstrataPesquisa implements Serializable {
+	
 	/****************************************************************************
 	 * Variaveis e Dependências
 	 ****************************************************************************/
@@ -40,31 +37,9 @@ public class PesquisaEmpresa implements Serializable {
 	 ****************************************************************************/
 	public void listarEmpresas() {
 		listaEmpresas = new ArrayList<Empresa>();
-		listaEmpresas = serEmpresa.listarRazaoSocialOuFantasia(razaoSocial, fantasia);
+		listaEmpresas = serEmpresa.listarPorRazaoSocialOuFantasia(razaoSocial, fantasia);
 	}
-
-	/****************************************************************************
-	 * Abre o xhtml em forma de dialogo
-	 ****************************************************************************/	
-	public void abrirDialogo() {
-		Map<String, Object> opcoes = new HashMap<>();
-		opcoes.put("modal", true);
-		opcoes.put("resizable", false);
-		opcoes.put("contentWidth", "800");		
-		opcoes.put("contentHeight", "450");
-		opcoes.put("width", "800");
-		opcoes.put("height", "450");
-
-		RequestContext.getCurrentInstance().openDialog("resources/ajudapesquisa/pesquisaEmpresa", opcoes, null);
-	}
-	
-	/****************************************************************************
-	 * Retorna o registro selecionado na lista
-	 ****************************************************************************/	
-	public void selecionar(Empresa empresa){
-		RequestContext.getCurrentInstance().closeDialog(empresa);
-	}
-
+		
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/

@@ -35,7 +35,7 @@ public class SecurityUserService implements UserDetailsService {
 			userDetails.setUsername(usuario.getCredencial());
 			userDetails.setPassword(usuario.getSenha());
 			userDetails.setContaBloqueada(usuario.isBloqueado());
-
+			
 			for (UsuarioRoles usuarioRole : usuario.getRoles()) {
 				userDetails.addAuthorities("ROLE_"+usuarioRole.getRole().toString());
 			}

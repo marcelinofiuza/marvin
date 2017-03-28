@@ -13,6 +13,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import br.com.resvut42.marvin.entidade.Empresa;
 import br.com.resvut42.marvin.entidade.Usuario;
@@ -43,6 +44,7 @@ public class ControleUsuario implements Serializable {
 	private boolean novaEmpresa = false;
 	private boolean dados = false;
 	private boolean senha = false;
+	private String password;
 
 	@Autowired
 	SerUsuario serUsuario;
@@ -94,7 +96,7 @@ public class ControleUsuario implements Serializable {
 	 * Buscar lista dos dados no banco
 	 ****************************************************************************/
 	public void listar() {
-		listaUsuarios = serUsuario.ListarTodos();
+		listaUsuarios = serUsuario.listarTodos();
 	}
 
 	/****************************************************************************
@@ -325,5 +327,19 @@ public class ControleUsuario implements Serializable {
 	public boolean isNovaEmpresa() {
 		return novaEmpresa;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();		
+		usuarioEdicao.setSenha(encoder.encode(this.password));
+		
+	}
+	
+	
 	
 }

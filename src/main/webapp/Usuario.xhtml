@@ -18,7 +18,7 @@
                 <p:growl id="msg-frm" showDetail="true"/> 	
 
                 <!-- Barra de Ferramentas -->           
-                <p:toolbar style="margin-bottom:10px" id="toolbar">
+                <p:toolbar styleClass="r42-toolbar" id="toolbar">
                     <p:toolbarGroup align="left">
                         <p:commandButton    id="bto-novo" 
                                             title="Novo" 
@@ -82,8 +82,8 @@
                                             <p:resetInput target="dialogo"/>                                            
                         </p:commandButton>                                                                                                                                 
                     </p:toolbarGroup>
-                    <p:toolbarGroup align="right">
-                        <p style="margin-top:5px; margin-bottom:5px; margin-right: 5px">Usuários</p>         
+                    <p:toolbarGroup align="right" styleClass="r42-toolbar-right">
+                        <p:outputLabel value="Usuários" />         
                     </p:toolbarGroup>
                 </p:toolbar>
 			
@@ -170,14 +170,14 @@
                                          
 	                            <h:outputLabel for="senha1" value="Senha:" />
 	                            <p:password id="senha1" 
-	                                        value="#{controleUsuario.usuarioEdicao.senha}" 
+	                                        value="#{controleUsuario.password}" 
 	                                        match="senha2" 
 	                                        validatorMessage="As senhas não conforem!" 
 	                                        label="senha1"/>	                                        
 	 
 	                            <h:outputLabel for="senha2" value="Confirmar Senha:" />
 	                            <p:password id="senha2" 
-	                                        value="#{controleUsuario.usuarioEdicao.senha}" 
+	                                        value="#{controleUsuario.password}" 
 	                                        label="senha2"/>
                          
 	                        </p:panelGrid>
@@ -191,7 +191,7 @@
                                         value="#{controleUsuario.rolesListModel}" var="role" 
 	                                    itemLabel="#{role.descricao}" 
 	                                    itemValue="#{role}" 
-	                                    converter="roleConverter"
+	                                    converter="converterRole"
 	                                    responsive="true">  
                                     
                                 <f:facet name="sourceCaption">Disponível</f:facet>

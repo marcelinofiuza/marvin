@@ -14,8 +14,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import br.com.resvut42.marvin.entidade.Empresa;
-import br.com.resvut42.marvin.enums.Estado;
-import br.com.resvut42.marvin.enums.RamoAtividade;
 import br.com.resvut42.marvin.servico.SerEmpresa;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -67,7 +65,7 @@ public class ControleEmpresa implements Serializable {
 	 ****************************************************************************/
 	public void buscar(){
 						
-		List<Empresa> listaEmpresas = serEmpresa.ListarTodos();
+		List<Empresa> listaEmpresas = serEmpresa.listarTodos();
 		if(!listaEmpresas.isEmpty()){
 			empresaEdicao = listaEmpresas.get(0);
 		}else{
@@ -87,19 +85,6 @@ public class ControleEmpresa implements Serializable {
 		httpSessao.setAttribute("EMPRESA", empresaEdicao);
 	}
 	
-
-	/****************************************************************************
-	 * -- Lista de opções de enums
-	 ****************************************************************************/
-	
-	public RamoAtividade[] getRamosAtividade() {
-		return RamoAtividade.values();
-	}
-
-	public Estado[] getEstados() {
-		return Estado.values();
-	}
-
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/

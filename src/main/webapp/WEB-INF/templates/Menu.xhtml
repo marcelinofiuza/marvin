@@ -7,8 +7,9 @@
         
 		<p:panelMenu style="width: 210px" toggleable="true">
 			<p:submenu label="Cadastros">
-			    <p:menuitem value="Empresa"  outcome="Empresa"/>
-				<p:menuitem value="Cliente" />
+			    <p:menuitem value="Empresa" outcome="Empresa"/>
+			    <p:menuitem value="Banco" outcome="Banco"/>
+				<p:menuitem value="Cliente" outcome="Cliente"/>
 				<p:menuitem value="Fornecedor" />
 				<p:menuitem value="Conta Contábil" outcome="Conta"/>
 			</p:submenu>
@@ -24,12 +25,13 @@
 				<p:menuitem value="Provisionar" />
 				<p:menuitem value="Pagar" />
 			</p:submenu>
-            <p:submenu label="Bancos">
-                <p:menuitem value="Lançamento" />
+            <p:submenu label="Movimento Bancário">
+                <p:menuitem value="Lançamento" outcome="BancoLcto"/>
                 <p:menuitem value="Transferência" />
             </p:submenu>			
             <p:submenu label="Configurações">                
                 <p:menuitem value="Usuários" outcome="Usuario"/>
+                <p:menuitem value="Migração" outcome="Migracao"/>
             </p:submenu>			
 		</p:panelMenu>
 

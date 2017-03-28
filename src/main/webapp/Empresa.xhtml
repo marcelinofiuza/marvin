@@ -10,7 +10,7 @@
 
 			<!-- execução inicial -->
 			<f:metadata>
-				<f:viewAction action="#{controleEmpresa.buscar}"></f:viewAction>
+				<f:viewAction action="#{controleEmpresa.buscar}"/>
 			</f:metadata>
 
 			<h:form id="frm">
@@ -41,7 +41,7 @@
 						<p:toolbarGroup align="right">
                             <p:commandButton id="bto-sair"
                                              title="Sair"
-                                             icon="fa fa-remove"
+                                             icon="fa fa-close"
                                              ajax="false"  
                                              action="Inicio.xhmtl?faces-redirect=true"                                    
                                              process="@this"/>
@@ -59,7 +59,7 @@
                                          columnClasses="ui-grid-col-3, ui-grid-col-9">
                                                              
                                 <p:outputLabel value="Razão Social" for="razao-social"/>
-                                <p:inputText id="razao-social" size="60" maxlength="80"                                           
+                                <p:inputText id="razao-social" size="55" maxlength="80"                                           
                                              value="#{controleEmpresa.empresaEdicao.razaoSocial}"
                                              onblur="value=value.toUpperCase()"/>
                                 
@@ -98,7 +98,7 @@
                                 <p:outputLabel value="Ramo de Atividade" for="ramo-atividade"/>
                                 <p:selectOneMenu id="ramo-atividade" value="#{controleEmpresa.empresaEdicao.ramoAtividade}">
                                     <f:selectItem  itemLabel="Selecione"/>
-                                    <f:selectItems value="#{controleEmpresa.ramosAtividade}" var="ramoAtividade" 
+                                    <f:selectItems value="#{controleEnums.ramosAtividade}" var="ramoAtividade" 
                                                    itemLabel="#{ramoAtividade.descricao}" itemValue="#{ramoAtividade}"/>                    
                                 </p:selectOneMenu>
                                 
@@ -158,7 +158,7 @@
                                 <p:outputLabel value="Estado" for="uf"/>
                                 <p:selectOneMenu id="uf" value="#{controleEmpresa.empresaEdicao.endereco.uf}">
                                     <f:selectItem  itemLabel="Selecione"/>
-                                    <f:selectItems value="#{controleEmpresa.estados}" var="estado" 
+                                    <f:selectItems value="#{controleEnums.estados}" var="estado" 
                                                    itemLabel="#{estado.nome}" itemValue="#{estado}"/>                    
                                 </p:selectOneMenu>
 

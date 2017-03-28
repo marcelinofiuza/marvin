@@ -22,4 +22,9 @@ public interface RepConta extends JpaRepository<Conta, Long> {
 	@Query("Select c from Conta c where c.contaPai is null")
 	public List<Conta> buscarContaRaiz();
 
+	/****************************************************************************
+	 * Busca conta pela Reduzida
+	 ****************************************************************************/	
+	public Conta findByReduzida(String reduzida);
+	
 }

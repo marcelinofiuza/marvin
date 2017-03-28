@@ -55,14 +55,14 @@ public class SerEmpresa {
 	/****************************************************************************
 	 * Metodo para Listar todos os registros
 	 ****************************************************************************/
-	public List<Empresa> ListarTodos() {
+	public List<Empresa> listarTodos() {
 		return repEmpresa.findAll();
 	}
 
 	/****************************************************************************
 	 * Retornar uma lista de empresas filtrando por Like RazaoSocial e Fantasia
 	 ****************************************************************************/
-	public List<Empresa> listarRazaoSocialOuFantasia(String razaoSocial, String fantasia) {
+	public List<Empresa> listarPorRazaoSocialOuFantasia(String razaoSocial, String fantasia) {
 		return repEmpresa.findByRazaoSocialContainingAndFantasiaContaining(razaoSocial, fantasia);
 	}
 

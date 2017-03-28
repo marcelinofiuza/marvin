@@ -18,7 +18,7 @@
 				<p:growl id="msg-frm" showDetail="true"/> 
 				
 				<!-- Barra de Ferramentas -->
-				<p:toolbar style="margin-bottom:10px" id="toolbar">
+				<p:toolbar styleClass="r42-toolbar" id="toolbar">
 					<p:toolbarGroup align="left">
 						<p:commandButton id="bto-novo" 
 										 title="Novo" 
@@ -50,8 +50,8 @@
 										<p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão da Conta?"/>
 						</p:commandButton>
 					</p:toolbarGroup>
-					<p:toolbarGroup align="right">
-						<p style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px">Cadastro de Contas Contábeis</p>
+					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
+						<p:outputLabel value="Cadastro de Contas Contábeis"/>
 					</p:toolbarGroup>
 				</p:toolbar>
 
@@ -123,24 +123,29 @@
 								             value="#{controleConta.contaEdicao.descricao}" 
 								             onblur="value=value.toUpperCase()"/>
 								
+								<p:outputLabel value="Reduzida" for="reduzida"/>
+								<p:inputText id="reduzida" size="10" maxlength="10"
+								             value="#{controleConta.contaEdicao.reduzida}"
+								             onblur="value=value.toUpperCase()"/>
+								
 								<p:outputLabel value="Tipo Conta" for="tipo-conta"/>
 								<p:selectOneMenu id="tipo-conta" value="#{controleConta.contaEdicao.tipoConta}">
 		                            <f:selectItem  itemLabel="Selecione"/>
-									<f:selectItems value="#{controleConta.tiposConta}" var="tipoConta"
+									<f:selectItems value="#{controleEnums.tiposConta}" var="tipoConta"
 												   itemLabel="#{tipoConta.descricao}" itemValue="#{tipoConta}"/>
 								</p:selectOneMenu>	
 		
 								<p:outputLabel value="Status" for="status"/>
 								<p:selectOneMenu id="status" value="#{controleConta.contaEdicao.status}">
 									<f:selectItem  itemLabel="Selecione"/>
-									<f:selectItems value="#{controleConta.statusConta}" var="status"
+									<f:selectItems value="#{controleEnums.statusConta}" var="status"
 												   itemLabel="#{status.descricao}" itemValue="#{status}"/>
 								</p:selectOneMenu>
 		
 								<p:outputLabel value="Natureza" for="natureza"/>
 								<p:selectOneMenu id="natureza" value="#{controleConta.contaEdicao.natureza}">
 									<f:selectItem  itemLabel="Selecione"/>
-									<f:selectItems value="#{controleConta.naturezas}" var="natureza"
+									<f:selectItems value="#{controleEnums.naturezas}" var="natureza"
 												   itemLabel="#{natureza.descricao}" itemValue="#{natureza}"/>
 								</p:selectOneMenu>
 														

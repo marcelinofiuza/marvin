@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+
+    <meta charset="UTF-8" />    
+    <title>Pesquisa Banco</title>
+
+    <h:outputStylesheet library="resvut42" name="css/ajudapesquisa.css" />     
+    
+</h:head>
+
+<h:body>
+	<h:form>
+        <!-- Listagem dos dados -->
+        <p:dataTable class="r42-tabela-selecao"
+                     value="#{pesquisaBanco.listaBancos}" 
+                     var="banco"
+                     id="tabela"
+                     rows="15" 
+                     paginator="true" 
+                     paginatorPosition="top"
+                     emptyMessage="Nenhum Banco Encontrado">
+    
+    
+            <!-- Botão de Seleção -->            
+            <p:column headerText="#" width="35">
+               <p:commandButton icon="fa fa-reply" 
+                                title="Selecionar" 
+                                action="#{pesquisaBanco.selecionar(banco)}"
+                                process="@this"/>
+            </p:column>
+                
+            <!-- Colunas -->
+            <p:column headerText="Id" width="50">
+                <h:outputText value="#{banco.idBanco}" />
+            </p:column>
+            <p:column headerText="Descrilção">
+                <h:outputText value="#{banco.descricao}" />
+            </p:column>
+            <p:column headerText="Agência" width="100">
+                <h:outputText value="#{banco.agencia}" />
+            </p:column>
+            <p:column headerText="N° Conta" width="100">
+                <h:outputText value="#{banco.numeroConta}" />
+            </p:column>
+    
+        </p:dataTable>	
+	</h:form>
+</h:body>
+</html>

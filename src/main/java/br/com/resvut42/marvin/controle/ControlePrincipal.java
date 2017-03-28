@@ -97,7 +97,7 @@ public class ControlePrincipal {
 		empresa = (Empresa) httpSessao.getAttribute("EMPRESA");
 		
 		if(empresa == null){
-			List<Empresa> listaEmpresas = serEmpresa.ListarTodos();
+			List<Empresa> listaEmpresas = serEmpresa.listarTodos();
 			if(!listaEmpresas.isEmpty()){
 				empresa = listaEmpresas.get(0);
 				httpSessao.setAttribute("EMPRESA", empresa);
