@@ -98,6 +98,10 @@ public class BancoLcto implements Serializable {
 	@Column(length = 250)
 	private String historico;
 
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "idLctoTransf")
+	private BancoLcto transferencia;
+
 	public BancoLcto() {
 		this.valorBase = new BigDecimal(0);
 		this.juros = new BigDecimal(0);
@@ -228,6 +232,14 @@ public class BancoLcto implements Serializable {
 
 	public void setHistorico(String historico) {
 		this.historico = historico;
+	}
+
+	public BancoLcto getTransferencia() {
+		return transferencia;
+	}
+
+	public void setTransferencia(BancoLcto transferencia) {
+		this.transferencia = transferencia;
 	}
 
 	@Override

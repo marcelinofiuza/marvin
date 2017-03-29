@@ -1,6 +1,7 @@
 package br.com.resvut42.marvin.servico;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.BancoLcto;
 import br.com.resvut42.marvin.entidade.BancoPeriodo;
 import br.com.resvut42.marvin.repositorio.RepBanco;
+import br.com.resvut42.marvin.util.R42Data;
 
 /****************************************************************************
  * Classe Serviço Regras de negócio do Banco Desenvolvido por :
@@ -94,4 +96,15 @@ public class SerBanco {
 		}
 	}
 
+	/****************************************************************************
+	 * Metodo para retornar o periodo do banco a partir da data
+	 ****************************************************************************/
+	public BancoPeriodo selecionaPeriodo(Banco banco, Date data) {
+		for (BancoPeriodo periodo : banco.getPeriodos()) {
+			if(R42Data.dentroPeriodo(data, periodo)){
+				return periodo;
+			}
+		}
+		return null;
+	}
 }

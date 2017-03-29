@@ -70,7 +70,7 @@ public class SerBancoLcto {
 		}
 		
 		if(bancoLcto.getBancoPeriodo().isFechado()){
-			throw new Exception("Periodo de lançamento fechado!");
+			throw new Exception("Periodo de lançamento do banco "+bancoLcto.getBancoPeriodo().getBanco().getIdBanco()+" fechado!");
 		}	
 	}
 	
