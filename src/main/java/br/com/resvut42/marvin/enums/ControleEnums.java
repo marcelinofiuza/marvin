@@ -44,4 +44,11 @@ public class ControleEnums implements Serializable {
 		return RamoAtividade.values();
 	}
 
+	public DebitoCredito[] getDebitoCredito() {
+		return DebitoCredito.values();
+	}
+	
+	public OrigemLcto[] getOrigemLcto(){
+		return OrigemLcto.values();
+	}
 }
