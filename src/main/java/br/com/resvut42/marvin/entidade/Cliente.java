@@ -12,10 +12,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
-@Entity
-public class Fornecedor2 {
-	
 
+@Entity
+public class Cliente {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -46,6 +46,20 @@ public class Fornecedor2 {
 	@Column(length = 15)
 	private String insMunicipal;
 	
+	@Column(length = 15)
+	private String unidade;
+	
+	@Column(length = 2)
+	private int diaPagamento;
+	
+	private double valor ;
+	
+	private float fracao ;
+	
+	private float fracao2 ;
+	
+	private float fracao3 ;
+	
 	@Embedded
 	private Endereco endereco = new Endereco();
 	
@@ -56,13 +70,13 @@ public class Fornecedor2 {
 	private Conta conta = new Conta();
 	
 	
-	public Fornecedor2() {
-		
+	public Cliente() {
+	
 	}
 	
-
-	public Fornecedor2(long idCliente, String razaoSocial, String fantasia, String cnpj, String cpf, String insEstadual,
-			String insMunicipal, Endereco endereco, Contato contatos, Conta conta) {
+	public Cliente(long idCliente, String razaoSocial, String fantasia, String cnpj, String cpf, String insEstadual,
+			String insMunicipal, String unidade, int diaPagamento, double valor, float fracao, float fracao2,
+			float fracao3, Endereco endereco, Contato contatos, Conta conta) {
 		super();
 		this.idCliente = idCliente;
 		this.razaoSocial = razaoSocial;
@@ -71,12 +85,16 @@ public class Fornecedor2 {
 		this.cpf = cpf;
 		this.insEstadual = insEstadual;
 		this.insMunicipal = insMunicipal;
+		this.unidade = unidade;
+		this.diaPagamento = diaPagamento;
+		this.valor = valor;
+		this.fracao = fracao;
+		this.fracao2 = fracao2;
+		this.fracao3 = fracao3;
 		this.endereco = endereco;
 		this.contatos = contatos;
 		this.conta = conta;
 	}
-	
-	
 
 	public long getIdCliente() {
 		return idCliente;
@@ -134,6 +152,54 @@ public class Fornecedor2 {
 		this.insMunicipal = insMunicipal;
 	}
 
+	public String getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(String unidade) {
+		this.unidade = unidade;
+	}
+
+	public int getDiaPagamento() {
+		return diaPagamento;
+	}
+
+	public void setDiaPagamento(int diaPagamento) {
+		this.diaPagamento = diaPagamento;
+	}
+
+	public double getValor() {
+		return valor;
+	}
+
+	public void setValor(double valor) {
+		this.valor = valor;
+	}
+
+	public float getFracao() {
+		return fracao;
+	}
+
+	public void setFracao(float fracao) {
+		this.fracao = fracao;
+	}
+
+	public float getFracao2() {
+		return fracao2;
+	}
+
+	public void setFracao2(float fracao2) {
+		this.fracao2 = fracao2;
+	}
+
+	public float getFracao3() {
+		return fracao3;
+	}
+
+	public void setFracao3(float fracao3) {
+		this.fracao3 = fracao3;
+	}
+
 	public Endereco getEndereco() {
 		return endereco;
 	}
@@ -142,11 +208,11 @@ public class Fornecedor2 {
 		this.endereco = endereco;
 	}
 
-	public Contato getContatos() {
+	public Contato getContato() {
 		return contatos;
 	}
 
-	public void setContatos(Contato contatos) {
+	public void setContato(Contato contatos) {
 		this.contatos = contatos;
 	}
 
@@ -158,7 +224,6 @@ public class Fornecedor2 {
 		this.conta = conta;
 	}
 
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -166,7 +231,6 @@ public class Fornecedor2 {
 		result = prime * result + (int) (idCliente ^ (idCliente >>> 32));
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -176,15 +240,14 @@ public class Fornecedor2 {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Fornecedor2 other = (Fornecedor2) obj;
+		Cliente other = (Cliente) obj;
 		if (idCliente != other.idCliente)
 			return false;
 		return true;
 	}
 
+
 	
-	
-	
-	
+
 
 }
