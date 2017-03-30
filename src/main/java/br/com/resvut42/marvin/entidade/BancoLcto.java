@@ -18,11 +18,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import br.com.resvut42.marvin.enums.DebitoCredito;
+import br.com.resvut42.marvin.enums.OrigemLcto;
 
 /****************************************************************************
  * Entidade BancoLcto, para gravação dos lançamentos contábeis
@@ -38,18 +43,25 @@ public class BancoLcto implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long idLcto;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name = "idPeriodo")
 	private BancoPeriodo bancoPeriodo;
 
+	@Enumerated(EnumType.STRING)
+	@Column(length = 3)
+	private OrigemLcto origemLcto;
+
+	@NotNull
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date dataLcto;
 
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private DebitoCredito tipoLcto;
 
+	@NotEmpty
 	@Column(length = 15)
 	private String documento;
 
@@ -68,15 +80,35 @@ public class BancoLcto implements Serializable {
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal desconto;
 
+	@NotNull(message = "Informar o valor do Lançamento!")
+	@DecimalMin(value = "0.01", message = "Não pode ser menor que 0,01")
+	@DecimalMax(value = "99999999.99", message = "Máximo deve ser 99.999.999,99")
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal valorLcto;
+
+	@Transient
+	@NumberFormat(pattern = "#,##0.00")
+	private BigDecimal saldo;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idConta")
 	private Conta conta;
 
+	@NotEmpty
 	@Column(length = 250)
 	private String historico;
+
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "idLctoTransf")
+	private BancoLcto transferencia;
+
+	public BancoLcto() {
+		this.valorBase = new BigDecimal(0);
+		this.juros = new BigDecimal(0);
+		this.multa = new BigDecimal(0);
+		this.desconto = new BigDecimal(0);
+		this.valorLcto = new BigDecimal(0);
+	}
 
 	public Long getIdLcto() {
 		return idLcto;
@@ -92,6 +124,14 @@ public class BancoLcto implements Serializable {
 
 	public void setBancoPeriodo(BancoPeriodo bancoPeriodo) {
 		this.bancoPeriodo = bancoPeriodo;
+	}
+
+	public OrigemLcto getOrigemLcto() {
+		return origemLcto;
+	}
+
+	public void setOrigemLcto(OrigemLcto origemLcto) {
+		this.origemLcto = origemLcto;
 	}
 
 	public Date getDataLcto() {
@@ -162,8 +202,20 @@ public class BancoLcto implements Serializable {
 		return valorLcto;
 	}
 
+	public BigDecimal getValorLctoConvertido() {
+		return valorLcto.multiply(BigDecimal.valueOf(tipoLcto.getMultiplicador()));
+	}
+
 	public void setValorLcto(BigDecimal valorLcto) {
 		this.valorLcto = valorLcto;
+	}
+
+	public BigDecimal getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(BigDecimal saldo) {
+		this.saldo = saldo;
 	}
 
 	public Conta getConta() {
@@ -180,6 +232,14 @@ public class BancoLcto implements Serializable {
 
 	public void setHistorico(String historico) {
 		this.historico = historico;
+	}
+
+	public BancoLcto getTransferencia() {
+		return transferencia;
+	}
+
+	public void setTransferencia(BancoLcto transferencia) {
+		this.transferencia = transferencia;
 	}
 
 	@Override

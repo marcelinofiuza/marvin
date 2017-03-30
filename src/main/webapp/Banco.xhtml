@@ -486,10 +486,9 @@
                         <p:inputNumber id="saldoInicial" size="20"
                                        value="#{controleBanco.bancoPeriodo.saldoInicial}"
                                        decimalSeparator=","
-                                       thousandSeparator="."
-                                       rendered="#{controleBanco.bancoPeriodo.abertura}">                                       
-                                       <f:convertNumber pattern="#0,00" />
-                        </p:inputNumber>
+                                       thousandSeparator="."                                       
+                                       rendered="#{controleBanco.bancoPeriodo.abertura}"/>                                       
+
                         <p:commandButton id="btoPer-ok" 
                                          title="Ok" 
                                          icon="fa fa-check" 

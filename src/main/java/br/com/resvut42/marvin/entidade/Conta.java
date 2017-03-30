@@ -138,6 +138,10 @@ public class Conta implements Serializable {
 		this.subConta = subConta;
 	}
 
+	public String getIdeDescricao(){
+		return idConta + " - " + descricao;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

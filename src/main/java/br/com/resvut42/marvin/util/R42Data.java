@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import br.com.resvut42.marvin.entidade.BancoPeriodo;
+
 /****************************************************************************
  * Metodos para trabalhos com datas
  * 
@@ -85,4 +87,18 @@ public class R42Data {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		return sdf.format(data.getTime());
 	}
+	
+	/****************************************************************************
+	 * Verifica se a data está dentro do periodo 
+	 ****************************************************************************/	
+	public static boolean dentroPeriodo(Date data, BancoPeriodo bancoPeriodo){
+
+		if(data.before(bancoPeriodo.getDataInicio()) || data.after(bancoPeriodo.getDataFinal())){
+			return false;
+		}
+		
+		return true;		
+	}
+		
+	
 }
