@@ -23,6 +23,7 @@ import javax.persistence.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
+import br.com.resvut42.marvin.enums.DebitoCredito;
 import br.com.resvut42.marvin.util.R42Data;
 
 /****************************************************************************
@@ -68,7 +69,7 @@ public class BancoPeriodo implements Serializable {
 
 	private boolean fechado;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "idPeriodo")
 	@OrderBy("dataLcto")
 	private List<BancoLcto> lancamentos = new ArrayList<BancoLcto>();
@@ -124,6 +125,9 @@ public class BancoPeriodo implements Serializable {
 	}
 
 	public BigDecimal getDebito() {
+		if (debito.compareTo(new BigDecimal(0)) == 0) {
+			somaDebitoCredito();
+		}
 		return debito;
 	}
 
@@ -132,6 +136,9 @@ public class BancoPeriodo implements Serializable {
 	}
 
 	public BigDecimal getCredito() {
+		if (credito.compareTo(new BigDecimal(0)) == 0) {
+			somaDebitoCredito();
+		}
 		return credito;
 	}
 
@@ -140,8 +147,8 @@ public class BancoPeriodo implements Serializable {
 	}
 
 	public BigDecimal getSaldoFinal() {
-		BigDecimal sldFinal = saldoInicial.add(credito);
-		sldFinal = sldFinal.subtract(debito);
+		BigDecimal sldFinal = saldoInicial.add(getCredito());
+		sldFinal = sldFinal.subtract(getDebito());
 		return sldFinal;
 	}
 
@@ -168,9 +175,19 @@ public class BancoPeriodo implements Serializable {
 	public void setLancamentos(List<BancoLcto> lancamentos) {
 		this.lancamentos = lancamentos;
 	}
-	
-	public void addLancamento(BancoLcto bancoLcto){
+
+	public void addLancamento(BancoLcto bancoLcto) {
 		this.lancamentos.add(bancoLcto);
+	}
+
+	private void somaDebitoCredito() {
+		for (BancoLcto bancoLcto : lancamentos) {
+			if (bancoLcto.getTipoLcto() == DebitoCredito.DEBITO) {
+				this.debito = this.debito.add(bancoLcto.getValorLcto());
+			} else {
+				this.credito = this.credito.add(bancoLcto.getValorLcto());
+			}
+		}
 	}
 
 	@Override

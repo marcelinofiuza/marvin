@@ -1,27 +1,40 @@
 package br.com.resvut42.marvin.entidade;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
-
+/****************************************************************************
+ * Entidade Contatos Cliente Desenvolvido por :
+ * 
+ * @author Gustavo - 15/03/2017
+ ****************************************************************************/
 @Entity
-public class Cliente {
-	
+public class Cliente implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long idCliente ;
-	
+	private Long idCliente;
+
 	@NotEmpty
 	@Column(length = 80, nullable = false)
 	private String razaoSocial;
@@ -29,7 +42,7 @@ public class Cliente {
 	@NotEmpty
 	@Column(length = 40, nullable = false)
 	private String fantasia;
-	
+
 	@CNPJ
 	@Column(length = 18, nullable = true)
 	@Nullable
@@ -39,68 +52,32 @@ public class Cliente {
 	@Column(length = 14, nullable = true)
 	@Nullable
 	private String cpf;
-	
+
 	@Column(length = 15)
 	private String insEstadual;
 
 	@Column(length = 15)
 	private String insMunicipal;
-	
+
 	@Column(length = 15)
 	private String unidade;
-	
-	@Column(length = 2)
-	private int diaPagamento;
-	
-	private double valor ;
-	
-	private float fracao ;
-	
-	private float fracao2 ;
-	
-	private float fracao3 ;
-	
+
 	@Embedded
 	private Endereco endereco = new Endereco();
-	
-	@Embedded
-	private Contato contatos = new Contato();
-	
-	@Embedded
-	private Conta conta = new Conta();
-	
-	
-	public Cliente() {
-	
-	}
-	
-	public Cliente(long idCliente, String razaoSocial, String fantasia, String cnpj, String cpf, String insEstadual,
-			String insMunicipal, String unidade, int diaPagamento, double valor, float fracao, float fracao2,
-			float fracao3, Endereco endereco, Contato contatos, Conta conta) {
-		super();
-		this.idCliente = idCliente;
-		this.razaoSocial = razaoSocial;
-		this.fantasia = fantasia;
-		this.cnpj = cnpj;
-		this.cpf = cpf;
-		this.insEstadual = insEstadual;
-		this.insMunicipal = insMunicipal;
-		this.unidade = unidade;
-		this.diaPagamento = diaPagamento;
-		this.valor = valor;
-		this.fracao = fracao;
-		this.fracao2 = fracao2;
-		this.fracao3 = fracao3;
-		this.endereco = endereco;
-		this.contatos = contatos;
-		this.conta = conta;
-	}
 
-	public long getIdCliente() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idConta")
+	private Conta conta;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "idCliente")
+	private List<ClienteContatos> contatos = new ArrayList<ClienteContatos>();
+
+	public Long getIdCliente() {
 		return idCliente;
 	}
 
-	public void setIdCliente(long idCliente) {
+	public void setIdCliente(Long idCliente) {
 		this.idCliente = idCliente;
 	}
 
@@ -160,46 +137,6 @@ public class Cliente {
 		this.unidade = unidade;
 	}
 
-	public int getDiaPagamento() {
-		return diaPagamento;
-	}
-
-	public void setDiaPagamento(int diaPagamento) {
-		this.diaPagamento = diaPagamento;
-	}
-
-	public double getValor() {
-		return valor;
-	}
-
-	public void setValor(double valor) {
-		this.valor = valor;
-	}
-
-	public float getFracao() {
-		return fracao;
-	}
-
-	public void setFracao(float fracao) {
-		this.fracao = fracao;
-	}
-
-	public float getFracao2() {
-		return fracao2;
-	}
-
-	public void setFracao2(float fracao2) {
-		this.fracao2 = fracao2;
-	}
-
-	public float getFracao3() {
-		return fracao3;
-	}
-
-	public void setFracao3(float fracao3) {
-		this.fracao3 = fracao3;
-	}
-
 	public Endereco getEndereco() {
 		return endereco;
 	}
@@ -208,11 +145,11 @@ public class Cliente {
 		this.endereco = endereco;
 	}
 
-	public Contato getContato() {
+	public List<ClienteContatos> getContatos() {
 		return contatos;
 	}
 
-	public void setContato(Contato contatos) {
+	public void setContatos(List<ClienteContatos> contatos) {
 		this.contatos = contatos;
 	}
 
@@ -228,7 +165,7 @@ public class Cliente {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (idCliente ^ (idCliente >>> 32));
+		result = prime * result + ((idCliente == null) ? 0 : idCliente.hashCode());
 		return result;
 	}
 
@@ -238,16 +175,15 @@ public class Cliente {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Cliente))
 			return false;
 		Cliente other = (Cliente) obj;
-		if (idCliente != other.idCliente)
+		if (idCliente == null) {
+			if (other.idCliente != null)
+				return false;
+		} else if (!idCliente.equals(other.idCliente))
 			return false;
 		return true;
 	}
-
-
-	
-
 
 }

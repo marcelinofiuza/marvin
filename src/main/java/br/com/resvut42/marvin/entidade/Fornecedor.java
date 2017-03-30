@@ -1,27 +1,40 @@
 package br.com.resvut42.marvin.entidade;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
+/****************************************************************************
+ * Entidade Contatos Cliente Desenvolvido por :
+ * 
+ * @author Gustavo - 15/03/2017
+ ****************************************************************************/
 @Entity
-public class Fornecedor {
-	
+public class Fornecedor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long idCliente ;
-	
+	private Long idFornecedor;
+
 	@NotEmpty
 	@Column(length = 80, nullable = false)
 	private String razaoSocial;
@@ -29,7 +42,7 @@ public class Fornecedor {
 	@NotEmpty
 	@Column(length = 40, nullable = false)
 	private String fantasia;
-	
+
 	@CNPJ
 	@Column(length = 18, nullable = true)
 	@Nullable
@@ -39,51 +52,30 @@ public class Fornecedor {
 	@Column(length = 14, nullable = true)
 	@Nullable
 	private String cpf;
-	
+
 	@Column(length = 15)
 	private String insEstadual;
 
 	@Column(length = 15)
 	private String insMunicipal;
-	
+
 	@Embedded
 	private Endereco endereco = new Endereco();
-	
-	@Embedded
-	private Contato contatos = new Contato();
-	
-	@Embedded
-	private Conta conta = new Conta();
-	
-	
-	public Fornecedor() {
-		
-	}
-	
 
-	public Fornecedor(long idCliente, String razaoSocial, String fantasia, String cnpj, String cpf, String insEstadual,
-			String insMunicipal, Endereco endereco, Contato contatos, Conta conta) {
-		super();
-		this.idCliente = idCliente;
-		this.razaoSocial = razaoSocial;
-		this.fantasia = fantasia;
-		this.cnpj = cnpj;
-		this.cpf = cpf;
-		this.insEstadual = insEstadual;
-		this.insMunicipal = insMunicipal;
-		this.endereco = endereco;
-		this.contatos = contatos;
-		this.conta = conta;
-	}
-	
-	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idConta")
+	private Conta conta;
 
-	public long getIdCliente() {
-		return idCliente;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "idCliente")
+	private List<ClienteContatos> contatos = new ArrayList<ClienteContatos>();
+
+	public Long getIdFornecedor() {
+		return idFornecedor;
 	}
 
-	public void setIdCliente(long idCliente) {
-		this.idCliente = idCliente;
+	public void setIdFornecedor(Long idFornecedor) {
+		this.idFornecedor = idFornecedor;
 	}
 
 	public String getRazaoSocial() {
@@ -142,14 +134,6 @@ public class Fornecedor {
 		this.endereco = endereco;
 	}
 
-	public Contato getContatos() {
-		return contatos;
-	}
-
-	public void setContatos(Contato contatos) {
-		this.contatos = contatos;
-	}
-
 	public Conta getConta() {
 		return conta;
 	}
@@ -158,15 +142,21 @@ public class Fornecedor {
 		this.conta = conta;
 	}
 
+	public List<ClienteContatos> getContatos() {
+		return contatos;
+	}
+
+	public void setContatos(List<ClienteContatos> contatos) {
+		this.contatos = contatos;
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (idCliente ^ (idCliente >>> 32));
+		result = prime * result + ((idFornecedor == null) ? 0 : idFornecedor.hashCode());
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -174,17 +164,15 @@ public class Fornecedor {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Fornecedor))
 			return false;
 		Fornecedor other = (Fornecedor) obj;
-		if (idCliente != other.idCliente)
+		if (idFornecedor == null) {
+			if (other.idFornecedor != null)
+				return false;
+		} else if (!idFornecedor.equals(other.idFornecedor))
 			return false;
 		return true;
 	}
-
-	
-	
-	
-	
 
 }
