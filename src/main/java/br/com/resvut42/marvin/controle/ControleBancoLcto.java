@@ -91,22 +91,9 @@ public class ControleBancoLcto implements Serializable {
 	 ****************************************************************************/
 	public void excluir() {
 		try {
-			if (lctoSelect.getOrigemLcto() == OrigemLcto.BCO) {
-				serBancoLcto.excluir(lctoSelect);
-				resgataPeriodo();
-				mensagens.info("Registro excluido com sucesso!");
-			} else if(lctoSelect.getOrigemLcto() == OrigemLcto.TRF){
-				if(lctoSelect.getTransferencia() != null){
-					serBancoLcto.validar(lctoSelect.getTransferencia());
-					serBancoLcto.excluir(lctoSelect);
-					resgataPeriodo();
-					mensagens.info("Transferencia excluida com sucesso!");					
-				}else{
-					mensagens.error("Transferência deverá ser excluida no banco de origem!");	
-				}							
-			} else {
-				mensagens.error("Apenas registro 'Banco' pode ser excluido aqui!");
-			}
+			serBancoLcto.excluir(lctoSelect);
+			resgataPeriodo();
+			mensagens.info("Registro excluido com sucesso!");
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}
@@ -117,9 +104,15 @@ public class ControleBancoLcto implements Serializable {
 	 * Resgata o periodo selecionado
 	 ****************************************************************************/
 	public void resgataPeriodo() {
+		
+		//atualiza dados do banco selecionado
+		Long idPeriodo = bancoPeriodo.getIdPeriodo();
 		banco = serBanco.buscarPorId(banco.getIdBanco());
-		serBanco.montaSaldo(banco);
-		bancoPeriodo = banco.getPeriodo(bancoPeriodo.getIdPeriodo());
+		serBanco.montaSaldo(banco, idPeriodo);
+
+		//Resgatar periodo atualizado
+		bancoPeriodo = banco.getPeriodo(idPeriodo);
+				
 		lctoSelect = null;
 	}
 
@@ -134,9 +127,14 @@ public class ControleBancoLcto implements Serializable {
 	/****************************************************************************
 	 * Efetua a confirmação do banco e periodo selecionado
 	 ****************************************************************************/
-	public void confirmaBanco() {
-		RequestContext.getCurrentInstance().execute("PF('wgSelecaoBanco').hide();");
-		resgataPeriodo();
+	public void confirmaBanco() {		
+		if(bancoPeriodo != null){
+			resgataPeriodo();
+			RequestContext.getCurrentInstance().execute("PF('wgSelecaoBanco').hide();");
+		}else{
+			FacesContext.getCurrentInstance().validationFailed();
+			mensagens.error("Nenhum periodo para lançamento!");			
+		}
 	}
 
 	/****************************************************************************
@@ -145,7 +143,7 @@ public class ControleBancoLcto implements Serializable {
 	public void contaSelecionada(SelectEvent event) {
 		conta = (Conta) event.getObject();
 	}
-	
+
 	/****************************************************************************
 	 * Preparar objetos para novo lancamento
 	 ****************************************************************************/
@@ -176,27 +174,26 @@ public class ControleBancoLcto implements Serializable {
 
 	/****************************************************************************
 	 * Prepara objetos para nova transferencia
-	 ****************************************************************************/	
-	public void novaTransferencia(){
+	 ****************************************************************************/
+	public void novaTransferencia() {
 		bancoCredito = new Banco();
 		bancoLcto = new BancoLcto();
 		bancoLcto.setBancoPeriodo(bancoPeriodo);
 		bancoLcto.setOrigemLcto(OrigemLcto.TRF);
 		bancoLcto.setTipoLcto(DebitoCredito.DEBITO);
-				
 	}
-	
+
 	/****************************************************************************
 	 * Salva o registro de transferencia
-	 ****************************************************************************/	
-	public void salvaTransferencia(){
-				
+	 ****************************************************************************/
+	public void salvaTransferencia() {
+
 		BancoPeriodo perTransf = serBanco.selecionaPeriodo(bancoCredito, bancoLcto.getDataLcto());
-		
-		//se não encontrou periodo para o banco credor, exibe erro
-		if(perTransf != null){
-			
-			BancoLcto transferencia = new BancoLcto();	
+
+		// se não encontrou periodo para o banco credor, exibe erro
+		if (perTransf != null) {
+
+			BancoLcto transferencia = new BancoLcto();
 			transferencia.setBancoPeriodo(perTransf);
 			transferencia.setOrigemLcto(bancoLcto.getOrigemLcto());
 			transferencia.setDataLcto(bancoLcto.getDataLcto());
@@ -204,14 +201,13 @@ public class ControleBancoLcto implements Serializable {
 			transferencia.setDocumento(bancoLcto.getDocumento());
 			transferencia.setCheque(false);
 			transferencia.setValorLcto(bancoLcto.getValorLcto());
-			transferencia.setConta(banco.getConta());//conta banco contrapartida
+			transferencia.setConta(banco.getConta());// conta banco-contrapartida
 			transferencia.setHistorico(bancoLcto.getHistorico());
-			
+
 			bancoLcto.setConta(bancoCredito.getConta());
 			bancoLcto.setTransferencia(transferencia);
-			
-			try {				
-				serBancoLcto.validar(transferencia);
+
+			try {
 				serBancoLcto.salvar(bancoLcto);
 				resgataPeriodo();
 				mensagens.info("Transferencia salva com sucesso!");
@@ -220,15 +216,14 @@ public class ControleBancoLcto implements Serializable {
 				FacesContext.getCurrentInstance().validationFailed();
 				mensagens.error(e.getMessage());
 			}
-			
-		}else{
+
+		} else {
 			FacesContext.getCurrentInstance().validationFailed();
-			mensagens.error("Não existe periodo de lançamento para o banco crédito");			
+			mensagens.error("Não existe periodo de lançamento para o banco crédito");
 		}
-		
-		
-	}	
-	
+
+	}
+
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -63,6 +64,7 @@ public class ControleBanco implements Serializable {
 	@PostConstruct
 	public void preparaTela() {
 		listaBancoContatos = new HashSet<BancoContatos>();
+		conta = new Conta();
 	}
 
 	/****************************************************************************
@@ -129,6 +131,7 @@ public class ControleBanco implements Serializable {
 	public void novoCadastro() {
 		preparaTela();
 		bancoEdicao = new Banco();
+		
 	}
 
 	/****************************************************************************
@@ -161,8 +164,9 @@ public class ControleBanco implements Serializable {
 	 * Atribuir no controle o registro selecionado na tela de periodo
 	 ****************************************************************************/
 	public void editPeriodo() {
-		listaBancoPeriodo = new ArrayList<>();
+		serBanco.montaSaldo(bancoSelect);
 		if (!bancoSelect.getPeriodos().isEmpty()) {
+			listaBancoPeriodo = new ArrayList<>();
 			listaBancoPeriodo.addAll(bancoSelect.getPeriodos());
 		}
 	}
@@ -173,7 +177,8 @@ public class ControleBanco implements Serializable {
 	public void novoPeriodo() {
 		bancoPeriodo = new BancoPeriodo();
 		bancoPeriodo.setBanco(bancoSelect);
-		if (listaBancoPeriodo.isEmpty()) {
+		if (listaBancoPeriodo == null || listaBancoPeriodo.isEmpty() ) {
+			listaBancoPeriodo = new ArrayList<>();
 			bancoPeriodo.setAbertura(true);
 		} else {
 			bancoPeriodo.setAbertura(false);
@@ -195,16 +200,15 @@ public class ControleBanco implements Serializable {
 		} else {
 			for (BancoPeriodo itemPeriodo : listaBancoPeriodo) {
 				if (R42Data.conflitoPeriodos(itemPeriodo.getDataInicio(), itemPeriodo.getDataFinal(),
-						bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
+											 bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
+					
 					periodoValido = false;
-
-					mensagens.error("Periodo informado está em conflito entre " +
-							R42Data.dataToString(itemPeriodo.getDataInicio())
-							+ " e " +
-							R42Data.dataToString(itemPeriodo.getDataFinal()));
+					mensagens.error("Periodo informado está em conflito entre "
+							+ R42Data.dataToString(itemPeriodo.getDataInicio()) + " e "
+							+ R42Data.dataToString(itemPeriodo.getDataFinal()));
 					break;
-				}
-				;
+					
+				}			
 			}
 		}
 
@@ -213,46 +217,51 @@ public class ControleBanco implements Serializable {
 			RequestContext.getCurrentInstance().execute("PF('wgDadosPeriodo').hide();");
 		}
 	}
-	
+
 	/****************************************************************************
 	 * Remove um periodo da lista de periodos
 	 ****************************************************************************/
-	public void removePeriodo(BancoPeriodo bancoPeriodo) {		
-		for (int i = 0; i < this.listaBancoPeriodo.size(); i++) {
-			BancoPeriodo bPeriodo = this.listaBancoPeriodo.get(i);
-			if(bPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio())==0){
-				this.listaBancoPeriodo.remove(i);		
-			}			
-		}		
-	}	
-	
+	public void removePeriodo(BancoPeriodo bancoPeriodo) {
+		if (bancoPeriodo.getLancamentos().size() == 0) {
+			for (int i = 0; i < this.listaBancoPeriodo.size(); i++) {
+				BancoPeriodo bPeriodo = this.listaBancoPeriodo.get(i);
+				if (bPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio()) == 0) {
+					this.listaBancoPeriodo.remove(i);
+				}
+			}
+		} else {
+			FacesContext.getCurrentInstance().validationFailed();
+			mensagens.error("Necessário excluir os lançamentos antes!");
+		}
+	}
+
 	/****************************************************************************
 	 * Fecha um periodo da lista de periodos
 	 ****************************************************************************/
 	public void fechaPeriodo(BancoPeriodo bancoPeriodo) {
 		for (BancoPeriodo regPeriodo : this.listaBancoPeriodo) {
-			if(regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio())==0){
+			if (regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio()) == 0) {				
 				regPeriodo.setFechado(true);
 			}
-		}		
-	}	
-	
+		}
+	}
+
 	/****************************************************************************
 	 * Abre um periodo da lista de periodos
 	 ****************************************************************************/
 	public void abrePeriodo(BancoPeriodo bancoPeriodo) {
 		for (BancoPeriodo regPeriodo : this.listaBancoPeriodo) {
-			if(regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio())==0){
+			if (regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio()) == 0) {
 				regPeriodo.setFechado(false);
 			}
-		}		
+		}
 	}
-	
+
 	/****************************************************************************
 	 * Salvar os periodos do banco
 	 ****************************************************************************/
 	public void salvaPeriodos() {
-		try {
+		try {			
 			bancoSelect.setPeriodos(listaBancoPeriodo);
 			serBanco.salvar(bancoSelect);
 			listar();
@@ -262,7 +271,7 @@ public class ControleBanco implements Serializable {
 			e.printStackTrace();
 		}
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
-	}	
+	}
 
 	/****************************************************************************
 	 * Gets e Sets do controle
@@ -324,26 +333,26 @@ public class ControleBanco implements Serializable {
 		return periodoValido;
 	}
 
-	public int getUltimoPeriodo() {		
-		if(listaBancoPeriodo.isEmpty()){
+	public int getUltimoPeriodo() {
+		if (listaBancoPeriodo.isEmpty()) {
 			return 0;
-		}else{
+		} else {
 			return this.listaBancoPeriodo.size() - 1;
 		}
 	}
-	
+
 	public int getUltimoFechado() {
 		int ultimo = -1;
-		if(!listaBancoPeriodo.isEmpty()){
-			for (int i = 0; i < listaBancoPeriodo.size(); i++) {				
+		if (!listaBancoPeriodo.isEmpty()) {
+			for (int i = 0; i < listaBancoPeriodo.size(); i++) {
 				BancoPeriodo bancoPeriodo = listaBancoPeriodo.get(i);
-				if(bancoPeriodo.isFechado()){
+				if (bancoPeriodo.isFechado()) {
 					ultimo = i;
-				}else{
+				} else {
 					break;
-				}				
-			}			
+				}
+			}
 		}
 		return ultimo;
-	}	
+	}
 }

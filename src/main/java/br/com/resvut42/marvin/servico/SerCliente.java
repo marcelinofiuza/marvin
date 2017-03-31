@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.repositorio.RepCliente;
 

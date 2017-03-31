@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.resvut42.marvin.entidade.BancoLcto;
+import br.com.resvut42.marvin.enums.OrigemLcto;
 import br.com.resvut42.marvin.repositorio.RepBancoLcto;
 import br.com.resvut42.marvin.util.R42Data;
 
@@ -37,41 +38,75 @@ public class SerBancoLcto {
 	 ****************************************************************************/
 	public void salvar(BancoLcto bancoLcto) throws Exception {
 		try {
-			validar(bancoLcto);
+			validarSalvar(bancoLcto);
 			repBancoLcto.save(bancoLcto);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
 	}
-	
+
 	/****************************************************************************
 	 * Metodo para Validar e excluir lançamento
 	 ****************************************************************************/
 	public void excluir(BancoLcto bancoLcto) throws Exception {
 		try {
-			validar(bancoLcto);
+			validarExcluir(bancoLcto);
 			repBancoLcto.delete(bancoLcto.getIdLcto());
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
-	}	
+	}
 
 	/****************************************************************************
 	 * Verifica os dados antes de salvar
 	 ****************************************************************************/
-	public void validar(BancoLcto bancoLcto) throws Exception{
+	public void validarSalvar(BancoLcto bancoLcto) throws Exception {
 		// Verifica se informou a conta contábil
 		if (bancoLcto.getConta().getIdConta() == null) {
 			throw new Exception("Conta é obrigatório!");
 		}
-		
-		if(!R42Data.dentroPeriodo(bancoLcto.getDataLcto(), bancoLcto.getBancoPeriodo())){
+
+		if (!R42Data.dentroPeriodo(bancoLcto.getDataLcto(), bancoLcto.getBancoPeriodo())) {
 			throw new Exception("Data fora do periodo de lançamento!");
 		}
-		
-		if(bancoLcto.getBancoPeriodo().isFechado()){
-			throw new Exception("Periodo de lançamento do banco "+bancoLcto.getBancoPeriodo().getBanco().getIdBanco()+" fechado!");
-		}	
+
+		if (bancoLcto.getBancoPeriodo().isFechado()) {
+			throw new Exception("Periodo de lançamento do banco " + bancoLcto.getBancoPeriodo().getBanco().getIdBanco()
+					+ " fechado!");
+		}
+
+		// verifica se é transferencia
+		if (bancoLcto.getOrigemLcto() == OrigemLcto.TRF) {			
+			if (bancoLcto.getTransferencia() != null) {				
+				if(bancoLcto.getBancoPeriodo().getBanco().getIdBanco() == bancoLcto.getTransferencia().getBancoPeriodo().getBanco().getIdBanco()){
+					throw new Exception("Banco destino igual banco origem");
+				}				
+				validarSalvar(bancoLcto.getTransferencia());
+			}
+		}
 	}
-	
+
+	/****************************************************************************
+	 * Verifica os dados antes de excluir
+	 ****************************************************************************/
+	public void validarExcluir(BancoLcto bancoLcto) throws Exception {
+
+		if (!R42Data.dentroPeriodo(bancoLcto.getDataLcto(), bancoLcto.getBancoPeriodo())) {
+			throw new Exception("Data fora do periodo de lançamento!");
+		}
+
+		if (bancoLcto.getBancoPeriodo().isFechado()) {
+			throw new Exception("Periodo de lançamento do banco " + bancoLcto.getBancoPeriodo().getBanco().getIdBanco()
+					+ " fechado!");
+		}
+
+		// verifica se é transferencia
+		if (bancoLcto.getOrigemLcto() == OrigemLcto.TRF) {
+			if (bancoLcto.getTransferencia() != null) {
+				validarSalvar(bancoLcto.getTransferencia());
+			} else {
+				throw new Exception("Transferência deverá ser excluida no banco de origem!");
+			}
+		}
+	}
 }

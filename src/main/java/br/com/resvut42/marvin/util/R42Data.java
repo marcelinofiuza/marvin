@@ -3,6 +3,7 @@ package br.com.resvut42.marvin.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import br.com.resvut42.marvin.entidade.BancoPeriodo;
 
@@ -15,8 +16,9 @@ public class R42Data {
 
 	/****************************************************************************
 	 * Verdadeiro se a {@link Date} inicial for maior que a {@link Date} final
-	 * @return
-	 * 20/03/2017 - 01/03/2017 => false ou 01/03/2017 - 20/03/2017 => true
+	 * 
+	 * @return 20/03/2017 - 01/03/2017 => false ou 01/03/2017 - 20/03/2017 =>
+	 *         true
 	 ****************************************************************************/
 	public static boolean inicialMaiorFinal(Date inicio, Date fim) {
 
@@ -54,51 +56,69 @@ public class R42Data {
 		}
 
 		// verifica se existe datas iguais entre os dois periodos
-		if (inicio1.compareTo(inicio2) == 0 || 
-			inicio1.compareTo(fim2) == 0 || 
-			fim1.compareTo(inicio2) == 0 || 
-			fim1.compareTo(fim2) == 0) {
+		if (inicio1.compareTo(inicio2) == 0 || inicio1.compareTo(fim2) == 0 || fim1.compareTo(inicio2) == 0
+				|| fim1.compareTo(fim2) == 0) {
 			return true;
 		}
 
 		return false;
 	}
-	
+
 	/****************************************************************************
-	 * Adiciona dias a uma Data retorna nova data
-	 * Ex. 20/03/2017 + 01 => 21/03/2017
-	 *     20/03/2017 + 15 => 04/04/2017 
-	 ****************************************************************************/	
-	public static Date adicionaDias(final Date data, final int dias){
-		
-		// Através do Calendar, trabalhamos a data informada e adicionamos 1 dia nela
+	 * Adiciona dias a uma Data retorna nova data Ex. 20/03/2017 + 01 =>
+	 * 21/03/2017 20/03/2017 + 15 => 04/04/2017
+	 ****************************************************************************/
+	public static Date adicionaDias(final Date data, final int dias) {
+
+		// Através do Calendar, trabalhamos a data informada e adicionamos 1 dia
+		// nela
 		Calendar c = Calendar.getInstance();
 		c.setTime(data);
 		c.add(Calendar.DATE, +dias);
 
 		// Obtemos a data alterada
-		return c.getTime();				
+		return c.getTime();
 	}
 
 	/****************************************************************************
-	 * Transforma Data em String (dd/MM/yyyy) 
-	 ****************************************************************************/	
-	public static String dataToString(Date data){
+	 * Transforma Data em String (dd/MM/yyyy)
+	 ****************************************************************************/
+	public static String dataToString(Date data) {
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		return sdf.format(data.getTime());
-	}
-	
-	/****************************************************************************
-	 * Verifica se a data está dentro do periodo 
-	 ****************************************************************************/	
-	public static boolean dentroPeriodo(Date data, BancoPeriodo bancoPeriodo){
 
-		if(data.before(bancoPeriodo.getDataInicio()) || data.after(bancoPeriodo.getDataFinal())){
+	}
+
+	/****************************************************************************
+	 * Verifica se a data está dentro do periodo
+	 ****************************************************************************/
+	public static boolean dentroPeriodo(Date data, BancoPeriodo bancoPeriodo) {
+
+		if (data.before(bancoPeriodo.getDataInicio()) || data.after(bancoPeriodo.getDataFinal())) {
 			return false;
 		}
-		
-		return true;		
+		return true;
+
 	}
-		
-	
+
+	/****************************************************************************
+	 * Retorna o primeiro dia do mes
+	 ****************************************************************************/	
+	public static Date inicioMes(Date data){
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(data);
+		gc.getMinimum(GregorianCalendar.DAY_OF_MONTH);
+		return gc.getTime();
+	}
+
+	/****************************************************************************
+	 * Retorna o ultimo dia do mes
+	 ****************************************************************************/
+	public static Date fimMes(Date data) {
+		GregorianCalendar gc = new GregorianCalendar();
+		gc.setTime(data);
+		gc.getMaximum(GregorianCalendar.DAY_OF_MONTH);
+		return gc.getTime();
+	}
 }

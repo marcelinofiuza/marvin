@@ -55,9 +55,11 @@ public class BancoPeriodo implements Serializable {
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal saldoInicial;
 
+	@Transient
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal debito;
 
+	@Transient
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal credito;
 
@@ -181,6 +183,8 @@ public class BancoPeriodo implements Serializable {
 	}
 
 	private void somaDebitoCredito() {
+		this.credito = new BigDecimal(0);
+		this.debito = new BigDecimal(0);		
 		for (BancoLcto bancoLcto : lancamentos) {
 			if (bancoLcto.getTipoLcto() == DebitoCredito.DEBITO) {
 				this.debito = this.debito.add(bancoLcto.getValorLcto());
