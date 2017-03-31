@@ -8,13 +8,20 @@ import org.springframework.stereotype.Service;
 import br.com.resvut42.marvin.entidade.Fornecedor;
 import br.com.resvut42.marvin.repositorio.RepFornecedor;
 
+/****************************************************************************
+ * Classe Serviço Regras de negócio do Fornecedor Desenvolvido por :
+ * 
+ * @author Gustavo - 30/03/2017
+ ****************************************************************************/
 @Service
 public class SerFornecedor {
-		
+
+	/****************************************************************************
+	 * Variaveis e Dependências
+	 ****************************************************************************/	
 	@Autowired
-	RepFornecedor repFornecedor ;
-	
-	
+	RepFornecedor repFornecedor;
+
 	/****************************************************************************
 	 * Metodo para Validar e salvar
 	 ****************************************************************************/

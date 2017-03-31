@@ -8,15 +8,20 @@ import org.springframework.stereotype.Service;
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.repositorio.RepCliente;
 
+/****************************************************************************
+ * Classe Serviço Regras de negócio do Cliente Desenvolvido por :
+ * 
+ * @author Gustavo - 30/03/2017
+ ****************************************************************************/
 @Service
 public class SerCliente {
-	
-	
-	
+
+	/****************************************************************************
+	 * Variaveis e Dependências
+	 ****************************************************************************/	
 	@Autowired
-	RepCliente repCliente ;
-	
-	
+	RepCliente repCliente;
+
 	/****************************************************************************
 	 * Metodo para Validar e salvar
 	 ****************************************************************************/
