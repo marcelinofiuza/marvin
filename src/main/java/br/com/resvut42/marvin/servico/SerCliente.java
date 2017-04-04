@@ -37,6 +37,7 @@ public class SerCliente {
 	 ****************************************************************************/
 	public void salvar(Cliente cliente) throws Exception {
 		try {
+			ajustarDados(cliente);
 			repCliente.save(cliente);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -66,6 +67,20 @@ public class SerCliente {
 	 ****************************************************************************/
 	public List<Cliente> listarTodos() {
 		return repCliente.findAll();
+	}
+	
+	private void ajustarDados(Cliente cliente) {
+		
+		// Seta null no cnpj quando estiver em branco para validação
+		if (cliente.getCnpj().isEmpty()) {
+			cliente.setCnpj(null);
+		}
+
+		// Seta null no cpf quando estiver em branco para validação
+		if (cliente.getCpf().isEmpty()) {
+			cliente.setCpf(null);
+		}
+
 	}
 
 }
