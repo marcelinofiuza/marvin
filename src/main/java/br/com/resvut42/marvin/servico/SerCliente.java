@@ -68,4 +68,10 @@ public class SerCliente {
 		return repCliente.findAll();
 	}
 
+	/****************************************************************************
+	 * Retornar uma lista de clientes filtrando por Like RazaoSocial e Unidade
+	 ****************************************************************************/	
+	public List<Cliente> listarPorRazaoSocialOuUnidade(String razaoSocial, String unidade){
+		return repCliente.findByRazaoSocialContainingAndUnidadeContaining(razaoSocial, unidade);
+	}
 }
