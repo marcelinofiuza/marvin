@@ -5,39 +5,29 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.resvut42.marvin.entidade.Cliente;
-import br.com.resvut42.marvin.repositorio.RepCliente;
+import br.com.resvut42.marvin.entidade.Cobranca;
+import br.com.resvut42.marvin.repositorio.RepCobranca;
 
 /****************************************************************************
- * Classe Serviço Regras de negócio do Cliente Desenvolvido por :
+ * Classe Serviço Regras de negócio do Cobranca Desenvolvido por :
  * 
- * @author Gustavo - 30/03/2017
+ * @author Marcelino - 02/04/2017
  ****************************************************************************/
 @Service
-public class SerCliente {
+public class SerCobranca {
 
 	/****************************************************************************
 	 * Variaveis e Dependências
-	 ****************************************************************************/	
-	@Autowired
-	RepCliente repCliente;
-
-	/****************************************************************************
-	 * Retorna se existe algum cliente cadastro
 	 ****************************************************************************/
-	public boolean exiteCliente() {
-		if (repCliente.count() > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}	
+	@Autowired
+	RepCobranca repCobranca;
+	
 	/****************************************************************************
 	 * Metodo para Validar e salvar
 	 ****************************************************************************/
-	public void salvar(Cliente cliente) throws Exception {
+	public void salvar(Cobranca cobranca) throws Exception {
 		try {
-			repCliente.save(cliente);
+			repCobranca.save(cobranca);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -46,9 +36,9 @@ public class SerCliente {
 	/****************************************************************************
 	 * Metodo para Validar e excluir
 	 ****************************************************************************/
-	public void excluir(Cliente cliente) throws Exception {
+	public void excluir(Cobranca cobranca) throws Exception {
 		try {
-			repCliente.delete(cliente);
+			repCobranca.delete(cobranca);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
@@ -57,15 +47,7 @@ public class SerCliente {
 	/****************************************************************************
 	 * Metodo para Listar todos os registros
 	 ****************************************************************************/
-	public Cliente buscarPorId(Long id) {
-		return repCliente.findOne(id);
-	}
-
-	/****************************************************************************
-	 * Metodo para Listar todos os registros
-	 ****************************************************************************/
-	public List<Cliente> listarTodos() {
-		return repCliente.findAll();
-	}
-
+	public List<Cobranca> listarTodos() {
+		return repCobranca.findAll();
+	}	
 }

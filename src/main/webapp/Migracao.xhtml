@@ -13,7 +13,7 @@
                   
                 <p:toolbar styleClass="r42-toolbar" id="toolbar">
                     <p:toolbarGroup align="right" styleClass="r42-toolbar-right">
-                        <p>Migração de Dados</p>
+                        <p:outputLabel value="Migração de Dados"/>
                     </p:toolbarGroup>                
                 </p:toolbar>            
                 
@@ -42,7 +42,19 @@
 
                         <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
                     </p:panel>
-                                    
+
+                    <p:panel id="cliente" header="Condôminos">
+                        <p:commandButton id="bto-condo"
+                                         title="Migrar Condôminos "
+                                         value="Migrar Condôminos"
+                                         process="@this"   
+                                         disabled="#{controleMigracao.clienteMigrado}"                                      
+                                         actionListener="#{controleMigracao.migrarCliente}"
+                                         update="board"/>
+
+                        <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
+                    </p:panel>
+                                                        
                 </p:dashboard>  
                 
                 <!-- Dialogo de Aguarde -->

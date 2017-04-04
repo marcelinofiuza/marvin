@@ -13,6 +13,7 @@ import org.primefaces.model.DefaultDashboardModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.resvut42.marvin.servico.SerBanco;
+import br.com.resvut42.marvin.servico.SerCliente;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -33,16 +34,21 @@ public class ControleMigracao implements Serializable {
 
 	private boolean contaMigrada;
 	private boolean bancoMigrado;
+	private boolean clienteMigrado;
 
 	@Autowired
 	private SerConta serConta;
 	@Autowired
 	private SerBanco serBanco;
+	@Autowired
+	private SerCliente serCliente;
 
 	@Autowired
 	MigrarConta migrarConta;
 	@Autowired
 	MigrarBanco migrarBanco;
+	@Autowired
+	MigrarCliente migrarCliente;
 
 	@Autowired
 	private FacesMessages mensagens;
@@ -59,6 +65,7 @@ public class ControleMigracao implements Serializable {
 
 		column1.addWidget("conta");
 		column1.addWidget("banco");
+		column1.addWidget("cliente");
 
 		// column2.addWidget("");
 		// column2.addWidget("");
@@ -72,6 +79,7 @@ public class ControleMigracao implements Serializable {
 		// Verica se efetua a migração
 		contaMigrada = serConta.exiteConta();
 		bancoMigrado = serBanco.exiteBanco();
+		clienteMigrado = serCliente.exiteCliente();
 
 	}
 
@@ -104,6 +112,20 @@ public class ControleMigracao implements Serializable {
 	}
 
 	/****************************************************************************
+	 * Executa a importação dos clientes
+	 ****************************************************************************/
+	public void migrarCliente() {
+		try {
+			migrarCliente.executar();
+			mensagens.info("Migração dos Condôminos efetuada com sucesso!");
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+		}
+
+		init();
+	}
+
+	/****************************************************************************
 	 * Gets e Sets
 	 ****************************************************************************/
 
@@ -117,6 +139,10 @@ public class ControleMigracao implements Serializable {
 
 	public boolean isBancoMigrado() {
 		return bancoMigrado;
+	}
+
+	public boolean isClienteMigrado() {
+		return clienteMigrado;
 	}
 
 }

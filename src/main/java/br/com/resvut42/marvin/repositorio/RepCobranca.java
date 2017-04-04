@@ -3,14 +3,14 @@ package br.com.resvut42.marvin.repositorio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.resvut42.marvin.entidade.Cliente;
+import br.com.resvut42.marvin.entidade.Cobranca;
 
 /****************************************************************************
- * Classe Repositório da entidade Cliente Desenvolvido por:
+ * Classe Repositório da entidade Cobranca Desenvolvido por:
  * 
- * @author Gustavo - 30/03/2017
+ * @author Bob-Odin - 02/04/2017
  ****************************************************************************/
 @Repository
-public interface RepCliente extends JpaRepository<Cliente, Long> {
+public interface RepCobranca extends JpaRepository<Cobranca, Long> {
 
 }

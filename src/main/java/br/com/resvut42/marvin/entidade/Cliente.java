@@ -153,6 +153,18 @@ public class Cliente implements Serializable {
 		this.contatos = contatos;
 	}
 
+	public void addContato(ClienteContatos contato) {
+		contato.setCliente(this);
+		this.contatos.add(contato);
+	}
+
+	public void addContato(Contato contato) {
+		ClienteContatos cc = new ClienteContatos();
+		cc.setIdContato(null);
+		cc.setContato(contato);
+		addContato(cc);
+	}
+
 	public Conta getConta() {
 		return conta;
 	}
