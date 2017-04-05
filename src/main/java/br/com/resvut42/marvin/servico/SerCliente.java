@@ -69,6 +69,9 @@ public class SerCliente {
 		return repCliente.findAll();
 	}
 	
+	/****************************************************************************
+	 * Metodo para validar dados antes de salvar
+	 ****************************************************************************/
 	private void ajustarDados(Cliente cliente) {
 		
 		// Seta null no cnpj quando estiver em branco para validação
