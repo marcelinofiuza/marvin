@@ -35,7 +35,7 @@
 						                    process="@this" 
 						                    update="dialogo"
 							                oncomplete="PF('wgDados').show()" 
-							                disabled="#{controleBanco.bancoSelect == null}"
+							                disabled="#{controleCliente.clienteSelect == null}"
 							                actionListener="#{controleCliente.editCadastro}">
 							                <p:resetInput target="dialogo" />
 						</p:commandButton>
@@ -43,7 +43,7 @@
 						                    title="Excluir" 
 						                    icon="fa fa-trash" 
 						                    process="@this"
-							                disabled="#{controleBanco.bancoSelect == null}" 
+							                disabled="#{controleCliente.clienteSelect == null}" 
 							                update="tabela msg-frm toolbar"
 							                actionListener="#{controleCliente.excluir}">
 							                <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Cliente?" />
@@ -52,7 +52,7 @@
                             <span class="fa fa-fw fa-ellipsis-v"/>
                         </span>
 					</p:toolbarGroup>
-					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
+					<p:toolbarGroup align="center" styleClass="r42-toolbar-right">
 						<p:outputLabel value="Clientes"/>
 					</p:toolbarGroup>
 				</p:toolbar>
@@ -76,13 +76,16 @@
 				<p:column headerText="Id" width="50">
 						<h:outputText value="#{cliente.idCliente}" />
 					</p:column>
-					<p:column headerText="Nome Fantasia">
+					<p:column headerText="Nome Fantasia" width="400">
 						<h:outputText value="#{cliente.fantasia}" />
 					</p:column>
-					<p:column headerText="CPF/CNPJ" width="100">
+					<p:column headerText="CPF" width="150">
+						<h:outputText value="#{cliente.cpf}" />
+					</p:column>
+					<p:column headerText="CNPJ" width="200">
 						<h:outputText value="#{cliente.cnpj}" />
 					</p:column>
-					<p:column headerText="Unidade" width="300">
+					<p:column headerText="Unidade" width="200">
 						<h:outputText value="#{cliente.unidade}" />
 					</p:column>
 				</p:dataTable>
@@ -123,7 +126,6 @@
 							             styleClass="panelgrid-noborder r42-panelgrid"
 								         columnClasses="ui-grid-col-3, ui-grid-col-9">
 								
-								<!-- Dados da Tabela Cliente -->   
 								      
 								<p:outputLabel value="Razão Social" for="razaoSocial" />
 								<p:inputText id="razaoSocial" size="50" maxlength="50" 
@@ -135,17 +137,25 @@
 								             value="#{controleCliente.clienteEdicao.fantasia}"
 									         onblur="value=value.toUpperCase()" />
 								
-								<p:outputLabel for="cnpj" value="CNPJ" />
-        						<p:inputMask id="cnpj" value="#{maskView.cnpj}" mask="99-999-999/9999-99"/>
+                                <p:outputLabel value="CNPJ" for="cnpj"/>
+                                <p:inputMask id="cnpj" size="18" maxlength="18"
+                                             value="#{controleCliente.clienteEdicao.cnpj}"
+                                             mask="99.999.999/9999-99"/>
+                                
+                                <p:outputLabel value="CPF" for="cpf"/>
+                                <p:inputMask id="cpf" size="14" maxlength="14"
+                                             value="#{controleCliente.clienteEdicao.cpf}"
+                                             mask="999.999.999-99"/>
         						
-        						<p:outputLabel for="cpf" value="CPF" />
-        						<p:inputMask id="cpf" value="#{maskView.cpf}" mask="999-999-999-99"/>
-        						
-        						<p:outputLabel for="insEstadual" value="Inscrição Estadual" />
-        						<p:inputMask id="insEstadual" value="#{maskView.insEstadual}" mask="99999999-99"/>
-        						
-        						<p:outputLabel for="insMunicipal" value="Inscrição Municipal" />
-        						<p:inputMask id="insMunicipal" value="#{maskView.insMunicipal}" mask="9999999999"/>
+        						<p:outputLabel value="Inscrição Estadual" for="ins-estadual"/>
+                                <p:inputText id="ins-estadual" size="15" maxlength="15"
+                                             value="#{controleCliente.clienteEdicao.insEstadual}"
+                                             onblur="value=value.toUpperCase()"/>
+                                
+                                <p:outputLabel value="Inscrição Municipal" for="ins-municipal"/>
+                                <p:inputText id="ins-municipal" size="15" maxlength="15"
+                                             value="#{controleCliente.clienteEdicao.insMunicipal}"
+                                             onblur="value=value.toUpperCase()"/>
         						
         						<p:outputLabel value="Unidade" for="unidade" />
 								<p:inputText id="unidade" size="50" maxlength="50" 

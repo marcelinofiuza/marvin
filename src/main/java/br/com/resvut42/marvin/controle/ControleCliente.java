@@ -10,12 +10,10 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
 
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.ClienteContatos;
@@ -39,6 +37,9 @@ public class ControleCliente implements Serializable {
 	
 	private Cliente clienteEdicao = new Cliente();
 	private Cliente clienteSelect;
+	
+	private final long newItem = 90000;
+	private long nextItem = newItem;
 
 	private Set<ClienteContatos> listaClienteContatos;
 	private List<Cliente> listaClientes = new ArrayList<Cliente>();
@@ -62,21 +63,53 @@ public class ControleCliente implements Serializable {
 	public void salvar() {
 		
 		try {
+			for (ClienteContatos contatosCliente : listaClienteContatos) {
+				if (contatosCliente.getIdContato() > newItem) {
+					contatosCliente.setIdContato(null);
+				}
+			}
 			
-			serCliente.salvar(clienteSelect);
+			clienteEdicao.getContatos().clear();
+			clienteEdicao.getContatos().addAll(listaClienteContatos);
+			serCliente.salvar(clienteEdicao);
+			listar();
 			mensagens.info("Registro salvo com sucesso!");
-			
-			//Atualiza memória
-			atualizaSessao();
-			
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
-		}		
-		
-		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm"));	
-		
+			e.printStackTrace();
+		}
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
 	}
 	
+	/****************************************************************************
+	 * Excluir dados
+	 ****************************************************************************/
+	public void excluir() {
+		try {
+			serCliente.excluir(clienteSelect);
+			clienteSelect = null;
+			listar();
+			mensagens.info("Registro excluido com sucesso!");
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+		}
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
+	}
+	
+	public void editCadastro() {
+		preparaTela();
+		clienteEdicao = clienteSelect;
+		listaClienteContatos.clear();
+		listaClienteContatos.addAll(clienteEdicao.getContatos());
+	}
+	
+	public void addContato() {
+		nextItem++;
+		ClienteContatos clienteContatos = new ClienteContatos();
+		clienteContatos.setCliente(clienteEdicao);
+		clienteContatos.setIdContato(nextItem);
+		listaClienteContatos.add(clienteContatos);
+	}
 
 	
 	/****************************************************************************
@@ -95,13 +128,12 @@ public class ControleCliente implements Serializable {
 		
 	}
 	
+	
 	/****************************************************************************
-	 * Atualiza a sessão com os novos dados do Cliente
-	 ****************************************************************************/	
-	private void atualizaSessao(){
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession httpSessao = attr.getRequest().getSession(true); // true == allow create	
-		httpSessao.setAttribute("EMPRESA", clienteSelect);
+	 * Remover contato
+	 ****************************************************************************/
+	public void removeContato(ClienteContatos contato) {
+		listaClienteContatos.remove(contato);
 	}
 	
 	public void novoCadastro() {
