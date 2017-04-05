@@ -75,12 +75,12 @@ public class SerCliente {
 	private void ajustarDados(Cliente cliente) {
 		
 		// Seta null no cnpj quando estiver em branco para validação
-		if (cliente.getCnpj().isEmpty()) {
+		if (cliente.getCnpj() != null && cliente.getCnpj().isEmpty()) {
 			cliente.setCnpj(null);
 		}
 
 		// Seta null no cpf quando estiver em branco para validação
-		if (cliente.getCpf().isEmpty()) {
+		if (cliente.getCpf() != null && cliente.getCpf().isEmpty()) {
 			cliente.setCpf(null);
 		}
 

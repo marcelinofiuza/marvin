@@ -1,6 +1,7 @@
 package br.com.resvut42.marvin.entidade;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,6 +148,38 @@ public class Cobranca implements Serializable {
 		this.itens = itens;
 	}
 
+	public BigDecimal getTotalValor(){
+		BigDecimal totalValor = new BigDecimal(0);		
+		for (CobrancaItem cobrancaItem : itens) {
+			totalValor.add(cobrancaItem.getValor());			
+		}
+		return totalValor;
+	}
+
+	public BigDecimal getTotalFracao1(){
+		BigDecimal totalFracao1 = new BigDecimal(0);		
+		for (CobrancaItem cobrancaItem : itens) {
+			totalFracao1.add(cobrancaItem.getFracao1());			
+		}
+		return totalFracao1;
+	}
+	
+	public BigDecimal getTotalFracao2(){
+		BigDecimal totalFracao2 = new BigDecimal(0);		
+		for (CobrancaItem cobrancaItem : itens) {
+			totalFracao2.add(cobrancaItem.getFracao2());			
+		}
+		return totalFracao2;
+	}
+	
+	public BigDecimal getTotalFracao3(){
+		BigDecimal totalFracao3 = new BigDecimal(0);		
+		for (CobrancaItem cobrancaItem : itens) {
+			totalFracao3.add(cobrancaItem.getFracao3());			
+		}
+		return totalFracao3;
+	}	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

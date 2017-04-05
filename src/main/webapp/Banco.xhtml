@@ -84,19 +84,19 @@
 					<p:ajax event="rowUnselect" update=":frm:toolbar" />
 
 					<!-- Colunas -->
-					<p:column headerText="Id" width="50">
+					<p:column headerText="Id" width="50" sortBy="#{banco.idBanco}">
 						<h:outputText value="#{banco.idBanco}" />
 					</p:column>
-					<p:column headerText="Descrilção">
+					<p:column headerText="Descrilção" sortBy="#{banco.descricao}">
 						<h:outputText value="#{banco.descricao}" />
 					</p:column>
-					<p:column headerText="Agência" width="100">
+					<p:column headerText="Agência" width="100" sortBy="#{banco.agencia}">
 						<h:outputText value="#{banco.agencia}" />
 					</p:column>
-					<p:column headerText="Nome" width="300">
+					<p:column headerText="Nome" width="300" sortBy="#{banco.nomeAgencia}">
 						<h:outputText value="#{banco.nomeAgencia}" />
 					</p:column>
-					<p:column headerText="N° Conta" width="100">
+					<p:column headerText="N° Conta" width="100" sortBy="#{banco.numeroConta}">
 						<h:outputText value="#{banco.numeroConta}" />
 					</p:column>
 

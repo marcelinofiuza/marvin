@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.Conta;
-import br.com.resvut42.marvin.entidade.Contato;
+//import br.com.resvut42.marvin.entidade.Contato;
 import br.com.resvut42.marvin.entidade.Endereco;
 import br.com.resvut42.marvin.enums.Estado;
 import br.com.resvut42.marvin.servico.SerCliente;
@@ -97,12 +97,12 @@ public class MigrarCliente {
 				String complemento = "";
 				
 				String[] parts = clender.split(",");
-				logradouro = parts[0];				
+				logradouro = parts[0].trim();				
 				if(parts.length > 1){
-					numero = parts[1];
+					numero = parts[1].trim();
 				}				
 				if(parts.length > 2){
-					complemento = parts[2];
+					complemento = parts[2].trim();
 				}				
 				
 				Endereco endereco = new Endereco();

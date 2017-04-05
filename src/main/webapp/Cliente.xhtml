@@ -48,11 +48,8 @@
 							                actionListener="#{controleCliente.excluir}">
 							                <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Cliente?" />
 						</p:commandButton>
-						<span class="ui-separator">
-                            <span class="fa fa-fw fa-ellipsis-v"/>
-                        </span>
 					</p:toolbarGroup>
-					<p:toolbarGroup align="center" styleClass="r42-toolbar-right">
+					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
 						<p:outputLabel value="Clientes"/>
 					</p:toolbarGroup>
 				</p:toolbar>
@@ -73,20 +70,20 @@
 					<p:ajax event="rowUnselect" update=":frm:toolbar" />
 					
 				<!-- Colunas -->
-				<p:column headerText="Id" width="50">
+				<p:column headerText="Id" width="50" sortBy="#{cliente.idCliente}">
 						<h:outputText value="#{cliente.idCliente}" />
 					</p:column>
-					<p:column headerText="Nome Fantasia" width="400">
-						<h:outputText value="#{cliente.fantasia}" />
+                    <p:column headerText="Unidade" width="100" sortBy="#{cliente.unidade}">
+                        <h:outputText value="#{cliente.unidade}" />
+                    </p:column>					
+					<p:column headerText="Razao Social" sortBy="#{cliente.razaoSocial}">
+						<h:outputText value="#{cliente.razaoSocial}" />
 					</p:column>
-					<p:column headerText="CPF" width="150">
+					<p:column headerText="CPF" width="150" sortBy="#{cliente.cpf}">
 						<h:outputText value="#{cliente.cpf}" />
 					</p:column>
-					<p:column headerText="CNPJ" width="200">
+					<p:column headerText="CNPJ" width="150" sortBy="#{cliente.cnpj}">
 						<h:outputText value="#{cliente.cnpj}" />
-					</p:column>
-					<p:column headerText="Unidade" width="200">
-						<h:outputText value="#{cliente.unidade}" />
 					</p:column>
 				</p:dataTable>
 				
@@ -158,7 +155,7 @@
                                              onblur="value=value.toUpperCase()"/>
         						
         						<p:outputLabel value="Unidade" for="unidade" />
-								<p:inputText id="unidade" size="50" maxlength="50" 
+								<p:inputText id="unidade" size="15" maxlength="15" 
 								             value="#{controleCliente.clienteEdicao.unidade}"
 									         onblur="value=value.toUpperCase()" />						
 							</p:panelGrid>
