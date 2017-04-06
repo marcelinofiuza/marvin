@@ -12,11 +12,13 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.ClienteContatos;
+import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.servico.SerCliente;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -38,6 +40,8 @@ public class ControleCliente implements Serializable {
 	private Cliente clienteEdicao = new Cliente();
 	private Cliente clienteSelect;
 	
+	private Conta conta;
+	
 	private final long newItem = 90000;
 	private long nextItem = newItem;
 
@@ -55,6 +59,7 @@ public class ControleCliente implements Serializable {
 	@PostConstruct
 	public void preparaTela() {
 		setListaClienteContatos(new HashSet<ClienteContatos>());
+		conta = new Conta();
 	}
 	
 	/****************************************************************************
@@ -69,6 +74,7 @@ public class ControleCliente implements Serializable {
 				}
 			}
 			
+			clienteEdicao.setConta(conta);
 			clienteEdicao.getContatos().clear();
 			clienteEdicao.getContatos().addAll(listaClienteContatos);
 			serCliente.salvar(clienteEdicao);
@@ -99,6 +105,7 @@ public class ControleCliente implements Serializable {
 	public void editCadastro() {
 		preparaTela();
 		clienteEdicao = clienteSelect;
+		conta = clienteEdicao.getConta();
 		listaClienteContatos.clear();
 		listaClienteContatos.addAll(clienteEdicao.getContatos());
 	}
@@ -152,6 +159,14 @@ public class ControleCliente implements Serializable {
 	}
 	
 	/****************************************************************************
+	 * Resgata a conta selecionada no dialogo
+	 ****************************************************************************/
+	public void contaSelecionada(SelectEvent event) {
+		conta = new Conta();
+		conta = (Conta) event.getObject();
+	}
+	
+	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
 
@@ -186,4 +201,14 @@ public class ControleCliente implements Serializable {
 	public void setListaClientes(List<Cliente> listaClientes) {
 		this.listaClientes = listaClientes;
 	}
+
+	public Conta getConta() {
+		return conta;
+	}
+
+	public void setConta(Conta conta) {
+		this.conta = conta;
+	}
+	
+	
 }

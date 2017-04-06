@@ -157,7 +157,31 @@
         						<p:outputLabel value="Unidade" for="unidade" />
 								<p:inputText id="unidade" size="15" maxlength="15" 
 								             value="#{controleCliente.clienteEdicao.unidade}"
-									         onblur="value=value.toUpperCase()" />						
+									         onblur="value=value.toUpperCase()" />		
+									         
+								<p:outputLabel value="Conta Contábil" for="conta" />                                
+                                <p:column>                                
+	                                <p:inputText id="conta" size="10"
+	                                             value="#{controleCliente.conta.idConta}"
+	                                             readonly="true"/>
+
+                                    <p:commandButton icon="fa fa-search" 
+                                                     title="Pesquisar"
+                                                     action="#{pesquisaConta.abrirDialogo('pesquisaConta')}"
+                                                     process="@this"
+                                                     update="@none">
+                                                 
+                                        <p:ajax event="dialogReturn" 
+                                                listener="#{controleCliente.contaSelecionada}"
+                                                process="@this"                                             
+                                                update="conta contaDescricao"/>
+                                            
+                                    </p:commandButton>
+                                    <p:spacer width="10"/>                                                                         
+                                    <p:inputText id="contaDescricao" size="50"
+                                                 value="#{controleCliente.conta.descricao}"
+                                                 readonly="true"/>                                
+                                </p:column>				
 							</p:panelGrid>
 							
 						</p:tab>
