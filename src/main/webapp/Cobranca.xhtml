@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<section class="r42-pagina">
+            
+            <!-- execução inicial -->
+            <f:metadata>
+                <f:viewAction action="#{controleCobranca.listar}" />
+            </f:metadata>
+                        
+            <h:form id="frm">
+                <!-- Mensagem form -->
+                <p:growl id="msg-frm" showDetail="true" />
+                
+                <!-- Barra Ferramentas -->
+                <p:toolbar styleClass="r42-toolbar" id="toolbar">
+                    <p:toolbarGroup align="left"> 
+                                                               
+                    </p:toolbarGroup>
+
+                    <p:toolbarGroup align="right" styleClass="r42-toolbar-right">
+                        <p:outputLabel value="Cobrança"/>
+                    </p:toolbarGroup>
+                </p:toolbar>                
+                
+                <!-- Listagem dos dados -->
+                <p:dataTable value="#{controleCobranca.listaCobranca}" 
+                             var="cobranca" 
+                             id="tabela" 
+                             reflow="true" 
+                             rows="15" paginator="true"
+                             paginatorPosition="top"  
+                             emptyMessage="Nenhuma Cobrança Cadastrado">
+                             
+                    <!-- Colunas -->
+                    <p:column headerText="Descrição">
+                        <h:outputText value="#{cobranca.descricao}" />
+                    </p:column>                             
+                    <p:column headerText="Total Valor">
+                        <h:outputText value="#{cobranca.totalValor}" />
+                    </p:column>
+                    <p:column headerText="Total Fração 1">
+                        <h:outputText value="#{cobranca.totalFracao1}" />
+                    </p:column>
+                    <p:column headerText="Total Fração 2">
+                        <h:outputText value="#{cobranca.totalFracao2}" />
+                    </p:column>                             
+                    <p:column headerText="Total Fração 3">
+                        <h:outputText value="#{cobranca.totalFracao3}" />
+                    </p:column>                                     
+                                
+                </p:dataTable>                
+                            
+                <!-- Dialogo inclusão/alteração -->
+                <p:dialog styleClass="r42-dialogo" 
+                          header="Dados Cliente" 
+                          widgetVar="wgDados" 
+                          id="dialogo" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+
+                    <!-- Barra de Ferramentas dialogo-->
+                    <p:defaultCommand target="bto-salvar" scope="dialogo" />
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton id="bto-salvar" 
+                                             title="Salvar" 
+                                             icon="fa fa-save" 
+                                             process="dialogo"
+                                             update="panel-dados" 
+                                             oncomplete="if(!args.validationFailed) PF('wgDados').hide()" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                    
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+                
+                    <!-- Dados Dialogo -->
+                    <p:tabView id="panel-dados">
+                        
+                        <!-- Aba Cabeçalho -->                        
+                        <p:tab title="Cabeçalho">
+                        
+                        </p:tab>
+                    </p:tabView>                
+                </p:dialog>                            
+            </h:form>
+		</section>
+	</ui:define>
+</ui:composition>
