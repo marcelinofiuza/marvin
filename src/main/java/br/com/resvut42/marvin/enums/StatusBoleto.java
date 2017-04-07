@@ -1,22 +1,23 @@
 package br.com.resvut42.marvin.enums;
 
 /****************************************************************************
- * Enum Natureza de Roles de Perfil
+ * Enum StatusBoleto para situação do Boleto
  * 
- * @author Bob-Odin - 31/01/2017
+ * @author Bob-Odin - 07/04/2017
  ****************************************************************************/
-public enum Role {
-	
-	ADMIN("Administrador"),
-	USUARIO("Usuario");
-	
+public enum StatusBoleto {
+
+	ABERTO("Aberto"), 
+	PROVISIONADO("Provisionado");
+
 	private String descricao;
 
-	private Role(String descricao) {
+	private StatusBoleto(String descricao) {
 		this.descricao = descricao;
 	}
 
 	public String getDescricao() {
 		return this.descricao;
-	}	
+	}
+
 }
