@@ -13,7 +13,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /****************************************************************************
  * Entidade Cobrança Desenvolvido por :
@@ -29,8 +32,13 @@ public class Cobranca implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long idCobranca;
 
+	@NotEmpty
 	@Column(length = 50)
 	private String descricao;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idConta")
+	private Conta conta;
 
 	@Column(length = 80)
 	private String insLinha01;
@@ -74,6 +82,14 @@ public class Cobranca implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public Conta getConta() {
+		return conta;
+	}
+
+	public void setConta(Conta conta) {
+		this.conta = conta;
 	}
 
 	public String getInsLinha01() {
@@ -148,38 +164,44 @@ public class Cobranca implements Serializable {
 		this.itens = itens;
 	}
 
-	public BigDecimal getTotalValor(){
-		BigDecimal totalValor = new BigDecimal(0);		
+	public void addItem(CobrancaItem item){
+		item.setCobranca(this);
+		itens.add(item);
+	}
+	
+	public BigDecimal getTotalValor() {
+		BigDecimal totalValor = new BigDecimal(0);
 		for (CobrancaItem cobrancaItem : itens) {
-			totalValor.add(cobrancaItem.getValor());			
+			totalValor = totalValor.add(cobrancaItem.getValor());
 		}
+
 		return totalValor;
 	}
 
-	public BigDecimal getTotalFracao1(){
-		BigDecimal totalFracao1 = new BigDecimal(0);		
+	public BigDecimal getTotalFracao1() {
+		BigDecimal totalFracao1 = new BigDecimal(0);
 		for (CobrancaItem cobrancaItem : itens) {
-			totalFracao1.add(cobrancaItem.getFracao1());			
+			totalFracao1 = totalFracao1.add(cobrancaItem.getFracao1());
 		}
 		return totalFracao1;
 	}
-	
-	public BigDecimal getTotalFracao2(){
-		BigDecimal totalFracao2 = new BigDecimal(0);		
+
+	public BigDecimal getTotalFracao2() {
+		BigDecimal totalFracao2 = new BigDecimal(0);
 		for (CobrancaItem cobrancaItem : itens) {
-			totalFracao2.add(cobrancaItem.getFracao2());			
+			totalFracao2 = totalFracao2.add(cobrancaItem.getFracao2());
 		}
 		return totalFracao2;
 	}
-	
-	public BigDecimal getTotalFracao3(){
-		BigDecimal totalFracao3 = new BigDecimal(0);		
+
+	public BigDecimal getTotalFracao3() {
+		BigDecimal totalFracao3 = new BigDecimal(0);
 		for (CobrancaItem cobrancaItem : itens) {
-			totalFracao3.add(cobrancaItem.getFracao3());			
+			totalFracao3 = totalFracao3.add(cobrancaItem.getFracao3());
 		}
 		return totalFracao3;
-	}	
-	
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

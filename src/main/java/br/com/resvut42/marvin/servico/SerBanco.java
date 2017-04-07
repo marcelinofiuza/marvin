@@ -30,7 +30,7 @@ public class SerBanco {
 	/****************************************************************************
 	 * Retorna se existe algum banco cadastro
 	 ****************************************************************************/
-	public boolean exiteBanco() {
+	public boolean existeBanco() {
 		if (repBanco.count() > 0) {
 			return true;
 		} else {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerCliente;
+import br.com.resvut42.marvin.servico.SerCobranca;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -32,16 +33,19 @@ public class ControleMigracao implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private DashboardModel model;
 
-	private boolean contaMigrada;
+	private boolean contaMigrado;
 	private boolean bancoMigrado;
 	private boolean clienteMigrado;
+	private boolean cobrancaMigrado;
 
 	@Autowired
-	private SerConta serConta;
+	SerConta serConta;
 	@Autowired
-	private SerBanco serBanco;
+	SerBanco serBanco;
 	@Autowired
-	private SerCliente serCliente;
+	SerCliente serCliente;
+	@Autowired
+	SerCobranca serCobranca;
 
 	@Autowired
 	MigrarConta migrarConta;
@@ -49,6 +53,8 @@ public class ControleMigracao implements Serializable {
 	MigrarBanco migrarBanco;
 	@Autowired
 	MigrarCliente migrarCliente;
+	@Autowired
+	MigrarCobranca migrarCobranca;
 
 	@Autowired
 	private FacesMessages mensagens;
@@ -66,6 +72,7 @@ public class ControleMigracao implements Serializable {
 		column1.addWidget("conta");
 		column1.addWidget("banco");
 		column1.addWidget("cliente");
+		column1.addWidget("cobranca");
 
 		// column2.addWidget("");
 		// column2.addWidget("");
@@ -77,9 +84,10 @@ public class ControleMigracao implements Serializable {
 		// model.addColumn(column3);
 
 		// Verica se efetua a migração
-		contaMigrada = serConta.exiteConta();
-		bancoMigrado = serBanco.exiteBanco();
-		clienteMigrado = serCliente.exiteCliente();
+		contaMigrado = serConta.existeConta();
+		bancoMigrado = serBanco.existeBanco();
+		clienteMigrado = serCliente.existeCliente();
+		cobrancaMigrado = serCobranca.existeCobranca();
 
 	}
 
@@ -126,6 +134,20 @@ public class ControleMigracao implements Serializable {
 	}
 
 	/****************************************************************************
+	 * Executa a importação das Cobranças
+	 ****************************************************************************/
+	public void migrarCobranca() {
+		try {
+			migrarCobranca.executar();
+			mensagens.info("Migração das Cobranças efetuada com sucesso!");
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+		}
+
+		init();
+	}
+
+	/****************************************************************************
 	 * Gets e Sets
 	 ****************************************************************************/
 
@@ -133,8 +155,8 @@ public class ControleMigracao implements Serializable {
 		return model;
 	}
 
-	public boolean isContaMigrada() {
-		return contaMigrada;
+	public boolean isContaMigrado() {
+		return contaMigrado;
 	}
 
 	public boolean isBancoMigrado() {
@@ -143,6 +165,10 @@ public class ControleMigracao implements Serializable {
 
 	public boolean isClienteMigrado() {
 		return clienteMigrado;
+	}
+
+	public boolean isCobrancaMigrado() {
+		return cobrancaMigrado;
 	}
 
 }

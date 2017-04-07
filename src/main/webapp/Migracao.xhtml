@@ -21,10 +21,10 @@
                                     
                     <p:panel id="conta" header="Contas Contábeis">
                         <p:commandButton id="bto-conta"
-                                         title="Migrar Contas"
-                                         value="Migrar Contas"
+                                         title="Migrar"
+                                         value="Migrar"
                                          process="@this"   
-                                         disabled="#{controleMigracao.contaMigrada}"                                      
+                                         disabled="#{controleMigracao.contaMigrado}"                                      
                                          actionListener="#{controleMigracao.migrarConta}"
                                          update="board"/>
 
@@ -33,8 +33,8 @@
 
                     <p:panel id="banco" header="Bancos">
                         <p:commandButton id="bto-banco"
-                                         title="Migrar Bancos"
-                                         value="Migrar Bancos"
+                                         title="Migrar"
+                                         value="Migrar"
                                          process="@this"   
                                          disabled="#{controleMigracao.bancoMigrado}"                                      
                                          actionListener="#{controleMigracao.migrarBanco}"
@@ -44,9 +44,9 @@
                     </p:panel>
 
                     <p:panel id="cliente" header="Condôminos">
-                        <p:commandButton id="bto-condo"
-                                         title="Migrar Condôminos "
-                                         value="Migrar Condôminos"
+                        <p:commandButton id="bto-condominos"
+                                         title="Migrar"
+                                         value="Migrar"
                                          process="@this"   
                                          disabled="#{controleMigracao.clienteMigrado}"                                      
                                          actionListener="#{controleMigracao.migrarCliente}"
@@ -54,7 +54,19 @@
 
                         <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
                     </p:panel>
-                                                        
+
+                    <p:panel id="cobranca" header="Cobrança">
+                        <p:commandButton id="bto-cobranca"
+                                         title="Migrar"
+                                         value="Migrar"
+                                         process="@this"   
+                                         disabled="#{controleMigracao.cobrancaMigrado}"                                      
+                                         actionListener="#{controleMigracao.migrarCobranca}"
+                                         update="board"/>
+
+                        <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
+                    </p:panel>
+                                                                            
                 </p:dashboard>  
                 
                 <!-- Dialogo de Aguarde -->

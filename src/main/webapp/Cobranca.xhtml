@@ -20,7 +20,34 @@
                 <!-- Barra Ferramentas -->
                 <p:toolbar styleClass="r42-toolbar" id="toolbar">
                     <p:toolbarGroup align="left"> 
-                                                               
+                        <p:commandButton    id="bto-novo" 
+                                            title="Novo" 
+                                            icon="fa fa-file-o" 
+                                            actionListener="#{controleCobranca.novoCadastro}"
+                                            process="@this" 
+                                            update="dialogo" 
+                                            oncomplete="PF('wgDados').show()">
+                                            <p:resetInput target="dialogo" />
+                        </p:commandButton>
+                        <p:commandButton    id="bto-editar" 
+                                            title="Editar" 
+                                            icon="fa fa-pencil" 
+                                            process="@this" 
+                                            update="dialogo"
+                                            oncomplete="PF('wgDados').show()" 
+                                            disabled="#{controleCobranca.cobrancaSelect == null}"
+                                            actionListener="#{controleCobranca.editCadastro}">
+                                            <p:resetInput target="dialogo" />
+                        </p:commandButton>
+                        <p:commandButton    id="bto-excluir" 
+                                            title="Excluir" 
+                                            icon="fa fa-trash" 
+                                            process="@this"
+                                            disabled="#{controleCobranca.cobrancaSelect == null}"
+                                            update="tabela msg-frm toolbar"
+                                            actionListener="#{controleCobranca.excluir}">
+                                            <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão da Cobrança?" />
+                        </p:commandButton>                                                                                                               
                     </p:toolbarGroup>
 
                     <p:toolbarGroup align="right" styleClass="r42-toolbar-right">
@@ -35,30 +62,44 @@
                              reflow="true" 
                              rows="15" paginator="true"
                              paginatorPosition="top"  
+                             selection="#{controleCobranca.cobrancaSelect}" 
+                             selectionMode="single" rowKey="#{cobranca.idCobranca}"                             
                              emptyMessage="Nenhuma Cobrança Cadastrado">
                              
+                    <!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+                    <p:ajax event="rowSelect" update=":frm:toolbar" />
+                    <p:ajax event="rowUnselect" update=":frm:toolbar" />
+                                                 
                     <!-- Colunas -->
                     <p:column headerText="Descrição">
                         <h:outputText value="#{cobranca.descricao}" />
                     </p:column>                             
-                    <p:column headerText="Total Valor">
-                        <h:outputText value="#{cobranca.totalValor}" />
+                    <p:column headerText="Total Valor" width="150">
+                        <h:outputText value="#{cobranca.totalValor}" style="float: right">
+                            <f:convertNumber type="currency" />                         
+                        </h:outputText>    
                     </p:column>
-                    <p:column headerText="Total Fração 1">
-                        <h:outputText value="#{cobranca.totalFracao1}" />
+                    <p:column headerText="Total Fração 1" width="150">
+                        <h:outputText value="#{cobranca.totalFracao1}" style="float: right">
+                            <f:convertNumber type="percent" pattern="#,##0.000000"/>                         
+                        </h:outputText>                         
                     </p:column>
-                    <p:column headerText="Total Fração 2">
-                        <h:outputText value="#{cobranca.totalFracao2}" />
+                    <p:column headerText="Total Fração 2" width="150">
+                        <h:outputText value="#{cobranca.totalFracao2}" style="float: right">
+                            <f:convertNumber type="percent" pattern="#,##0.000000"/>                         
+                        </h:outputText>
                     </p:column>                             
-                    <p:column headerText="Total Fração 3">
-                        <h:outputText value="#{cobranca.totalFracao3}" />
+                    <p:column headerText="Total Fração 3" width="150">
+                        <h:outputText value="#{cobranca.totalFracao3}" style="float: right">
+                            <f:convertNumber type="percent" pattern="#,##0.000000"/>                         
+                        </h:outputText>
                     </p:column>                                     
                                 
                 </p:dataTable>                
                             
                 <!-- Dialogo inclusão/alteração -->
                 <p:dialog styleClass="r42-dialogo" 
-                          header="Dados Cliente" 
+                          header="Itens de Cobrança" 
                           widgetVar="wgDados" 
                           id="dialogo" 
                           modal="true" 
@@ -72,6 +113,7 @@
                             <p:commandButton id="bto-salvar" 
                                              title="Salvar" 
                                              icon="fa fa-save" 
+                                             action="#{controleCobranca.salvar}" 
                                              process="dialogo"
                                              update="panel-dados" 
                                              oncomplete="if(!args.validationFailed) PF('wgDados').hide()" />
@@ -85,8 +127,225 @@
                         
                         <!-- Aba Cabeçalho -->                        
                         <p:tab title="Cabeçalho">
-                        
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="panelgrid-noborder r42-panelgrid"
+                                         columnClasses="ui-grid-col-3, ui-grid-col-9">
+                            
+                                <p:outputLabel value="Descrição" for="descricao" />
+                                <p:inputText id="descricao" size="50" maxlength="50" 
+                                             value="#{controleCobranca.cobrancaEdicao.descricao}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Conta Contábil" for="conta" />                                
+                                <p:column>                                
+                                    <p:inputText id="conta" size="10"
+                                                 value="#{controleCobranca.conta.idConta}"
+                                                 readonly="true"/>
+
+                                    <p:commandButton icon="fa fa-search" 
+                                                     title="Pesquisar"
+                                                     action="#{pesquisaConta.abrirDialogo('pesquisaConta')}"
+                                                     process="@this"
+                                                     update="@none">
+                                                 
+                                        <p:ajax event="dialogReturn" 
+                                                listener="#{controleCobranca.contaSelecionada}"
+                                                process="@this"                                             
+                                                update="conta contaDescricao"/>
+                                            
+                                    </p:commandButton>
+                                    <p:spacer width="10"/>                                                                         
+                                    <p:inputText id="contaDescricao" size="50"
+                                                 value="#{controleCobranca.conta.descricao}"
+                                                 readonly="true"/>                                
+                                </p:column>             
+                                                                         
+                            </p:panelGrid>                            
+                            <p:panelGrid columns="2" 
+                                         layout="grid"                                          
+                                         styleClass="panelgrid-noborder r42-panelgrid"
+                                         columnClasses="ui-grid-col-3, ui-grid-col-9">
+                            
+                                <f:facet name="header">
+                                    <p:outputLabel value="Instruções"/>
+                                </f:facet>
+                            
+                                <p:outputLabel value="Linha 1" for="insLinha01" />
+                                <p:inputText id="insLinha01" size="80" maxlength="80" 
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha01}"
+                                             onblur="value=value.toUpperCase()" />
+                                
+                                <p:outputLabel value="Linha 2" for="insLinha02" />             
+                                <p:inputText id="insLinha02" size="80" maxlength="80" 
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha02}"
+                                             onblur="value=value.toUpperCase()" />
+                                
+                                <p:outputLabel value="Linha 3" for="insLinha03" />                           
+                                <p:inputText id="insLinha03" size="80" maxlength="80" 
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha03}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 4" for="insLinha04" />             
+                                <p:inputText id="insLinha04" size="80" maxlength="80"
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha04}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 5" for="insLinha05" />             
+                                <p:inputText id="insLinha05" size="80" maxlength="80" 
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha05}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 6" for="insLinha06" />                                             
+                                <p:inputText id="insLinha06" size="80" maxlength="80" 
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha06}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 7" for="insLinha07" />                                             
+                                <p:inputText id="insLinha07" size="80" maxlength="80" 
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha07}"
+                                             onblur="value=value.toUpperCase()" />
+
+                                <p:outputLabel value="Linha 8" for="insLinha08" />                                             
+                                <p:inputText id="insLinha08" size="80" maxlength="80" 
+                                             value="#{controleCobranca.cobrancaEdicao.insLinha08}"
+                                             onblur="value=value.toUpperCase()" />     
+                                                                                                                                                                                                                                                                                                                                                                                               
+                            </p:panelGrid>                               
                         </p:tab>
+                        
+                        <!-- Aba itens -->
+                        <p:tab title="Itens">
+                            <p:commandButton id="bto-add" 
+                                             title="Novo" 
+                                             icon="fa fa-plus" 
+                                             action="#{controleCobranca.addItem}" 
+                                             process="@this" 
+                                             update="tabItens" />  
+                                             
+                            <!-- Listagem dos dados -->
+                            <p:dataTable value="#{controleCobranca.listaCobrancaItem}" 
+                                         var="item" 
+                                         id="tabItens" 
+                                         reflow="true" 
+                                         rows="8"
+                                         paginator="true" 
+                                         paginatorPosition="top" 
+                                         emptyMessage="Nenhum item informado"> 
+                                         
+                                <!-- Colunas -->
+                                <p:column width="20">
+                                    <p:rowToggler />
+                                </p:column>
+                                    
+                                <p:column headerText="Nome">
+                                    <h:outputText value="#{item.cliente.razaoSocial}" />
+                                </p:column>  
+                                <p:column headerText="Dia" width="20">
+                                    <h:outputText value="#{item.diaVencimento}" />
+                                </p:column>                                                                                                    
+		                        <p:column headerText="Valor" width="100">
+		                            <h:outputText value="#{item.valor}" style="float: right">
+		                                <f:convertNumber type="currency" />                         
+		                            </h:outputText>                            
+		                        </p:column>
+                                <p:column headerText="Fração 1" width="100"> 
+                                    <h:outputText value="#{item.fracao1}" style="float: right">
+                                        <f:convertNumber type="percent" pattern="#,##0.000000"/>                         
+                                    </h:outputText>                            
+                                </p:column>
+                                <p:column headerText="Fração 2" width="100">
+                                    <h:outputText value="#{item.fracao2}" style="float: right">
+                                        <f:convertNumber type="percent" pattern="#,##0.000000"/>    
+                                    </h:outputText>                            
+                                </p:column>                          
+                                <p:column headerText="Fração 3" width="100">
+                                    <h:outputText value="#{item.fracao3}" style="float: right">
+                                        <f:convertNumber type="percent" pattern="#,##0.000000"/>    
+                                    </h:outputText>                            
+                                </p:column>     
+                                <p:column headerText="#" width="35">
+                                    <p:commandButton icon="fa fa-trash" 
+                                                     title="Remover" 
+                                                     action="#{controleCobranca.removeItem(item)}" 
+                                                     process="@this"
+                                                     update="tabItens" />
+                                </p:column>
+                                
+                                <p:rowExpansion id="rowItem">
+                                    <p:panelGrid id="rowExp" 
+                                                 columns="2" 
+                                                 layout="grid" 
+                                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+                                                 
+                                        <p:outputLabel value="Cliente" for="itemCliente" />         
+		                                <p:column>                                
+		                                    <p:inputText id="itemCliente" size="10"
+		                                                 value="#{item.cliente.idCliente}"
+		                                                 readonly="true"/>
+		
+		                                    <p:commandButton icon="fa fa-search" 
+		                                                     title="Pesquisar"
+		                                                     actionListener="#{controleCobranca.itemAcao(item.idItem)}"
+		                                                     action="#{pesquisaCliente.abrirDialogo('pesquisaCliente')}"
+		                                                     process="@this"
+		                                                     update="@none">
+		                                                 
+		                                        <p:ajax event="dialogReturn" 		                                                
+		                                                listener="#{controleCobranca.clienteSelecionado}"
+		                                                process="@this"                                             
+		                                                update="itemCliente itemRazaoSocial"/>
+		                                            
+		                                    </p:commandButton>
+		                                    <p:spacer width="10"/>                                                                         
+		                                    <p:inputText id="itemRazaoSocial" size="50"
+		                                                 value="#{item.cliente.razaoSocial}"
+		                                                 readonly="true"/>                                
+		                                </p:column>    
+		                                                                             
+		                                <p:outputLabel value="Dia Vencimento" for="diaVencimento" />
+                                        <p:inputNumber id="diaVencimento" size="2"
+                                                       value="#{item.diaVencimento}"
+                                                       decimalPlaces="0"/> 	                                                
+                                                 
+		                                <p:outputLabel value="Valor" for="valor"/>
+		                                <p:inputNumber id="valor" size="20"
+		                                               value="#{item.valor}"
+		                                               decimalSeparator=","
+		                                               thousandSeparator="."/>            
+
+                                        <p:outputLabel value="Fração 1" for="fracao1"/>
+                                        <p:inputNumber id="fracao1" size="20"
+                                                       value="#{item.fracao1}"
+                                                       decimalPlaces="6"                                                       
+                                                       decimalSeparator=","
+                                                       thousandSeparator="."/>
+
+                                        <p:outputLabel value="Fração 2" for="fracao2"/>
+                                        <p:inputNumber id="fracao2" size="20"
+                                                       value="#{item.fracao2}"
+                                                       decimalPlaces="6"        
+                                                       decimalSeparator=","
+                                                       thousandSeparator="."/>
+                                                       
+                                        <p:outputLabel value="Fração 3" for="fracao3"/>
+                                        <p:inputNumber id="fracao3" size="20"
+                                                       value="#{item.fracao3}"
+                                                       decimalPlaces="6"        
+                                                       decimalSeparator=","
+                                                       thousandSeparator="."/> 
+                                                       
+                                        <p:commandButton icon="fa fa-check"  
+                                                         title="ok"  
+                                                         process="tabItens"
+                                                         update="tabItens"
+                                                         actionListener="#{controleCobranca.validaItens}"/>                                                                                                                                                                        		                                                                                  
+                                    </p:panelGrid>
+                                </p:rowExpansion>
+                            </p:dataTable>                                                                   
+                        </p:tab>
+                        
                     </p:tabView>                
                 </p:dialog>                            
             </h:form>

@@ -51,4 +51,8 @@ public class ControleEnums implements Serializable {
 	public OrigemLcto[] getOrigemLcto(){
 		return OrigemLcto.values();
 	}
+	
+	public DiasMes[] getDiasMes(){
+		return DiasMes.values();
+	}
 }

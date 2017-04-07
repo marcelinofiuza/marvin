@@ -15,7 +15,6 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.ClienteContatos;
 import br.com.resvut42.marvin.entidade.Conta;
@@ -34,25 +33,25 @@ public class ControleCliente implements Serializable {
 	/****************************************************************************
 	 * Variaveis e Dependências
 	 ****************************************************************************/
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Cliente clienteEdicao = new Cliente();
 	private Cliente clienteSelect;
-	
+
 	private Conta conta;
-	
+
 	private final long newItem = 90000;
 	private long nextItem = newItem;
 
 	private Set<ClienteContatos> listaClienteContatos;
 	private List<Cliente> listaClientes = new ArrayList<Cliente>();
-	
+
 	@Autowired
 	SerCliente serCliente;
 	@Autowired
 	FacesMessages mensagens;
-	
+
 	/****************************************************************************
 	 * Reseta as variaveis para inclusão ou alteração
 	 ****************************************************************************/
@@ -61,19 +60,19 @@ public class ControleCliente implements Serializable {
 		setListaClienteContatos(new HashSet<ClienteContatos>());
 		conta = new Conta();
 	}
-	
+
 	/****************************************************************************
 	 * Metodo Salvar
 	 ****************************************************************************/
 	public void salvar() {
-		
+
 		try {
 			for (ClienteContatos contatosCliente : listaClienteContatos) {
 				if (contatosCliente.getIdContato() > newItem) {
 					contatosCliente.setIdContato(null);
 				}
 			}
-			
+
 			clienteEdicao.setConta(conta);
 			clienteEdicao.getContatos().clear();
 			clienteEdicao.getContatos().addAll(listaClienteContatos);
@@ -82,11 +81,10 @@ public class ControleCliente implements Serializable {
 			mensagens.info("Registro salvo com sucesso!");
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
-			e.printStackTrace();
 		}
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
 	}
-	
+
 	/****************************************************************************
 	 * Excluir dados
 	 ****************************************************************************/
@@ -101,7 +99,10 @@ public class ControleCliente implements Serializable {
 		}
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
-	
+
+	/****************************************************************************
+	 * Metodo Editar Cliente
+	 ****************************************************************************/
 	public void editCadastro() {
 		preparaTela();
 		clienteEdicao = clienteSelect;
@@ -109,7 +110,10 @@ public class ControleCliente implements Serializable {
 		listaClienteContatos.clear();
 		listaClienteContatos.addAll(clienteEdicao.getContatos());
 	}
-	
+
+	/****************************************************************************
+	 * Metodo adicionar novo contato
+	 ****************************************************************************/
 	public void addContato() {
 		nextItem++;
 		ClienteContatos clienteContatos = new ClienteContatos();
@@ -118,37 +122,37 @@ public class ControleCliente implements Serializable {
 		listaClienteContatos.add(clienteContatos);
 	}
 
-	
-	/****************************************************************************
-	 * Buscar lista dos dados no banco
-	 ****************************************************************************/
-	public void buscar(){
-						
-		List<Cliente> listaClientes = serCliente.listarTodos();
-		if(!listaClientes.isEmpty()){
-			clienteSelect = listaClientes.get(0);
-		}else{
-			clienteSelect = new Cliente();
-		}
-		
-		RequestContext.getCurrentInstance().execute("PF('wgDados').show();");		
-		
-	}
-	
-	
+//	/****************************************************************************
+//	 * Buscar lista dos dados no banco
+//	 ****************************************************************************/
+//	public void buscar() {
+//
+//		List<Cliente> listaClientes = serCliente.listarTodos();
+//		if (!listaClientes.isEmpty()) {
+//			clienteSelect = listaClientes.get(0);
+//		} else {
+//			clienteSelect = new Cliente();
+//		}
+//
+//		RequestContext.getCurrentInstance().execute("PF('wgDados').show();");
+//
+//	}
+
 	/****************************************************************************
 	 * Remover contato
 	 ****************************************************************************/
 	public void removeContato(ClienteContatos contato) {
 		listaClienteContatos.remove(contato);
 	}
-	
+
+	/****************************************************************************
+	 * Prepara tela para novo cadastro
+	 ****************************************************************************/	
 	public void novoCadastro() {
 		preparaTela();
-		clienteSelect = new Cliente();
-		
+		clienteEdicao = new Cliente();
 	}
-	
+
 	/****************************************************************************
 	 * Buscar lista dos dados no banco
 	 ****************************************************************************/
@@ -157,7 +161,7 @@ public class ControleCliente implements Serializable {
 		clienteSelect = null;
 		listaClientes = serCliente.listarTodos();
 	}
-	
+
 	/****************************************************************************
 	 * Resgata a conta selecionada no dialogo
 	 ****************************************************************************/
@@ -165,7 +169,7 @@ public class ControleCliente implements Serializable {
 		conta = new Conta();
 		conta = (Conta) event.getObject();
 	}
-	
+
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
@@ -209,6 +213,5 @@ public class ControleCliente implements Serializable {
 	public void setConta(Conta conta) {
 		this.conta = conta;
 	}
-	
-	
+
 }

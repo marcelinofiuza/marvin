@@ -32,7 +32,7 @@ public class SerConta {
 	/****************************************************************************
 	 * Retorna se existe alguma conta cadastrada
 	 ****************************************************************************/	
-	public boolean exiteConta(){
+	public boolean existeConta(){
 		if(repConta.count() > 0){
 			return true;
 		}else{

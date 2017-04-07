@@ -20,4 +20,9 @@ public interface RepCliente extends JpaRepository<Cliente, Long> {
 	 ****************************************************************************/
 	List<Cliente> findByRazaoSocialContainingAndUnidadeContaining(String razaoSocial, String unidade);
 
+	/****************************************************************************
+	 * Retornar um cliente fazendo busca pela unidade
+	 ****************************************************************************/		
+	Cliente findByUnidade(String unidade);
+	
 }

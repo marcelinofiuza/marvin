@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,9 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.NumberFormat;
-
-import br.com.resvut42.marvin.enums.DiasMes;
 
 /****************************************************************************
  * Entidade Cobrança Item Desenvolvido por :
@@ -41,9 +38,8 @@ public class CobrancaItem implements Serializable {
 	@JoinColumn(name = "idCliente")
 	private Cliente cliente;
 
-	@Enumerated(EnumType.STRING)
-	@Column(length = 2)
-	private DiasMes diaVencimento;
+	@Range(min=0, max=31, message="O dia deve ser entre 0 e 31!")
+	private Integer diaVencimento;
 
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal valor;
@@ -60,6 +56,14 @@ public class CobrancaItem implements Serializable {
 	@Column(precision = 19, scale = 6)
 	private BigDecimal fracao3;
 
+	public CobrancaItem(){
+		diaVencimento = 0;
+		valor = new BigDecimal(0);
+		fracao1 = new BigDecimal(0);
+		fracao2 = new BigDecimal(0);
+		fracao3 = new BigDecimal(0);
+	}
+		
 	public Long getIdItem() {
 		return idItem;
 	}
@@ -84,11 +88,11 @@ public class CobrancaItem implements Serializable {
 		this.cliente = cliente;
 	}
 
-	public DiasMes getDiaVencimento() {
+	public Integer getDiaVencimento() {
 		return diaVencimento;
 	}
 
-	public void setDiaVencimento(DiasMes diaVencimento) {
+	public void setDiaVencimento(Integer diaVencimento) {
 		this.diaVencimento = diaVencimento;
 	}
 

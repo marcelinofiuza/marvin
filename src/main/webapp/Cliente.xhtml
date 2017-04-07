@@ -65,12 +65,12 @@
 					         selectionMode="single" rowKey="#{cliente.idCliente}"
 					         emptyMessage="Nenhum Cliente Cadastrado">
 				
-				<!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+				    <!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
 					<p:ajax event="rowSelect" update=":frm:toolbar" />
 					<p:ajax event="rowUnselect" update=":frm:toolbar" />
 					
-				<!-- Colunas -->
-				<p:column headerText="Id" width="50" sortBy="#{cliente.idCliente}">
+				    <!-- Colunas -->
+				    <p:column headerText="Id" width="50" sortBy="#{cliente.idCliente}">
 						<h:outputText value="#{cliente.idCliente}" />
 					</p:column>
                     <p:column headerText="Unidade" width="100" sortBy="#{cliente.unidade}">
