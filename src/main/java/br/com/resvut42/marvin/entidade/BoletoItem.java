@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,11 +36,9 @@ public class BoletoItem implements Serializable {
 	@JoinColumn(name = "idBoleto")
 	private Boleto boleto;
 
-	private Long idItemCobranca;
-
 	private Long documento;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCliente")
 	private Cliente cliente;
 
@@ -59,6 +58,13 @@ public class BoletoItem implements Serializable {
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal valor3;
 
+	public BoletoItem(){
+		valor0 = new BigDecimal(0);
+		valor1 = new BigDecimal(0);
+		valor2 = new BigDecimal(0);
+		valor3 = new BigDecimal(0);
+	}	
+	
 	public Long getIdItem() {
 		return idItem;
 	}
@@ -73,14 +79,6 @@ public class BoletoItem implements Serializable {
 
 	public void setBoleto(Boleto boleto) {
 		this.boleto = boleto;
-	}
-
-	public Long getIdItemCobranca() {
-		return idItemCobranca;
-	}
-
-	public void setIdItemCobranca(Long idItemCobranca) {
-		this.idItemCobranca = idItemCobranca;
 	}
 
 	public Long getDocumento() {
@@ -139,6 +137,15 @@ public class BoletoItem implements Serializable {
 		this.valor3 = valor3;
 	}
 
+	public BigDecimal getTotalItem(){		
+		BigDecimal totalItem = new BigDecimal(0);		
+		totalItem = totalItem.add(valor0);
+		totalItem = totalItem.add(valor1);
+		totalItem = totalItem.add(valor2);
+		totalItem = totalItem.add(valor3);		
+		return totalItem;		
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -1,0 +1,426 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+	            xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	            xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	            xmlns:p="http://primefaces.org/ui"
+	            template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<section class="r42-pagina">
+		
+			<h:form id="frm">
+				<!-- Mensagem form -->
+				<p:growl id="msg-frm" showDetail="true" />
+						
+                <!-- Dialogo para selecionar banco -->
+                <p:dialog header="Banco"
+                          width="600" 
+                          widgetVar="wgSelecaoBanco" 
+                          id="selecaoBanco"
+                          closable="false" 
+                          modal="true"                        
+                          resizable="false"                   
+                          responsive="true">                
+
+                    <p:panelGrid id="panelSelecao"
+                                 columns="2" 
+                                 layout="grid" 
+                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+                            
+                        <p:outputLabel value="Banco" for="banco" />     
+                        <p:column>
+                            <p:inputText id="banco" 
+                                         size="10"
+                                         value="#{controleBoleto.banco.idBanco}"
+                                         readonly="true"/>
+                                         
+                            <p:commandButton icon="fa fa-search" 
+                                             title="Pesquisar"
+                                             action="#{pesquisaBanco.abrirDialogo('pesquisaBanco')}"
+                                             process="@this"
+                                             update="@none">
+                                                 
+                                <p:ajax event="dialogReturn" 
+                                        listener="#{controleBoleto.bancoSelecionado}"
+                                        process="@this"                                             
+                                        update="panelSelecao"/>
+                                            
+                            </p:commandButton>                                
+                        </p:column>
+                        
+                        <p:outputLabel value="Descrição" for="descricao" />                                                                             
+                        <p:inputText id="descricao" size="50"
+                                     value="#{controleBoleto.banco.descricao}"
+                                     readonly="true"/>
+                                                                                     
+                        <p:column>
+                            <p:commandButton icon="fa fa-check" 
+                                             title="Ok"
+                                             process="panelSelecao"                                             
+                                             update="toolbar tabela"
+                                             action="#{controleBoleto.confirmaBanco}"
+                                             disabled="#{controleBoleto.banco == null}"/>                        
+
+                            <p:commandButton icon="fa fa-close" 
+                                             title="Sair"
+                                             process="@this"                                        
+                                             action="Inicio.xhmtl?faces-redirect=true"/>
+                        </p:column>                        
+                        
+                    </p:panelGrid>                        
+                </p:dialog>
+		
+
+				<!-- Barra Ferramentas -->
+				<p:toolbar styleClass="r42-toolbar" id="toolbar">
+					<p:toolbarGroup align="left">
+                        <p:commandButton    id="bto-novo" 
+                                            title="Novo" 
+                                            icon="fa fa-file-o"
+                                            actionListener="#{controleBoleto.novoBoleto}"
+                                            process="@this" 
+                                            update="dialogo" 
+                                            oncomplete="PF('wgDados').show()">
+                                            <p:resetInput target="dialogo" />
+                        </p:commandButton>		
+                        <p:commandButton    id="bto-editar" 
+                                            title="Editar" 
+                                            icon="fa fa-pencil" 
+                                            process="@this" 
+                                            update="dialogo"
+                                            oncomplete="PF('wgDados').show()" 
+                                            disabled="#{controleBoleto.boletoSelect == null}"
+                                            actionListener="#{controleBoleto.editCadastro}">
+                                            <p:resetInput target="dialogo" />
+                        </p:commandButton>                        
+                        <p:commandButton    id="bto-excluir" 
+                                            title="Excluir" 
+                                            icon="fa fa-trash" 
+                                            process="@this"
+                                            disabled="#{controleBoleto.boletoSelect == null}"
+                                            update="tabela msg-frm toolbar"
+                                            actionListener="#{controleBoleto.excluir}">
+                                            <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Boleto?" />
+                        </p:commandButton>                         				
+					</p:toolbarGroup>			
+							
+					<p:toolbarGroup align="right">
+						<p:outputLabel value="Boletos: "/>
+						<p:outputLabel value="#{controleBoleto.banco.idBanco}."/>
+                        <p:outputLabel value="#{controleBoleto.banco.descricao}"/>		
+                     	<p:spacer height="10"/>
+                        <p:commandButton    id="bto-troca" 
+                                            title="Selecionar Banco" 
+                                            icon="fa fa-refresh"
+                                            oncomplete="PF('wgSelecaoBanco').show();"/>                          				
+					</p:toolbarGroup>
+				</p:toolbar>
+								
+				<!-- Listagem dos dados -->
+				<p:dataTable value="#{controleBoleto.listaBoletos}" 
+				             var="boleto" 
+				             id="tabela" 
+				             reflow="true" 
+				             rows="15" paginator="true"
+					         paginatorPosition="top"  
+                             selection="#{controleBoleto.boletoSelect}" 
+                             selectionMode="single" rowKey="#{boleto.idBoleto}"      					         
+					         emptyMessage="Nenhum Boleto Criado">
+				
+                    <!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha -->
+                    <p:ajax event="rowSelect" update=":frm:toolbar" />
+                    <p:ajax event="rowUnselect" update=":frm:toolbar" />
+                    				
+					<!-- Colunas -->
+					<p:column headerText="Id" width="50" sortBy="#{boleto.idBoleto}">
+						<h:outputText value="#{boleto.idBoleto}" />
+					</p:column>				
+					<p:column headerText="Lançamento" width="120" sortBy="#{boleto.lancamento}">
+	                	<h:outputText value="#{boleto.lancamento}">
+                        	<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>                                
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Status" width="150">
+						<h:outputText value="#{boleto.statusBoleto.descricao}"/>
+					</p:column>		
+					<p:column>
+						<h:outputText value="#{boleto.conta.ideDescricao}"/>
+					</p:column>			
+	                <p:column headerText="Valor Total" width="200">
+	                    <h:outputText value="#{boleto.valorBoletos}" style="float: right">
+                            <f:convertNumber type="currency" />
+	                    </h:outputText>	                        
+	                </p:column>
+					<p:column headerText="Nº Boletos" width="100">
+						<h:outputText value="#{boleto.numBoletos}"/>
+					</p:column>	                									
+				</p:dataTable>							
+				
+                <!-- Dialogo de Boletos -->
+                <p:dialog styleClass="r42-dialogo" 
+                          header="Boletos" 
+                          widgetVar="wgDados" 
+                          id="dialogo" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+				
+                    <!-- Barra de Ferramentas dialogo-->
+                    <p:defaultCommand target="bto-salvar" scope="dialogo" />
+                    
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton id="bto-salvar" 
+                                             title="Salvar" 
+                                             icon="fa fa-save"
+                                             action="#{controleBoleto.salvar}"  
+                                             process="dialogo"
+                                             update="panel"
+                                             oncomplete="if(!args.validationFailed) PF('wgDados').hide()" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />   				
+				
+                    <!-- Dados Dialogo -->                    
+                    <p:tabView id="panel">
+                        
+                        <!-- Aba Dados Lançamento -->
+                        <p:tab title="Cabeçalho">                                            
+		                    <p:panelGrid columns="2" 
+		                                 layout="grid" 
+		                                 styleClass="panelgrid-noborder r42-panelgrid"
+		                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+		                                 
+		                        <p:outputLabel value="Lançamento" for="lancamento"/>
+		                        <p:calendar id="lancamento" size="10"
+		                                    locale="pt_BR"
+		                                    value="#{controleBoleto.boletoEdicao.lancamento}"
+		                                    pattern="dd/MM/yyyy" mask="99/99/9999"
+		                                    showOn="button"
+		                                    required="true"/>         
+		                                 
+		                        <p:outputLabel value="Conta Contábil" for="conta" />            
+                                <p:column>                                
+                                    <p:inputText id="conta" size="10"
+                                                 value="#{controleBoleto.conta.idConta}"
+                                                 readonly="true"/>
+
+                                    <p:commandButton icon="fa fa-search" 
+                                                     title="Pesquisar"
+                                                     action="#{pesquisaConta.abrirDialogo('pesquisaConta')}"
+                                                     process="@this"
+                                                     update="@none">
+                                                 
+                                        <p:ajax event="dialogReturn" 
+                                                listener="#{controleBoleto.contaSelecionada}"
+                                                process="@this"                                             
+                                                update="conta contaDescricao"/>
+                                            
+                                    </p:commandButton>
+                                    <p:spacer width="10"/>                                                                         
+                                    <p:inputText id="contaDescricao" size="50"
+                                                 value="#{controleBoleto.conta.descricao}"
+                                                 readonly="true"/>                                
+                                </p:column>             
+		                                 
+							</p:panelGrid>
+							
+                            <p:panelGrid columns="2" 
+                                         layout="grid"                                          
+                                         styleClass="panelgrid-noborder r42-panelgrid"
+                                         columnClasses="ui-grid-col-3, ui-grid-col-9">
+                            
+                                <f:facet name="header">
+                                    <p:outputLabel value="Instruções"/>
+                                </f:facet>
+                            
+                                <p:outputLabel value="Linha 1" for="insLinha01" />
+                                <p:inputText id="insLinha01" size="80" maxlength="80" 
+                                             value="#{controleBoleto.boletoEdicao.insLinha01}"
+                                             onblur="value=value.toUpperCase()" />
+                                
+                                <p:outputLabel value="Linha 2" for="insLinha02" />             
+                                <p:inputText id="insLinha02" size="80" maxlength="80" 
+                                             value="#{controleBoleto.boletoEdicao.insLinha02}"
+                                             onblur="value=value.toUpperCase()" />
+                                
+                                <p:outputLabel value="Linha 3" for="insLinha03" />                           
+                                <p:inputText id="insLinha03" size="80" maxlength="80" 
+                                             value="#{controleBoleto.boletoEdicao.insLinha03}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 4" for="insLinha04" />             
+                                <p:inputText id="insLinha04" size="80" maxlength="80"
+                                             value="#{controleBoleto.boletoEdicao.insLinha04}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 5" for="insLinha05" />             
+                                <p:inputText id="insLinha05" size="80" maxlength="80" 
+                                             value="#{controleBoleto.boletoEdicao.insLinha05}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 6" for="insLinha06" />                                             
+                                <p:inputText id="insLinha06" size="80" maxlength="80" 
+                                             value="#{controleBoleto.boletoEdicao.insLinha06}"
+                                             onblur="value=value.toUpperCase()" />
+                                             
+                                <p:outputLabel value="Linha 7" for="insLinha07" />                                             
+                                <p:inputText id="insLinha07" size="80" maxlength="80" 
+                                             value="#{controleBoleto.boletoEdicao.insLinha07}"
+                                             onblur="value=value.toUpperCase()" />
+
+                                <p:outputLabel value="Linha 8" for="insLinha08" />                                             
+                                <p:inputText id="insLinha08" size="80" maxlength="80" 
+                                             value="#{controleBoleto.boletoEdicao.insLinha08}"
+                                             onblur="value=value.toUpperCase()" />     
+                                                                                                                                                                                                                                                                                                                                                                                               
+                            </p:panelGrid>                               							
+						</p:tab>
+						
+						<!-- Aba itens -->
+						<p:tab title="Itens">
+                            <p:commandButton id="bto-add" 
+                                             title="Novo" 
+                                             icon="fa fa-plus" 
+                                              action="#{controleBoleto.addItem}"
+                                             process="@this" 
+                                             update="tabItens" />  
+                                             
+                            <!-- Listagem dos dados -->
+                            <p:dataTable value="#{controleBoleto.listaBoletoItem}" 
+                                         var="item" 
+                                         id="tabItens" 
+                                         reflow="true" 
+                                         rows="8"
+                                         paginator="true" 
+                                         paginatorPosition="top" 
+                                         emptyMessage="Nenhum item informado"> 
+                                         
+                                <!-- Colunas -->
+                                <p:column width="20">
+                                    <p:rowToggler />
+                                </p:column>
+                                
+                                <p:column headerText="Nome">
+                                    <h:outputText value="#{item.cliente.razaoSocial}" />
+                                </p:column>                                                      
+                    			<p:column headerText="Data" width="80">
+                        			<h:outputText value="#{item.vencimento}">
+                            			<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>   
+                        			</h:outputText>
+                    			</p:column>                                
+		                        <p:column headerText="Valor" width="100">
+		                            <h:outputText value="#{item.valor0}" style="float: right">
+		                                <f:convertNumber type="currency" />                         
+		                            </h:outputText>                            
+		                        </p:column>
+		                        <p:column headerText="Valor" width="100">
+		                            <h:outputText value="#{item.valor1}" style="float: right">
+		                                <f:convertNumber type="currency" />                         
+		                            </h:outputText>                            
+		                        </p:column>
+		                        <p:column headerText="Valor" width="100">
+		                            <h:outputText value="#{item.valor2}" style="float: right">
+		                                <f:convertNumber type="currency" />                         
+		                            </h:outputText>                            
+		                        </p:column>
+		                        <p:column headerText="Valor" width="100">
+		                            <h:outputText value="#{item.valor3}" style="float: right">
+		                                <f:convertNumber type="currency" />                         
+		                            </h:outputText>                            
+		                        </p:column>		                        		                            
+                                <p:column headerText="#" width="35">
+                                    <p:commandButton icon="fa fa-trash" 
+                                                     title="Remover" 
+                                                     action="#{controleBoleto.removeItem(item)}" 
+                                                     process="@this"
+                                                     update="tabItens" />
+                                </p:column>
+
+                                <p:rowExpansion id="rowItem">
+                                    <p:panelGrid id="rowExp" 
+                                                 columns="2" 
+                                                 layout="grid" 
+                                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+									
+                                        <p:outputLabel value="Cliente" for="itemCliente" />         
+		                                <p:column>                                
+		                                    <p:inputText id="itemCliente" size="10"
+		                                                 value="#{item.cliente.idCliente}"
+		                                                 readonly="true"/>
+		
+		                                    <p:commandButton icon="fa fa-search" 
+		                                                     title="Pesquisar"
+		                                                     actionListener="#{controleBoleto.itemAcao(item.idItem)}"
+		                                                     action="#{pesquisaCliente.abrirDialogo('pesquisaCliente')}"
+		                                                     process="@this"
+		                                                     update="@none">
+		                                                 
+		                                        <p:ajax event="dialogReturn" 		                                                
+		                                                listener="#{controleBoleto.clienteSelecionado}"
+		                                                process="@this"                                             
+		                                                update="itemCliente itemRazaoSocial"/>
+		                                            
+		                                    </p:commandButton>
+		                                    <p:spacer width="10"/>                                                                         
+		                                    <p:inputText id="itemRazaoSocial" size="50"
+		                                                 value="#{item.cliente.razaoSocial}"
+		                                                 readonly="true"/>                                
+		                                </p:column>  									
+				                        
+				                        <p:outputLabel value="Vencimento" for="vencimento"/>
+				                        <p:calendar id="vencimento" size="10"
+				                                    locale="pt_BR"
+				                                    value="#{item.vencimento}"
+				                                    pattern="dd/MM/yyyy" mask="99/99/9999"
+				                                    showOn="button"
+				                                    required="true"/>
+				                                      									
+				                        <p:outputLabel value="Valor" for="valor0"/>
+				                        <p:inputNumber id="valor0" size="20"
+				                                       value="#{item.valor0}"
+				                                       decimalSeparator=","
+				                                       thousandSeparator="."
+				                                       required="true"/> 									
+
+				                        <p:outputLabel value="Valor 1" for="valor1"/>
+				                        <p:inputNumber id="valor1" size="20"
+				                                       value="#{item.valor1}"
+				                                       decimalSeparator=","
+				                                       thousandSeparator="."
+				                                       required="true"/>
+
+				                        <p:outputLabel value="Valor 2" for="valor2"/>
+				                        <p:inputNumber id="valor2" size="20"
+				                                       value="#{item.valor2}"
+				                                       decimalSeparator=","
+				                                       thousandSeparator="."
+				                                       required="true"/>
+				                                       
+				                        <p:outputLabel value="Valor 3" for="valor3"/>
+				                        <p:inputNumber id="valor3" size="20"
+				                                       value="#{item.valor3}"
+				                                       decimalSeparator=","
+				                                       thousandSeparator="."
+				                                       required="true"/>
+				                                       		
+                                        <p:commandButton icon="fa fa-check"  
+                                                         title="ok"  
+                                                         process="tabItens"
+                                                         update="tabItens"
+                                                         actionListener="#{controleBoleto.validaItens}"/>     
+                                                         				                                       		                                       				                                       									
+									</p:panelGrid>
+					            </p:rowExpansion>
+					            
+							</p:dataTable>
+						</p:tab>
+					</p:tabView>								
+				</p:dialog>					
+			</h:form>		
+		</section>		
+	</ui:define>
+</ui:composition>

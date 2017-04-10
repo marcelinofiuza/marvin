@@ -63,7 +63,7 @@ public class SerBanco {
 	}
 
 	/****************************************************************************
-	 * Metodo para Listar todos os registros
+	 * Metodo para buscar o banco pelo id
 	 ****************************************************************************/
 	public Banco buscarPorId(Long id) {
 		return repBanco.findOne(id);

@@ -49,7 +49,7 @@ public class ControleUsuario implements Serializable {
 	@Autowired
 	SerUsuario serUsuario;
 	@Autowired
-	private FacesMessages mensagens;
+	FacesMessages mensagens;
 
 	/****************************************************************************
 	 * Inicialização

@@ -56,7 +56,7 @@ public class ControleBanco implements Serializable {
 	@Autowired
 	SerBanco serBanco;
 	@Autowired
-	private FacesMessages mensagens;
+	FacesMessages mensagens;
 
 	/****************************************************************************
 	 * Reseta as variaveis para inclusão ou alteração

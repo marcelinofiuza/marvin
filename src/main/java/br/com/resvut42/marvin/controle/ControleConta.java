@@ -35,7 +35,7 @@ public class ControleConta implements Serializable {
 	@Autowired
 	SerConta serConta;
 	@Autowired
-	private FacesMessages mensagens;
+	FacesMessages mensagens;
 
 	/****************************************************************************
 	 * Metodo Salvar

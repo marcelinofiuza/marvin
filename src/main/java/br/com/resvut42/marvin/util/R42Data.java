@@ -103,6 +103,14 @@ public class R42Data {
 	}
 
 	/****************************************************************************
+	 * Retorna a data atual
+	 ****************************************************************************/
+	public static Date dataAtual(){
+		Calendar hoje = Calendar.getInstance();
+		return hoje.getTime();
+	}
+	
+	/****************************************************************************
 	 * Retorna o primeiro dia do mes
 	 ****************************************************************************/	
 	public static Date inicioMes(Date data){

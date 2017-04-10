@@ -52,7 +52,7 @@ public class ControleBancoLcto implements Serializable {
 	@Autowired
 	SerBancoLcto serBancoLcto;
 	@Autowired
-	private FacesMessages mensagens;
+	FacesMessages mensagens;
 
 	/****************************************************************************
 	 * Inicialização
