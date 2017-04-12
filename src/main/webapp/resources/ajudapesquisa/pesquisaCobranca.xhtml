@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    
+<h:head>
+
+    <meta charset="UTF-8" />    
+    <title>Pesquisa Cobrança</title>
+
+    <h:outputStylesheet library="resvut42" name="css/ajudapesquisa.css" />     
+    
+</h:head>
+
+<h:body>
+	<h:form>
+       <!-- Listagem dos dados -->
+        <p:dataTable class="r42-tabela-selecao"
+                     value="#{pesquisaCobranca.listaCobranca}" 
+                     var="cobranca"
+                     id="tabela"
+                     rows="15" 
+                     paginator="true" 
+                     paginatorPosition="top"
+                     emptyMessage="Nenhuma Cobrança Encontrada">
+    
+    
+            <!-- Botão de Seleção -->            
+            <p:column headerText="#" width="35">
+               <p:commandButton icon="fa fa-reply" 
+                                title="Selecionar" 
+                                action="#{pesquisaCobranca.selecionar(cobranca)}"
+                                process="@this"/>
+            </p:column>
+                
+			<!-- Colunas -->
+            <p:column headerText="Descrição">
+            	<h:outputText value="#{cobranca.descricao}" />
+            </p:column>                             
+            <p:column headerText="Valor" width="100">
+            	<h:outputText value="#{cobranca.totalValor}" style="float: right">
+                	<f:convertNumber type="currency" />                         
+                </h:outputText>    
+            </p:column>
+            <p:column headerText="Fração 1" width="100">
+            	<h:outputText value="#{cobranca.totalFracao1}" style="float: right">
+            		<f:convertNumber type="percent" pattern="#,##0.000000"/>                         
+            	</h:outputText>                         
+            </p:column>
+            <p:column headerText="Fração 2" width="100">
+            	<h:outputText value="#{cobranca.totalFracao2}" style="float: right">
+            		<f:convertNumber type="percent" pattern="#,##0.000000"/>                         
+				</h:outputText>
+            </p:column>                             
+            <p:column headerText="Fração 3" width="100">
+            	<h:outputText value="#{cobranca.totalFracao3}" style="float: right">
+                	<f:convertNumber type="percent" pattern="#,##0.000000"/>                         
+                </h:outputText>
+            </p:column>                         
+		</p:dataTable>
+	</h:form>
+</h:body>
+</html>

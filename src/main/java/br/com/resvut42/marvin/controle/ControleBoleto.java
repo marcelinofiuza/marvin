@@ -19,8 +19,10 @@ import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Boleto;
 import br.com.resvut42.marvin.entidade.BoletoItem;
 import br.com.resvut42.marvin.entidade.Cliente;
+import br.com.resvut42.marvin.entidade.Cobranca;
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.enums.StatusBoleto;
+import br.com.resvut42.marvin.estrutura.CalculoBoleto;
 import br.com.resvut42.marvin.servico.SerBoleto;
 import br.com.resvut42.marvin.util.FacesMessages;
 import br.com.resvut42.marvin.util.R42Data;
@@ -40,11 +42,12 @@ public class ControleBoleto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private List<Boleto> listaBoletos = new ArrayList<Boleto>();
-	private List<BoletoItem> listaBoletoItem = new ArrayList<BoletoItem>();;
+	private List<BoletoItem> listaBoletoItem = new ArrayList<BoletoItem>();
 	private Boleto boletoEdicao = new Boleto();
 	private Boleto boletoSelect;
 	private Banco banco;
 	private Conta conta;
+	private CalculoBoleto calculoBoleto;
 
 	private final long newItem = 9000000;
 	private long nextItem = newItem;
@@ -76,8 +79,7 @@ public class ControleBoleto implements Serializable {
 			}
 			boletoEdicao.setConta(conta);
 			boletoEdicao.setBanco(banco);
-			boletoEdicao.getItens().clear();
-			boletoEdicao.getItens().addAll(listaBoletoItem);
+			boletoEdicao.setItens(listaBoletoItem);
 			serBoleto.salvar(boletoEdicao);
 			listar();
 			mensagens.info("Registro salvo com sucesso!");
@@ -219,7 +221,29 @@ public class ControleBoleto implements Serializable {
 		}
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
-	
+
+	/****************************************************************************
+	 * Resgata a Cobrança selecionada no dialogo
+	 ****************************************************************************/
+	public void cobrancaSelecionada(SelectEvent event) {
+		calculoBoleto.setCobranca((Cobranca) event.getObject());
+	}
+
+	/****************************************************************************
+	 * Abrir dialogo para seleção de cobrança
+	 ****************************************************************************/	
+	public void abrirDialogoCobranca(){
+		calculoBoleto = new CalculoBoleto();
+	}
+
+	/****************************************************************************
+	 * Confirmar cobrança selecionada e calcular os dados
+	 ****************************************************************************/	
+	public void confirmaCobranca(){
+		boletoEdicao = calculoBoleto.getBoleto();
+		listaBoletoItem = boletoEdicao.getItens();
+		conta = boletoEdicao.getConta();
+	}	
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
@@ -258,6 +282,14 @@ public class ControleBoleto implements Serializable {
 
 	public void setConta(Conta conta) {
 		this.conta = conta;
+	}
+
+	public CalculoBoleto getCalculoBoleto() {
+		return calculoBoleto;
+	}
+
+	public void setCalculoBoleto(CalculoBoleto calculoBoleto) {
+		this.calculoBoleto = calculoBoleto;
 	}
 
 	public List<BoletoItem> getListaBoletoItem() {

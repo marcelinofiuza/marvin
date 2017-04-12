@@ -105,18 +105,19 @@ public class R42Data {
 	/****************************************************************************
 	 * Retorna a data atual
 	 ****************************************************************************/
-	public static Date dataAtual(){
+	public static Date dataAtual() {
 		Calendar hoje = Calendar.getInstance();
 		return hoje.getTime();
 	}
-	
+
 	/****************************************************************************
 	 * Retorna o primeiro dia do mes
-	 ****************************************************************************/	
-	public static Date inicioMes(Date data){
+	 ****************************************************************************/
+	public static Date inicioMes(Date data) {
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(data);
-		gc.getMinimum(GregorianCalendar.DAY_OF_MONTH);
+		int primeiro = gc.getActualMinimum(GregorianCalendar.DAY_OF_MONTH);
+		gc.set(GregorianCalendar.DATE, primeiro);
 		return gc.getTime();
 	}
 
@@ -126,7 +127,38 @@ public class R42Data {
 	public static Date fimMes(Date data) {
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTime(data);
-		gc.getMaximum(GregorianCalendar.DAY_OF_MONTH);
+		int ultimo = gc.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+		gc.set(GregorianCalendar.DATE, ultimo);
 		return gc.getTime();
 	}
+
+	/****************************************************************************
+	 * Retorna uma data, com base um dia e uma data Base
+	 ****************************************************************************/
+	public static Date montaData(Date dataBase, Integer dia) {
+
+		if (dia == 0) {
+			return dataBase;
+		}
+
+		Date novaData = null;
+		String strData = dataToString(dataBase);
+		String base = strData.substring(2);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				
+		try{
+			novaData = sdf.parse(dia.toString()+base);			
+			strData = dataToString(novaData);
+			String basenova = strData.substring(2);			
+			if(!base.equalsIgnoreCase(basenova)){
+				novaData = fimMes(dataBase);
+			}						
+		}catch (Exception e) {
+			novaData = fimMes(dataBase);
+		}
+
+		return novaData;
+	}
+
 }

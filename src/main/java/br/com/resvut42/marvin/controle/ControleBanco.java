@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -47,7 +45,7 @@ public class ControleBanco implements Serializable {
 
 	private final long newItem = 90000;
 	private long nextItem = newItem;
-	private Set<BancoContatos> listaBancoContatos;
+	private List<BancoContatos> listaBancoContatos;
 
 	private List<BancoPeriodo> listaBancoPeriodo;
 	private BancoPeriodo bancoPeriodo;
@@ -63,7 +61,7 @@ public class ControleBanco implements Serializable {
 	 ****************************************************************************/
 	@PostConstruct
 	public void preparaTela() {
-		listaBancoContatos = new HashSet<BancoContatos>();
+		listaBancoContatos = new ArrayList<BancoContatos>();
 		conta = new Conta();
 	}
 
@@ -78,8 +76,8 @@ public class ControleBanco implements Serializable {
 				}
 			}
 			bancoEdicao.setConta(conta);
-			bancoEdicao.getContatos().clear();
-			bancoEdicao.getContatos().addAll(listaBancoContatos);
+			bancoEdicao.setContatos(null);
+			bancoEdicao.setContatos(listaBancoContatos);
 			serBanco.salvar(bancoEdicao);
 			listar();
 			mensagens.info("Registro salvo com sucesso!");
@@ -297,11 +295,11 @@ public class ControleBanco implements Serializable {
 		this.bancoSelect = bancoSelect;
 	}
 
-	public Set<BancoContatos> getListaBancoContatos() {
+	public List<BancoContatos> getListaBancoContatos() {
 		return listaBancoContatos;
 	}
 
-	public void setListaBancoContatos(Set<BancoContatos> listaBancoContatos) {
+	public void setListaBancoContatos(List<BancoContatos> listaBancoContatos) {
 		this.listaBancoContatos = listaBancoContatos;
 	}
 

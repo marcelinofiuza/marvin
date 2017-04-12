@@ -1,7 +1,6 @@
 package br.com.resvut42.marvin.pesquisa;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -20,7 +19,7 @@ import br.com.resvut42.marvin.servico.SerBanco;
  ****************************************************************************/
 @Named
 @ViewScoped
-public class PesquisaBanco extends AbstrataPesquisa implements Serializable{
+public class PesquisaBanco extends AbstrataPesquisa implements Serializable {
 
 	/****************************************************************************
 	 * Variaveis e Dependências
@@ -30,13 +29,12 @@ public class PesquisaBanco extends AbstrataPesquisa implements Serializable{
 
 	@Autowired
 	SerBanco serBanco;
-	
+
 	/****************************************************************************
 	 * Buscar lista de empresas
 	 ****************************************************************************/
 	@PostConstruct
 	public void listarBanco() {
-		listaBancos = new ArrayList<>();
 		listaBancos = serBanco.listarTodos();
 	}
 

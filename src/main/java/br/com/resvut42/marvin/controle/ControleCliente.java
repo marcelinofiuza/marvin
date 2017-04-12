@@ -3,9 +3,7 @@ package br.com.resvut42.marvin.controle;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ViewScoped;
@@ -44,7 +42,7 @@ public class ControleCliente implements Serializable {
 	private final long newItem = 90000;
 	private long nextItem = newItem;
 
-	private Set<ClienteContatos> listaClienteContatos;
+	private List<ClienteContatos> listaClienteContatos;
 	private List<Cliente> listaClientes = new ArrayList<Cliente>();
 
 	@Autowired
@@ -57,7 +55,7 @@ public class ControleCliente implements Serializable {
 	 ****************************************************************************/
 	@PostConstruct
 	public void preparaTela() {
-		setListaClienteContatos(new HashSet<ClienteContatos>());
+		setListaClienteContatos(new ArrayList<ClienteContatos>());
 		conta = new Conta();
 	}
 
@@ -72,10 +70,9 @@ public class ControleCliente implements Serializable {
 					contatosCliente.setIdContato(null);
 				}
 			}
-
 			clienteEdicao.setConta(conta);
-			clienteEdicao.getContatos().clear();
-			clienteEdicao.getContatos().addAll(listaClienteContatos);
+			clienteEdicao.setContatos(null);
+			clienteEdicao.setContatos(listaClienteContatos);
 			serCliente.salvar(clienteEdicao);
 			listar();
 			mensagens.info("Registro salvo com sucesso!");
@@ -190,11 +187,11 @@ public class ControleCliente implements Serializable {
 		this.clienteSelect = clienteSelect;
 	}
 
-	public Set<ClienteContatos> getListaClienteContatos() {
+	public List<ClienteContatos> getListaClienteContatos() {
 		return listaClienteContatos;
 	}
 
-	public void setListaClienteContatos(Set<ClienteContatos> listaClienteContatos) {
+	public void setListaClienteContatos(List<ClienteContatos> listaClienteContatos) {
 		this.listaClienteContatos = listaClienteContatos;
 	}
 

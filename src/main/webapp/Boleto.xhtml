@@ -178,6 +178,17 @@
                                              process="dialogo"
                                              update="panel"
                                              oncomplete="if(!args.validationFailed) PF('wgDados').hide()" />
+                        	<span class="ui-separator">
+                            	<span class="fa fa-fw fa-ellipsis-v"/>
+                        	</span>                                                                     
+	                        <p:commandButton id="bto-cobranca" 
+	                                         title="Cobrança" 
+	                                         icon="fa fa-download"
+	                                         actionListener="#{controleBoleto.abrirDialogoCobranca}"
+	                                         process="@this" 
+	                                         update="dialogoCobranca" 
+	                                         oncomplete="PF('wgDadosCobranca').show()"/>
+           
                         </p:toolbarGroup>
                     </p:toolbar>
 
@@ -419,7 +430,91 @@
 							</p:dataTable>
 						</p:tab>
 					</p:tabView>								
-				</p:dialog>					
+				</p:dialog>	
+				
+				<!-- Dialogo Cobrança -->
+                <p:dialog 
+                          header="Cobrança" 
+                          widgetVar="wgDadosCobranca" 
+                          id="dialogoCobranca" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+				
+                    <p:panelGrid id="panelSelecaoCobranca"
+                                 columns="2" 
+                                 layout="grid" 
+                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+                            
+                        <p:outputLabel value="Cobrança" for="cobranca" />     
+                        <p:column>
+                            <p:inputText id="cobranca" 
+                                         size="10"
+                                         value="#{controleBoleto.calculoBoleto.cobranca.idCobranca}"
+                                         readonly="true"/>
+                                         
+                            <p:commandButton icon="fa fa-search" 
+                                             title="Pesquisar"
+                                             action="#{pesquisaCobranca.abrirDialogo('pesquisaCobranca')}"
+                                             process="@this"
+                                             update="@none">
+                                                 
+                                <p:ajax event="dialogReturn" 
+                                        listener="#{controleBoleto.cobrancaSelecionada}"
+                                        process="@this"                                             
+                                        update="panelSelecaoCobranca"/>
+                                            
+                            </p:commandButton>
+                               
+                        	<p:inputText id="descricaoCobranca" size="50"
+                            	         value="#{controleBoleto.calculoBoleto.cobranca.descricao}"
+                                	     readonly="true"/>
+                                                                                              
+                        </p:column>
+                        
+						<p:outputLabel value="Vencimento Base" for="vencimentoBase"/>
+				        <p:calendar id="vencimentoBase" size="10"
+				        			locale="pt_BR"
+				                    value="#{controleBoleto.calculoBoleto.vencimento}"
+				                    pattern="dd/MM/yyyy" mask="99/99/9999"
+				                    showOn="button"
+				                    required="true"/>                        
+                        
+						<p:outputLabel value="Base 1" for="base1"/>
+				        <p:inputNumber id="base1" size="20"
+				        			   value="#{controleBoleto.calculoBoleto.base1}"
+				                       decimalSeparator=","
+				                       thousandSeparator="."
+				                       required="true"/> 	                        
+
+						<p:outputLabel value="Base 2" for="base2"/>
+				        <p:inputNumber id="base2" size="20"
+				        			   value="#{controleBoleto.calculoBoleto.base2}"
+				                       decimalSeparator=","
+				                       thousandSeparator="."
+				                       required="true"/> 	                      
+				                       
+						<p:outputLabel value="Base 3" for="base3"/>
+				        <p:inputNumber id="base3" size="20"
+				        			   value="#{controleBoleto.calculoBoleto.base3}"
+				                       decimalSeparator=","
+				                       thousandSeparator="."
+				                       required="true"/> 	                      				                       
+				                    
+                        <p:column>
+                            <p:commandButton icon="fa fa-check" 
+                                             title="Ok"
+                                             process="panelSelecaoCobranca"                                             
+                                             update="panel"
+                                             action="#{controleBoleto.confirmaCobranca}"
+                                             disabled="#{controleBoleto.calculoBoleto.cobranca == null}"
+                                             oncomplete="PF('wgDadosCobranca').hide()"/>                        
+
+                        </p:column>   				                                               
+					</p:panelGrid>                    
+				</p:dialog>
+								
 			</h:form>		
 		</section>		
 	</ui:define>

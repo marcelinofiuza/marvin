@@ -65,6 +65,10 @@ public class SerBoleto {
 			if(item.getVencimento() == null){
 				throw new Exception("Data de vencimento não informada no item " + i);
 			}
+			
+			if(item.getTotalItem().compareTo(new BigDecimal(0)) <= 0 ){
+				throw new Exception("Valor zero no item " + i);
+			}
 		}
 	}	
 	

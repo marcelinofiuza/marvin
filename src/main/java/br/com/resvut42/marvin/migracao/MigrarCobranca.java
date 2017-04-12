@@ -91,7 +91,7 @@ public class MigrarCobranca {
 	private void montaCabecalho() {
 
 		Cobranca cobranca = new Cobranca();
-		cobranca.setDescricao("Grupo de cobrança " + clgrupo);
+		cobranca.setDescricao("GRUPO DE COBRANÇA " + clgrupo);
 		cobranca.setConta(converteConta(contaPadrao));
 		mapCobranca.put(clgrupo, cobranca);
 

@@ -40,7 +40,7 @@ public class ControleCobranca implements Serializable {
 	private Cobranca cobrancaSelect;
 	private Conta conta = new Conta();
 
-	private final long newItem = 90000;
+	private final long newItem = 900000;
 	private long nextItem = newItem;
 	private long editItem;
 
