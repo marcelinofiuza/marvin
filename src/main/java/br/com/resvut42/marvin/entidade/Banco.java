@@ -48,15 +48,12 @@ public class Banco implements Serializable {
 	@Column(length = 50)
 	private String descricao;
 
-	@NotEmpty
 	@Column(length = 10)
 	private String agencia;
 
-	@NotEmpty
 	@Column(length = 30)
 	private String nomeAgencia;
 
-	@NotEmpty
 	@Column(length = 15)
 	private String numeroConta;
 
@@ -75,6 +72,10 @@ public class Banco implements Serializable {
 	@JoinColumn(name = "idBanco")
 	@OrderBy("dataInicio")
 	private List<BancoPeriodo> periodos = new ArrayList<BancoPeriodo>();
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "idBanco")
+	private List<Carteira> carteiras = new ArrayList<Carteira>();
 
 	public Long getIdBanco() {
 		return idBanco;
@@ -160,11 +161,11 @@ public class Banco implements Serializable {
 		contato.setBanco(this);
 		this.contatos.add(contato);
 	}
-	
-	public void addContato(Contato contato){
+
+	public void addContato(Contato contato) {
 		BancoContatos bc = new BancoContatos();
 		bc.setIdContato(null);
-		bc.setContato(contato);		
+		bc.setContato(contato);
 		addContato(bc);
 	}
 
@@ -176,18 +177,31 @@ public class Banco implements Serializable {
 		this.periodos = periodos;
 	}
 
-	public BancoPeriodo getPeriodo(Long idPeriodo){		
+	public BancoPeriodo getPeriodo(Long idPeriodo) {
 		for (BancoPeriodo bancoPeriodo : periodos) {
-			if(bancoPeriodo.getIdPeriodo() == idPeriodo){
+			if (bancoPeriodo.getIdPeriodo() == idPeriodo) {
 				return bancoPeriodo;
 			}
 		}
 		return null;
 	}
-	
+
 	public void addSaldo(BancoPeriodo periodo) {
 		periodo.setBanco(this);
 		this.periodos.add(periodo);
+	}
+
+	public List<Carteira> getCarteiras() {
+		return carteiras;
+	}
+
+	public void setCarteiras(List<Carteira> carteiras) {
+		this.carteiras = carteiras;
+	}
+
+	public void addCarteira(Carteira carteira) {
+		carteira.setBanco(this);
+		this.carteiras.add(carteira);
 	}
 
 	@Override

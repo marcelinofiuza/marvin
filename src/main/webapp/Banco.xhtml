@@ -60,7 +60,21 @@
                                             disabled="#{controleBanco.bancoSelect == null}"
                                             actionListener="#{controleBanco.editPeriodo}">
                                             <p:resetInput target="dialogoPeriodo" />
+                        </p:commandButton>
+                        <span class="ui-separator">
+                            <span class="fa fa-fw fa-ellipsis-v"/>
+                        </span>
+                        <p:commandButton    id="bto-carteira" 
+                                            title="Carteira Cobrança" 
+                                            icon="fa fa-suitcase" 
+                                            process="@this" 
+                                            update="dialogoCarteira tabCarteira"
+                                            oncomplete="PF('wgCarteira').show()" 
+                                            disabled="#{controleBanco.bancoSelect == null}"
+                                            actionListener="#{controleBanco.editCarteira}">
+                                            <p:resetInput target="dialogoCarteira" />
                         </p:commandButton>                       						
+                                               						
 					</p:toolbarGroup>
 
 					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
@@ -497,7 +511,131 @@
                                          update="tabPeriodo"/> 
       
                     </p:panelGrid>  
-                </p:dialog>                
+                </p:dialog>
+                
+				<!-- Dialogo Carteira -->
+                <p:dialog styleClass="r42-dialogo" 
+                          header="Carteira de Cobrança" 
+                          widgetVar="wgCarteira" 
+                          id="dialogoCarteira" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+
+                    <!-- Barra de Ferramentas dialogo-->
+                    <p:defaultCommand target="btoCarteira-novo" scope="dialogoCarteira" />
+                    <p:toolbar styleClass="r42-toolbar"
+                    		   id="toolbarCarteira">
+                               
+						<p:toolbarGroup align="left">
+	                    	<p:commandButton    id="btoCarteira-novo" 
+	                                            title="Novo" 
+	                                            icon="fa fa-file-o"
+	                                            actionListener="#{controleBanco.novaCarteira}" 
+	                                            process="@this"
+	                                            update="dialogoDadosCarteira" 
+	                                            oncomplete="PF('wgDadosCarteira').show()">
+	                                            <p:resetInput target="dialogoDadosCarteira" />
+	                        </p:commandButton>
+                            <p:commandButton id="btoCarteira-salvar" 
+                                             title="Salvar" 
+                                             icon="fa fa-save" 
+                                             action="#{controleBanco.salvaCarteiras}"  
+                                             process="@this"
+                                             oncomplete="PF('wgCarteira').hide()" />	                        
+						</p:toolbarGroup>
+	                   
+	                                      
+					</p:toolbar>
+					
+	                <p:messages id="msgCarteira" showDetail="false" autoUpdate="true" closable="true" />
+	                   						
+                    <!-- Listagem dos dados da carteira-->
+                    <p:dataTable value="#{controleBanco.listaBancoCarteira}" 
+                                 var="carteira" 
+                                 rowIndexVar="rowId"
+                                 id="tabCarteira" 
+                                 reflow="true" 
+                                 rows="11"
+                                 paginator="true" 
+                                 paginatorPosition="top"  
+                                 emptyMessage="Nenhuma Carteira Existente">
+                                 
+	                    <!-- Colunas -->
+	                    <p:column headerText="Descrição">
+	                        <h:outputText value="#{carteira.descricao}"/>
+	                    </p:column> 
+	                    <p:column headerText="Carteira" width="100">
+	                        <h:outputText value="#{carteira.codCarteira}"/>
+	                    </p:column> 	                                                     
+	                    <p:column headerText="Agência" width="100">
+	                        <h:outputText value="#{carteira.agencia}"/>
+	                    </p:column> 
+	                    <p:column headerText="N° Conta" width="100">
+	                        <h:outputText value="#{carteira.conta}"/>
+	                    </p:column>
+	                    <p:column headerText="Cod. Mestre" width="100">
+	                        <h:outputText value="#{carteira.codMestre}"/>
+	                    </p:column>
+	                    <p:column headerText="#" width="50">
+                            <p:commandButton icon="fa fa-trash" 
+                                             title="Remover" 
+                                             action="#{controleBanco.removeCarteira(carteira)}" 
+                                             process="@this"
+                                             update="tabCarteira"/>
+						</p:column>                                             	                    	                     	                                                     
+					</p:dataTable>
+				</p:dialog>
+				
+                <!-- Dialogo Carteira -->
+                <p:dialog header="Dados Carteira" 
+                          widgetVar="wgDadosCarteira" 
+                          id="dialogoDadosCarteira" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+                          
+                    <p:defaultCommand target="btoCarteira-ok" scope="dialogoDadosCarteira" />
+                          
+                    <p:panelGrid id="panelCarteira" 
+                                 columns="2" 
+                                 layout="grid" 
+                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+                                 
+						<p:outputLabel value="Descrição" for="descricaoCarteira" />
+						<p:inputText id="descricaoCarteira" size="30" maxlength="50" 
+									 value="#{controleBanco.bancoCarteira.descricao}"
+									 onblur="value=value.toUpperCase()" />                                 
+
+						<p:outputLabel value="Cod.Carteira" for="codCarteira" />
+						<p:inputText id="codCarteira" size="2" maxlength="2" 
+									 value="#{controleBanco.bancoCarteira.codCarteira}"
+									 onblur="value=value.toUpperCase()" />                                 
+
+						<p:outputLabel value="Agência" for="agencia" />
+						<p:inputText id="agencia" size="10" maxlength="10" 
+									 value="#{controleBanco.bancoCarteira.agencia}"
+									 onblur="value=value.toUpperCase()" />
+
+						<p:outputLabel value="Nº Conta" for="conta" />
+						<p:inputText id="conta" size="15" maxlength="15" 
+									 value="#{controleBanco.bancoCarteira.conta}"
+									 onblur="value=value.toUpperCase()" />
+
+						<p:outputLabel value="Cod. Mestre" for="codMestre" />
+						<p:inputText id="codMestre" size="7" maxlength="7" 
+									 value="#{controleBanco.bancoCarteira.codMestre}"
+									 onblur="value=value.toUpperCase()" />
+									 									 									                                  
+                        <p:commandButton id="btoCarteira-ok" 
+                                         title="Ok" 
+                                         icon="fa fa-check" 
+                                         actionListener="#{controleBanco.adicionaCarteira}"
+                                         process="dialogoDadosCarteira" 
+                                         update="tabCarteira"/>                                  
+					</p:panelGrid>
+				</p:dialog>
 			</h:form>
 		</section>
 	</ui:define>

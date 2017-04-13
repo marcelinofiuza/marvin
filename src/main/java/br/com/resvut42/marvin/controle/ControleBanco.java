@@ -19,6 +19,7 @@ import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.entidade.BancoContatos;
 import br.com.resvut42.marvin.entidade.BancoPeriodo;
+import br.com.resvut42.marvin.entidade.Carteira;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.util.FacesMessages;
 import br.com.resvut42.marvin.util.R42Data;
@@ -50,6 +51,9 @@ public class ControleBanco implements Serializable {
 	private List<BancoPeriodo> listaBancoPeriodo;
 	private BancoPeriodo bancoPeriodo;
 	private boolean periodoValido;
+
+	private List<Carteira> listaBancoCarteira;
+	private Carteira bancoCarteira;
 
 	@Autowired
 	SerBanco serBanco;
@@ -129,7 +133,7 @@ public class ControleBanco implements Serializable {
 	public void novoCadastro() {
 		preparaTela();
 		bancoEdicao = new Banco();
-		
+
 	}
 
 	/****************************************************************************
@@ -175,7 +179,7 @@ public class ControleBanco implements Serializable {
 	public void novoPeriodo() {
 		bancoPeriodo = new BancoPeriodo();
 		bancoPeriodo.setBanco(bancoSelect);
-		if (listaBancoPeriodo == null || listaBancoPeriodo.isEmpty() ) {
+		if (listaBancoPeriodo == null || listaBancoPeriodo.isEmpty()) {
 			listaBancoPeriodo = new ArrayList<>();
 			bancoPeriodo.setAbertura(true);
 		} else {
@@ -198,15 +202,15 @@ public class ControleBanco implements Serializable {
 		} else {
 			for (BancoPeriodo itemPeriodo : listaBancoPeriodo) {
 				if (R42Data.conflitoPeriodos(itemPeriodo.getDataInicio(), itemPeriodo.getDataFinal(),
-											 bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
-					
+						bancoPeriodo.getDataInicio(), bancoPeriodo.getDataFinal())) {
+
 					periodoValido = false;
 					mensagens.error("Periodo informado está em conflito entre "
 							+ R42Data.dataToString(itemPeriodo.getDataInicio()) + " e "
 							+ R42Data.dataToString(itemPeriodo.getDataFinal()));
 					break;
-					
-				}			
+
+				}
 			}
 		}
 
@@ -238,7 +242,7 @@ public class ControleBanco implements Serializable {
 	 ****************************************************************************/
 	public void fechaPeriodo(BancoPeriodo bancoPeriodo) {
 		for (BancoPeriodo regPeriodo : this.listaBancoPeriodo) {
-			if (regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio()) == 0) {				
+			if (regPeriodo.getDataInicio().compareTo(bancoPeriodo.getDataInicio()) == 0) {
 				regPeriodo.setFechado(true);
 			}
 		}
@@ -259,7 +263,7 @@ public class ControleBanco implements Serializable {
 	 * Salvar os periodos do banco
 	 ****************************************************************************/
 	public void salvaPeriodos() {
-		try {			
+		try {
 			bancoSelect.setPeriodos(listaBancoPeriodo);
 			serBanco.salvar(bancoSelect);
 			listar();
@@ -271,6 +275,53 @@ public class ControleBanco implements Serializable {
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
 	}
 
+	/****************************************************************************
+	 * Atribuir no controle o registro selecionado na tela de banco
+	 ****************************************************************************/
+	public void editCarteira() {
+		listaBancoCarteira = new ArrayList<>();
+		listaBancoCarteira.addAll(bancoSelect.getCarteiras());
+	}	
+	
+	/****************************************************************************
+	 * Adicionar nova carteira em branco
+	 ****************************************************************************/
+	public void novaCarteira() {
+		bancoCarteira = new Carteira();
+		bancoCarteira.setBanco(bancoSelect);
+	}
+	
+	/****************************************************************************
+	 * Salvar as carteiras do banco
+	 ****************************************************************************/
+	public void salvaCarteiras() {
+		try {
+			bancoSelect.setCarteiras(listaBancoCarteira);
+			serBanco.salvar(bancoSelect);
+			listar();
+			mensagens.info("Registro salvo com sucesso!");
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+			e.printStackTrace();
+		}
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
+	}
+	
+	/****************************************************************************
+	 * Remove uma carteira da lista de carteiras
+	 ****************************************************************************/
+	public void removeCarteira(Carteira bancoCarteira) {
+		this.listaBancoCarteira.remove(bancoCarteira);
+	}	
+	
+	/****************************************************************************
+	 * Adicionar periodo na lista de periodos
+	 ****************************************************************************/
+	public void adicionaCarteira() {
+		listaBancoCarteira.add(bancoCarteira);
+		RequestContext.getCurrentInstance().execute("PF('wgDadosCarteira').hide();");
+	}
+	
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
@@ -353,4 +404,21 @@ public class ControleBanco implements Serializable {
 		}
 		return ultimo;
 	}
+
+	public List<Carteira> getListaBancoCarteira() {
+		return listaBancoCarteira;
+	}
+
+	public void setListaBancoCarteira(List<Carteira> listaBancoCarteira) {
+		this.listaBancoCarteira = listaBancoCarteira;
+	}
+
+	public Carteira getBancoCarteira() {
+		return bancoCarteira;
+	}
+
+	public void setBancoCarteira(Carteira bancoCarteira) {
+		this.bancoCarteira = bancoCarteira;
+	}
+
 }
