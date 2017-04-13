@@ -71,8 +71,7 @@ public class ControleFornecedor implements Serializable {
 					contatosFornecedor.setIdContato(null);
 				}
 			}
-			fornecedorEdicao.setConta(null);
-			fornecedorEdicao.setContatos(null);
+			fornecedorEdicao.setConta(conta);
 			fornecedorEdicao.setContatos(listaFornecedorContatos);
 			serFornecedor.salvar(fornecedorEdicao);
 			listar();
@@ -155,7 +154,6 @@ public class ControleFornecedor implements Serializable {
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
-
 	
 	public Fornecedor getFornecedorEdicao() {
 		return fornecedorEdicao;
