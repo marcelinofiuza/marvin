@@ -27,6 +27,7 @@ public class SerFornecedor {
 	 ****************************************************************************/
 	public void salvar(Fornecedor fornecedor) throws Exception {
 		try {
+			ajustarDados(fornecedor);
 			repFornecedor.save(fornecedor);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -56,6 +57,24 @@ public class SerFornecedor {
 	 ****************************************************************************/
 	public List<Fornecedor> listarTodos() {
 		return repFornecedor.findAll();
+	}
+	
+	/****************************************************************************
+	 * Metodo para validar dados antes de salvar
+	 ****************************************************************************/
+	
+	private void ajustarDados(Fornecedor fornecedor) {
+
+		// Seta null no cnpj quando estiver em branco para validação
+		if (fornecedor.getCnpj() != null && fornecedor.getCnpj().isEmpty()) {
+			fornecedor.setCnpj(null);
+		}
+
+		// Seta null no cpf quando estiver em branco para validação
+		if (fornecedor.getCpf() != null && fornecedor.getCpf().isEmpty()) {
+			fornecedor.setCpf(null);
+		}
+
 	}
 
 }

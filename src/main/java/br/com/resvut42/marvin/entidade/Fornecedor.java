@@ -67,8 +67,8 @@ public class Fornecedor implements Serializable {
 	private Conta conta;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "idCliente")
-	private List<ClienteContatos> contatos = new ArrayList<ClienteContatos>();
+	@JoinColumn(name = "idFornecedor")
+	private List<FornecedorContatos> contatos = new ArrayList<FornecedorContatos>();
 
 	public Long getIdFornecedor() {
 		return idFornecedor;
@@ -142,11 +142,11 @@ public class Fornecedor implements Serializable {
 		this.conta = conta;
 	}
 
-	public List<ClienteContatos> getContatos() {
+	public List<FornecedorContatos> getContatos() {
 		return contatos;
 	}
 
-	public void setContatos(List<ClienteContatos> contatos) {
+	public void setContatos(List<FornecedorContatos> contatos) {
 		this.contatos = contatos;
 	}
 
