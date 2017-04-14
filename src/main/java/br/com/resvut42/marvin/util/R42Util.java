@@ -4,8 +4,6 @@ import java.io.File;
 
 import org.jamel.dbf.DbfReader;
 
-import br.com.resvut42.marvin.migracao.MigrarConta;
-
 public class R42Util {
 
 	/****************************************************************************
@@ -136,14 +134,23 @@ public class R42Util {
 	 * Retorna o arquivo DbfReader
 	 * 
 	 * @param Arquivo
-	 *            - Arquivo na pasta src/main/resources
+	 *            - path do arquivo "c:\temp\dbf\arquivo.dbf"
 	 * @return - DbfReader
 	 * 
 	 ****************************************************************************/
-	public static DbfReader lerDbf(String arquivo){		
-		ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();
-		File file = new File(classLoader.getResource(arquivo).getFile());
-		DbfReader dbfReader = new DbfReader(file);
-		return dbfReader;		
+	public static DbfReader lerDbf(String arquivo) throws Exception{	
+
+//      "/src/resources/"+arquivo		
+//		ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();	
+//		File file = new File(classLoader.getResource(arquivo).getFile());
+		
+		File file = new File(arquivo);
+		try {		
+			DbfReader dbfReader = new DbfReader(file);
+			return dbfReader;		
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new Exception("Não foi possível abrir o arquivo " + file.getAbsolutePath());
+		}		 
 	}
 }

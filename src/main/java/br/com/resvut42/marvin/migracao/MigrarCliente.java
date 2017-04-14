@@ -22,7 +22,7 @@ import br.com.resvut42.marvin.util.R42Util;
 @Component
 public class MigrarCliente {
 
-	private final String arquivo = "dbf/DCL01.DBF";
+	private final String arquivo = "c:\\temp\\dbf\\DCL01.DBF";
 	private DbfReader dbfReader;
 
 	@Autowired
@@ -131,7 +131,7 @@ public class MigrarCliente {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new Exception("Erro na importação dos Condôminos!");
+			throw new Exception(e.getMessage());
 		}
 
 	}

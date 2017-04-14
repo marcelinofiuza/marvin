@@ -23,7 +23,7 @@ import br.com.resvut42.marvin.util.R42Util;
 @Component
 public class MigrarConta {
 
-	private final String arquivo = "dbf/DCT01.DBF";
+	private final String arquivo = "c:\\temp\\dbf\\DCT01.DBF";
 	private int lenCt1Conta;
 	private DbfReader dbfReader;
 	private List<String[]> registro;
@@ -66,7 +66,7 @@ public class MigrarConta {
 			}
 
 		} catch (Exception e) {
-			throw new Exception("Erro na importação da Conta!");
+			throw new Exception(e.getMessage());
 		}
 
 	}

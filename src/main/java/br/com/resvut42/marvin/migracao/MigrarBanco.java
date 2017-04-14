@@ -26,7 +26,7 @@ import br.com.resvut42.marvin.util.R42Util;
 @Component
 public class MigrarBanco {
 
-	private final String arquivo = "dbf/DBC01.DBF";
+	private final String arquivo = "c:\\temp\\dbf\\DBC01.DBF";
 	private DbfReader dbfReader;
 
 	@Autowired
@@ -143,7 +143,7 @@ public class MigrarBanco {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new Exception("Erro na importação dos Bancos!");
+			throw new Exception(e.getMessage());
 		}
 	}
 
