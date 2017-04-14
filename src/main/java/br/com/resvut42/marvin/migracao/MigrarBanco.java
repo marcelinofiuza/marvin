@@ -1,6 +1,5 @@
 package br.com.resvut42.marvin.migracao;
 
-import java.io.File;
 import java.math.BigDecimal;
 
 import org.jamel.dbf.DbfReader;
@@ -17,6 +16,7 @@ import br.com.resvut42.marvin.enums.Estado;
 import br.com.resvut42.marvin.enums.Febraban;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerConta;
+import br.com.resvut42.marvin.util.R42Util;
 
 /****************************************************************************
  * Classe para migrar dados do Banco ADMCON -> MARVIN
@@ -41,10 +41,8 @@ public class MigrarBanco {
 
 		try {
 
-			ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();
-			File file = new File(classLoader.getResource(arquivo).getFile());
-			dbfReader = new DbfReader(file);
-
+			dbfReader = R42Util.lerDbf(arquivo);
+			
 			for (int i = 0; i < dbfReader.getRecordCount(); i++) {
 				Object[] row = dbfReader.nextRecord();
 

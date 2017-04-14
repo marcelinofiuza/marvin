@@ -1,7 +1,5 @@
 package br.com.resvut42.marvin.migracao;
 
-import java.io.File;
-
 import org.jamel.dbf.DbfReader;
 import org.jamel.dbf.utils.DbfUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +36,7 @@ public class MigrarCliente {
 	public void executar() throws Exception {
 		try {
 
-			ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();
-			File file = new File(classLoader.getResource(arquivo).getFile());
-			dbfReader = new DbfReader(file);
+			dbfReader = R42Util.lerDbf(arquivo);
 
 			for (int i = 0; i < dbfReader.getRecordCount(); i++) {
 				Object[] row = dbfReader.nextRecord();

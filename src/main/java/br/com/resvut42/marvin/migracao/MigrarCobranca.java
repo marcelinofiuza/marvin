@@ -1,6 +1,5 @@
 package br.com.resvut42.marvin.migracao;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +16,7 @@ import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.servico.SerCliente;
 import br.com.resvut42.marvin.servico.SerCobranca;
 import br.com.resvut42.marvin.servico.SerConta;
+import br.com.resvut42.marvin.util.R42Util;
 
 /****************************************************************************
  * Classe para migrar dados de cobrança dos Clientes ADMCON -> MARVIN
@@ -53,9 +53,8 @@ public class MigrarCobranca {
 	 ****************************************************************************/
 	public void executar() throws Exception {
 		try {
-			ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();
-			File file = new File(classLoader.getResource(arquivo).getFile());
-			dbfReader = new DbfReader(file);
+			
+			dbfReader = R42Util.lerDbf(arquivo);
 
 			for (int i = 0; i < dbfReader.getRecordCount(); i++) {
 				Object[] row = dbfReader.nextRecord();

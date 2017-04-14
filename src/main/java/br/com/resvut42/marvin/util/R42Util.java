@@ -1,5 +1,11 @@
 package br.com.resvut42.marvin.util;
 
+import java.io.File;
+
+import org.jamel.dbf.DbfReader;
+
+import br.com.resvut42.marvin.migracao.MigrarConta;
+
 public class R42Util {
 
 	/****************************************************************************
@@ -125,4 +131,19 @@ public class R42Util {
 				newCnpj.substring(12,14);
 
 	}	
+	
+	/****************************************************************************
+	 * Retorna o arquivo DbfReader
+	 * 
+	 * @param Arquivo
+	 *            - Arquivo na pasta src/main/resources
+	 * @return - DbfReader
+	 * 
+	 ****************************************************************************/
+	public static DbfReader lerDbf(String arquivo){		
+		ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();
+		File file = new File(classLoader.getResource(arquivo).getFile());
+		DbfReader dbfReader = new DbfReader(file);
+		return dbfReader;		
+	}
 }

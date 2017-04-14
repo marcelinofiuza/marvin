@@ -1,6 +1,5 @@
 package br.com.resvut42.marvin.migracao;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import br.com.resvut42.marvin.enums.AnaliticaSintetica;
 import br.com.resvut42.marvin.enums.AtivaItativa;
 import br.com.resvut42.marvin.enums.Natureza;
 import br.com.resvut42.marvin.servico.SerConta;
+import br.com.resvut42.marvin.util.R42Util;
 
 /****************************************************************************
  * Classe para migrar do plano de contas ADMCON -> MARVIN
@@ -38,9 +38,7 @@ public class MigrarConta {
 
 		try {
 
-			ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();
-			File file = new File(classLoader.getResource(arquivo).getFile());
-			dbfReader = new DbfReader(file);
+			dbfReader = R42Util.lerDbf(arquivo);
 
 			try {
 				processaDados();
