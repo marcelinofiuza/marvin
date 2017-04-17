@@ -26,7 +26,7 @@ import br.com.resvut42.marvin.util.R42Util;
 @Component
 public class MigrarCobranca {
 
-	private final String arquivo = "c:\\temp\\dbf\\DCL01.DBF";
+	private final String arquivo = "DCL01.DBF";
 	private DbfReader dbfReader;
 
 	private Map<String, Cobranca> mapCobranca = new HashMap<>();

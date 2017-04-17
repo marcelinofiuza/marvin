@@ -16,6 +16,7 @@ import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerCliente;
 import br.com.resvut42.marvin.servico.SerCobranca;
 import br.com.resvut42.marvin.servico.SerConta;
+import br.com.resvut42.marvin.servico.SerFornecedor;
 import br.com.resvut42.marvin.util.FacesMessages;
 
 /****************************************************************************
@@ -37,6 +38,7 @@ public class ControleMigracao implements Serializable {
 	private boolean bancoMigrado;
 	private boolean clienteMigrado;
 	private boolean cobrancaMigrado;
+	private boolean fornecedorMigrado;
 
 	@Autowired
 	SerConta serConta;
@@ -46,6 +48,8 @@ public class ControleMigracao implements Serializable {
 	SerCliente serCliente;
 	@Autowired
 	SerCobranca serCobranca;
+	@Autowired
+	SerFornecedor serFornecedor;
 
 	@Autowired
 	MigrarConta migrarConta;
@@ -55,6 +59,8 @@ public class ControleMigracao implements Serializable {
 	MigrarCliente migrarCliente;
 	@Autowired
 	MigrarCobranca migrarCobranca;
+	@Autowired
+	MigrarFornecedor migrarFornecedor;
 
 	@Autowired
 	private FacesMessages mensagens;
@@ -73,6 +79,7 @@ public class ControleMigracao implements Serializable {
 		column1.addWidget("banco");
 		column1.addWidget("cliente");
 		column1.addWidget("cobranca");
+		column1.addWidget("fornecedor");
 
 		// column2.addWidget("");
 		// column2.addWidget("");
@@ -88,6 +95,7 @@ public class ControleMigracao implements Serializable {
 		bancoMigrado = serBanco.existeBanco();
 		clienteMigrado = serCliente.existeCliente();
 		cobrancaMigrado = serCobranca.existeCobranca();
+		fornecedorMigrado = serFornecedor.existeFornecedor();
 
 	}
 
@@ -148,6 +156,20 @@ public class ControleMigracao implements Serializable {
 	}
 
 	/****************************************************************************
+	 * Executa a importação dos Fornecedores
+	 ****************************************************************************/
+	public void migrarFornecedor() {
+		try {
+			migrarFornecedor.executar();
+			mensagens.info("Migração dos Fornecedores efetuada com sucesso!");
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+		}
+
+		init();
+	}
+
+	/****************************************************************************
 	 * Gets e Sets
 	 ****************************************************************************/
 
@@ -169,6 +191,10 @@ public class ControleMigracao implements Serializable {
 
 	public boolean isCobrancaMigrado() {
 		return cobrancaMigrado;
+	}
+
+	public boolean isFornecedorMigrado() {
+		return fornecedorMigrado;
 	}
 
 }

@@ -35,11 +35,13 @@ public class Fornecedor implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long idFornecedor;
 
+	@Column(length = 15)
+	private String frCodigo;
+
 	@NotEmpty
 	@Column(length = 80, nullable = false)
 	private String razaoSocial;
 
-	@NotEmpty
 	@Column(length = 40, nullable = false)
 	private String fantasia;
 
@@ -76,6 +78,14 @@ public class Fornecedor implements Serializable {
 
 	public void setIdFornecedor(Long idFornecedor) {
 		this.idFornecedor = idFornecedor;
+	}
+
+	public String getFrCodigo() {
+		return frCodigo;
+	}
+
+	public void setFrCodigo(String frCodigo) {
+		this.frCodigo = frCodigo;
 	}
 
 	public String getRazaoSocial() {
@@ -150,6 +160,18 @@ public class Fornecedor implements Serializable {
 		this.contatos = contatos;
 	}
 
+	public void addContato(FornecedorContatos contato) {
+		contato.setFornecedor(this);
+		this.contatos.add(contato);
+	}
+	
+	public void addContato(Contato contato) {
+		FornecedorContatos fc = new FornecedorContatos();
+		fc.setIdContato(null);
+		fc.setContato(contato);
+		addContato(fc);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

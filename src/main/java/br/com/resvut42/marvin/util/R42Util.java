@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.jamel.dbf.DbfReader;
 
+import br.com.resvut42.marvin.enums.Estado;
+
 public class R42Util {
 
 	/****************************************************************************
@@ -131,26 +133,42 @@ public class R42Util {
 	}	
 	
 	/****************************************************************************
-	 * Retorna o arquivo DbfReader
+	 * Retorna o arquivo DbfReader contido no path c:\temp\dbf
 	 * 
-	 * @param Arquivo
-	 *            - path do arquivo "c:\temp\dbf\arquivo.dbf"
+	 * @param arquivo
+	 *            - "arquivo.dbf"
 	 * @return - DbfReader
 	 * 
 	 ****************************************************************************/
 	public static DbfReader lerDbf(String arquivo) throws Exception{	
 
-//      "/src/resources/"+arquivo		
+//      String path = "/src/resources/"+arquivo		
 //		ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();	
-//		File file = new File(classLoader.getResource(arquivo).getFile());
+//		File file = new File(classLoader.getResource(path).getFile());
 		
-		File file = new File(arquivo);
+		String path = "c:\\temp\\dbf\\"+arquivo;		
+		File file = new File(path);
+		
 		try {		
 			DbfReader dbfReader = new DbfReader(file);
 			return dbfReader;		
 		} catch (Exception e) {
-			// TODO: handle exception
 			throw new Exception("Não foi possível abrir o arquivo " + file.getAbsolutePath());
 		}		 
 	}
+	
+	/****************************************************************************
+	 * Converte String em Estado
+	 ****************************************************************************/
+	public static Estado converteEstado(String uf) throws Exception {
+		Estado estado = null;
+		if (uf != null && !uf.isEmpty()) {
+			try {
+				estado = Estado.valueOf(uf);
+			} catch (Exception e) {
+				throw new Exception("Estado não existente!");
+			}					
+		}
+		return estado;
+	}	
 }

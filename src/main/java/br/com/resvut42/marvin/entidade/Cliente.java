@@ -39,7 +39,6 @@ public class Cliente implements Serializable {
 	@Column(length = 80, nullable = false)
 	private String razaoSocial;
 
-	@NotEmpty
 	@Column(length = 40, nullable = false)
 	private String fantasia;
 

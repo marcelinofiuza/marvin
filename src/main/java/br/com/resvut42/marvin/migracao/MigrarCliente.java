@@ -9,7 +9,6 @@ import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.Conta;
 //import br.com.resvut42.marvin.entidade.Contato;
 import br.com.resvut42.marvin.entidade.Endereco;
-import br.com.resvut42.marvin.enums.Estado;
 import br.com.resvut42.marvin.servico.SerCliente;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.R42Util;
@@ -22,7 +21,7 @@ import br.com.resvut42.marvin.util.R42Util;
 @Component
 public class MigrarCliente {
 
-	private final String arquivo = "c:\\temp\\dbf\\DCL01.DBF";
+	private final String arquivo = "DCL01.DBF";
 	private DbfReader dbfReader;
 
 	@Autowired
@@ -90,16 +89,23 @@ public class MigrarCliente {
 				
 				String logradouro = "";
 				String numero = "";
-				String complemento = "";
-				
-				String[] parts = clender.split(",");
-				logradouro = parts[0].trim();				
+				String complemento = "";				
+				String[] parts = clender.split(",");				
+				if(parts.length >= 1){
+					logradouro = parts[0].trim();				
+				}				
 				if(parts.length > 1){
 					numero = parts[1].trim();
+					if(numero.length() > 10){
+						numero.substring(0, 10);
+					}
 				}				
 				if(parts.length > 2){
 					complemento = parts[2].trim();
-				}				
+					if(complemento.length() > 20){
+						complemento.substring(0, 20);
+					}					
+				}			
 				
 				Endereco endereco = new Endereco();
 				endereco.setCep(clcep);
@@ -108,7 +114,7 @@ public class MigrarCliente {
 				endereco.setComplemento(complemento);
 				endereco.setBairro(clbair);
 				endereco.setCidade(clcidade);
-				endereco.setUf(converteEstado(cluf));
+				endereco.setUf(R42Util.converteEstado(cluf));
 				
 //				Contato contato = new Contato();
 //				contato.setNomeContato(clrazao);
@@ -136,14 +142,6 @@ public class MigrarCliente {
 
 	}
 	
-	/****************************************************************************
-	 * Converte String em Estado
-	 ****************************************************************************/	
-	private Estado converteEstado(String uf) {
-		Estado estado = Estado.valueOf(uf);
-		return estado;
-	}
-
 	/****************************************************************************
 	 * Converte String em Conta (busca no banco de dados)
 	 ****************************************************************************/	

@@ -23,7 +23,7 @@ import br.com.resvut42.marvin.util.R42Util;
 @Component
 public class MigrarConta {
 
-	private final String arquivo = "c:\\temp\\dbf\\DCT01.DBF";
+	private final String arquivo = "DCT01.DBF";
 	private int lenCt1Conta;
 	private DbfReader dbfReader;
 	private List<String[]> registro;

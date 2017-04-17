@@ -69,7 +69,19 @@
 
                         <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
                     </p:panel>
-                                                                            
+
+                    <p:panel id="fornecedor" header="Fornecedor">
+                        <p:commandButton id="bto-fornecedor"
+                                         title="Migrar"
+                                         value="Migrar"
+                                         process="@this"   
+                                         disabled="#{controleMigracao.fornecedorMigrado}"                                      
+                                         actionListener="#{controleMigracao.migrarFornecedor}"
+                                         update="board"/>
+
+                        <p:ajaxStatus onstart="PF('wgDados').show()" onsuccess="PF('wgDados').hide()" />
+                    </p:panel>
+                                                                                                
                 </p:dashboard>  
                 
                 <!-- Dialogo de Aguarde -->

@@ -23,6 +23,17 @@ public class SerFornecedor {
 	RepFornecedor repFornecedor;
 
 	/****************************************************************************
+	 * Retorna se existe algum fornecedor cadastro
+	 ****************************************************************************/
+	public boolean existeFornecedor() {
+		if (repFornecedor.count() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/****************************************************************************
 	 * Metodo para Validar e salvar
 	 ****************************************************************************/
 	public void salvar(Fornecedor fornecedor) throws Exception {

@@ -12,7 +12,6 @@ import br.com.resvut42.marvin.entidade.Carteira;
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.entidade.Contato;
 import br.com.resvut42.marvin.entidade.Endereco;
-import br.com.resvut42.marvin.enums.Estado;
 import br.com.resvut42.marvin.enums.Febraban;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerConta;
@@ -26,7 +25,7 @@ import br.com.resvut42.marvin.util.R42Util;
 @Component
 public class MigrarBanco {
 
-	private final String arquivo = "c:\\temp\\dbf\\DBC01.DBF";
+	private final String arquivo = "DBC01.DBF";
 	private DbfReader dbfReader;
 
 	@Autowired
@@ -100,7 +99,7 @@ public class MigrarBanco {
 				endereco.setBairro(bc1bairro);
 				endereco.setCidade(bc1cid);
 				endereco.setCep(bc1cep);
-				endereco.setUf(converteEstado(bc1uf));
+				endereco.setUf(R42Util.converteEstado(bc1uf));
 
 				Contato contato = new Contato();
 				contato.setNomeContato(bc1contato);
@@ -156,17 +155,6 @@ public class MigrarBanco {
 			cod = Febraban.valueOf("F_" + codFebraban);
 		}
 		return cod;
-	}
-
-	/****************************************************************************
-	 * Converte String em Estado
-	 ****************************************************************************/
-	private Estado converteEstado(String uf) {
-		Estado estado = null;
-		if (uf != null && !uf.isEmpty()) {
-			estado = Estado.valueOf(uf);
-		}
-		return estado;
 	}
 
 	/****************************************************************************
