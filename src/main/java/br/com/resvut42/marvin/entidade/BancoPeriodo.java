@@ -82,7 +82,7 @@ public class BancoPeriodo implements Serializable {
 		this.debito = new BigDecimal(0);
 	}
 
-	public long getIdPeriodo() {
+	public Long getIdPeriodo() {
 		return idPeriodo;
 	}
 

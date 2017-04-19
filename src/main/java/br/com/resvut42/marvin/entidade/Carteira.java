@@ -44,8 +44,6 @@ public class Carteira implements Serializable {
 	@Column(length = 7)
 	private String codMestre;
 
-	private Long seqArquivo;
-
 	public Long getIdCarteira() {
 		return idCarteira;
 	}
@@ -100,14 +98,6 @@ public class Carteira implements Serializable {
 
 	public void setCodMestre(String codMestre) {
 		this.codMestre = codMestre;
-	}
-
-	public Long getSeqArquivo() {
-		return seqArquivo;
-	}
-
-	public void setSeqArquivo(Long seqArquivo) {
-		this.seqArquivo = seqArquivo;
 	}
 
 	@Override

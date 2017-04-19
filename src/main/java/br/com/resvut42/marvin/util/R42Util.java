@@ -1,13 +1,43 @@
 package br.com.resvut42.marvin.util;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
+import javax.servlet.http.HttpSession;
 
 import org.jamel.dbf.DbfReader;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import br.com.resvut42.marvin.entidade.Empresa;
 import br.com.resvut42.marvin.enums.Estado;
 
 public class R42Util {
-
+	
+	/****************************************************************************
+	 * Retorna a sessão em aberto
+	 * 
+	 * @return - HttpSession
+	 * 
+	 ****************************************************************************/	
+	public static HttpSession getSessao(){
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		return attr.getRequest().getSession(true); // true == allow create		
+	}
+	
+	/****************************************************************************
+	 * Retorna a empresa ativa
+	 * 
+	 * @return - Empresa
+	 * 
+	 ****************************************************************************/		
+	public static Empresa resgataEmpresa(){		
+		HttpSession httpSessao = getSessao();
+		Empresa empresa = (Empresa) httpSessao.getAttribute("EMPRESA");			
+		return empresa;
+	}
+	
 	/****************************************************************************
 	 * Valida CPF
 	 * 
@@ -94,6 +124,21 @@ public class R42Util {
 	}
 
 	/****************************************************************************
+	 * Remove caracteres 
+	 * 
+	 * @param numero
+	 *            - Numero do cpf (123.555.896-65)
+	 *            - Numero do cnpj (12.225.896/0001-65)
+	 *            - Numero qualquer (4566.11)
+	 * @return - sem ponto (12355589665)
+	 * 
+	 ****************************************************************************/	
+	public static String removePontos(final String numero){
+		String newNumero = numero.replace('(', ' ').replace(')', ' ').replaceAll("[ ./-]", "").replace("-","");
+		return newNumero;
+	}
+	
+	/****************************************************************************
 	 * Coloca pontos no CPF
 	 * 
 	 * @param numero
@@ -103,13 +148,12 @@ public class R42Util {
 	 ****************************************************************************/
 	public static String pontosCpf(final String cpf) {
 
-		String newCpf = cpf.replace('(', ' ').replace(')', ' ').replaceAll("[ ./-]", "").replace("-","");	
+		String newCpf = removePontos(cpf);
 		
 		return newCpf.substring(0, 3) + "." + 
 				newCpf.substring(3, 6) + "." + 
 				newCpf.substring(6, 9) + "-" + 
 				newCpf.substring(9, 11);
-
 	}
 	
 	/****************************************************************************
@@ -122,14 +166,13 @@ public class R42Util {
 	 ****************************************************************************/
 	public static String pontosCnpj(final String cnpj) {
 
-		String newCnpj = cnpj.replace('(', ' ').replace(')', ' ').replaceAll("[ ./-]", "").replace("-","");	
+		String newCnpj = removePontos(cnpj);
 		
 		return newCnpj.substring(0, 2) + "." + 
 				newCnpj.substring(2, 5) + "." + 
 				newCnpj.substring(5, 8) + "/" + 
 				newCnpj.substring(8, 12) + "-" +
 				newCnpj.substring(12,14);
-
 	}	
 	
 	/****************************************************************************
@@ -170,5 +213,21 @@ public class R42Util {
 			}					
 		}
 		return estado;
+	}	
+	
+	/****************************************************************************
+	 * Converte BigDecimal para String formatado
+	 * @param moeda - Exemplo "R$"
+	 ****************************************************************************/
+	public static String converteValor(String moeda, BigDecimal bigDecimal) {
+		String valor;
+		DecimalFormat decFormat = new DecimalFormat("#,###,##0.00");
+		valor = decFormat.format(bigDecimal);
+		
+		if(moeda != null){
+			valor = moeda +" "+ valor;
+		}
+		
+		return valor;
 	}	
 }

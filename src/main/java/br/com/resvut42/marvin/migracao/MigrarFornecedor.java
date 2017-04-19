@@ -84,6 +84,7 @@ public class MigrarFornecedor {
 				
 				Endereco endereco = new Endereco();
 				endereco.setCep(frcep);
+				endereco.setTipoLogradouro("");
 				endereco.setLogradouro(logradouro);
 				endereco.setNumero(numero);
 				endereco.setComplemento(complemento);

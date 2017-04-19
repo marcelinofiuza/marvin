@@ -1,9 +1,17 @@
 package br.com.resvut42.marvin.controle;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -13,16 +21,22 @@ import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import br.com.resvut42.marvin.cnab.BaseCnab;
+import br.com.resvut42.marvin.cnab.Cnab;
 import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Boleto;
 import br.com.resvut42.marvin.entidade.BoletoItem;
+import br.com.resvut42.marvin.entidade.Carteira;
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.Cobranca;
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.enums.StatusBoleto;
 import br.com.resvut42.marvin.estrutura.CalculoBoleto;
+import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerBoleto;
 import br.com.resvut42.marvin.util.FacesMessages;
 import br.com.resvut42.marvin.util.R42Data;
@@ -48,6 +62,7 @@ public class ControleBoleto implements Serializable {
 	private Banco banco;
 	private Conta conta;
 	private CalculoBoleto calculoBoleto;
+	private Carteira carteira;
 
 	private final long newItem = 9000000;
 	private long nextItem = newItem;
@@ -55,6 +70,8 @@ public class ControleBoleto implements Serializable {
 
 	@Autowired
 	SerBoleto serBoleto;
+	@Autowired
+	SerBanco serBanco;
 	@Autowired
 	FacesMessages mensagens;
 
@@ -231,19 +248,88 @@ public class ControleBoleto implements Serializable {
 
 	/****************************************************************************
 	 * Abrir dialogo para seleção de cobrança
-	 ****************************************************************************/	
-	public void abrirDialogoCobranca(){
+	 ****************************************************************************/
+	public void abrirDialogoCobranca() {
 		calculoBoleto = new CalculoBoleto();
 	}
 
 	/****************************************************************************
 	 * Confirmar cobrança selecionada e calcular os dados
-	 ****************************************************************************/	
-	public void confirmaCobranca(){
+	 ****************************************************************************/
+	public void confirmaCobranca() {
 		boletoEdicao = calculoBoleto.getBoleto();
 		listaBoletoItem = boletoEdicao.getItens();
 		conta = boletoEdicao.getConta();
-	}	
+	}
+
+	/****************************************************************************
+	 * Processo para definir a carteira geração do cnab
+	 ****************************************************************************/
+	public void novoArquivo() {
+		carteira = new Carteira();
+	}
+
+	/****************************************************************************
+	 * Processo para gerar os dados do arquivo cnab
+	 ****************************************************************************/
+	public void geraCnab(PrintWriter arquivo) throws Exception{
+		
+		BaseCnab cnab = Cnab.getLayout(boletoSelect.getBanco().getFebraban(), "400");
+
+		if(cnab != null){
+			cnab.setBoleto(boletoSelect);
+			cnab.setCarteira(carteira);
+			cnab.gerarArquivo(arquivo);
+			serBanco.proximoArquivo(boletoSelect.getBanco());
+		}else{
+			throw new Exception("Não encontrado layout CNAB para esse banco");
+		}
+							
+	}
+	
+	
+	/****************************************************************************
+	 * Processo para gerar novo arquivo cnab
+	 ****************************************************************************/
+	public StreamedContent getFile() {
+		
+		RequestContext.getCurrentInstance().execute("PF('wgDadosCnab').hide();");
+		
+		String hoje = R42Data.dataToString(new Date()).replaceAll("/", "");			
+		StreamedContent file = null;
+		String arquivo = "CB000000.TXT";
+		String arqSaida = "CB"+hoje.substring(0, 4)+".REM";
+		
+		try{
+			
+			//Crio o arquivo
+			File f = new File(arquivo);
+			FileWriter arq = new FileWriter(f);
+			PrintWriter gravarArq = new PrintWriter(arq);
+			
+			geraCnab(gravarArq);					
+			arq.close();
+
+			//Passo ele para o StreamedContent (file)
+			InputStream stream = new FileInputStream(arquivo);
+			file = new DefaultStreamedContent(stream, "image/txt", arqSaida);
+
+			//Deleto o arquivo
+			f.delete();
+			
+		} catch (FileNotFoundException e) {
+			mensagens.error(e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e){
+			mensagens.error(e.getMessage());
+			e.printStackTrace();
+		}  catch (Exception e){
+			mensagens.error(e.getMessage());
+		}
+		
+		return file;
+    }	
+		
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
@@ -300,4 +386,12 @@ public class ControleBoleto implements Serializable {
 		this.listaBoletoItem = listaBoletoItem;
 	}
 
+	public Carteira getCarteira() {
+		return carteira;
+	}
+
+	public void setCarteira(Carteira carteira) {
+		this.carteira = carteira;
+	}
+	    	
 }

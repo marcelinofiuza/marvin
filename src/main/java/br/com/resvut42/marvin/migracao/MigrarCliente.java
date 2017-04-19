@@ -109,6 +109,7 @@ public class MigrarCliente {
 				
 				Endereco endereco = new Endereco();
 				endereco.setCep(clcep);
+				endereco.setTipoLogradouro("");
 				endereco.setLogradouro(logradouro);
 				endereco.setNumero(numero);
 				endereco.setComplemento(complemento);

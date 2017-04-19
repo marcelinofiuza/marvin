@@ -102,7 +102,21 @@
                                             update="tabela msg-frm toolbar"
                                             actionListener="#{controleBoleto.excluir}">
                                             <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Boleto?" />
-                        </p:commandButton>                         				
+                        </p:commandButton>
+                        <span class="ui-separator">
+                            <span class="fa fa-fw fa-ellipsis-v"/>
+                        </span>
+                        <p:commandButton    id="bto-cnab" 
+                                            title="Gerar Arquivo CNAB" 
+                                            icon="fa fa-download"  
+                                            process="@this" 
+                                            update="cnab:dialogoCnab"
+                                            oncomplete="PF('wgDadosCnab').show()" 
+                                            disabled="#{controleBoleto.boletoSelect == null}"
+                                            actionListener="#{controleBoleto.novoArquivo}">
+                                            <p:resetInput target="cnab:dialogoCnab" />
+                        </p:commandButton>                        
+                                                 				
 					</p:toolbarGroup>			
 							
 					<p:toolbarGroup align="right">
@@ -317,27 +331,27 @@
                                 <p:column headerText="Nome">
                                     <h:outputText value="#{item.cliente.razaoSocial}" />
                                 </p:column>                                                      
-                    			<p:column headerText="Data" width="80">
+                    			<p:column headerText="Vencimento" width="80">
                         			<h:outputText value="#{item.vencimento}">
                             			<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>   
                         			</h:outputText>
                     			</p:column>                                
-		                        <p:column headerText="Valor" width="100">
+		                        <p:column headerText="Valor 0" width="100">
 		                            <h:outputText value="#{item.valor0}" style="float: right">
 		                                <f:convertNumber type="currency" />                         
 		                            </h:outputText>                            
 		                        </p:column>
-		                        <p:column headerText="Valor" width="100">
+		                        <p:column headerText="Valor 1" width="100">
 		                            <h:outputText value="#{item.valor1}" style="float: right">
 		                                <f:convertNumber type="currency" />                         
 		                            </h:outputText>                            
 		                        </p:column>
-		                        <p:column headerText="Valor" width="100">
+		                        <p:column headerText="Valor 2" width="100">
 		                            <h:outputText value="#{item.valor2}" style="float: right">
 		                                <f:convertNumber type="currency" />                         
 		                            </h:outputText>                            
 		                        </p:column>
-		                        <p:column headerText="Valor" width="100">
+		                        <p:column headerText="Valor 3" width="100">
 		                            <h:outputText value="#{item.valor3}" style="float: right">
 		                                <f:convertNumber type="currency" />                         
 		                            </h:outputText>                            
@@ -390,7 +404,7 @@
 				                                    showOn="button"
 				                                    required="true"/>
 				                                      									
-				                        <p:outputLabel value="Valor" for="valor0"/>
+				                        <p:outputLabel value="Valor 0" for="valor0"/>
 				                        <p:inputNumber id="valor0" size="20"
 				                                       value="#{item.valor0}"
 				                                       decimalSeparator=","
@@ -433,8 +447,7 @@
 				</p:dialog>	
 				
 				<!-- Dialogo Cobrança -->
-                <p:dialog 
-                          header="Cobrança" 
+                <p:dialog header="Cobrança" 
                           widgetVar="wgDadosCobranca" 
                           id="dialogoCobranca" 
                           modal="true" 
@@ -514,7 +527,50 @@
                         </p:column>   				                                               
 					</p:panelGrid>                    
 				</p:dialog>
+			</h:form>	
+			
+			<h:form id="cnab">								
+				<!-- Dialogo Cobrança -->
+                <p:dialog header="Arquivo CNAB" 
+                          widgetVar="wgDadosCnab" 
+                          id="dialogoCnab" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+				
+ 					<p:messages showDetail="false" autoUpdate="true" closable="true" />
+ 				
+                    <p:panelGrid id="panelSelecaoCnab"
+                                 columns="2" 
+                                 layout="grid" 
+                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+						<p:outputLabel value="Carteira" for="carteira" />
+						<p:selectOneMenu id="carteira" 
+										 value="#{controleBoleto.carteira}" 
+										 converter="converterCarteira">
+							<f:selectItems value="#{controleBoleto.boletoSelect.banco.carteiras}" 
+							               var="carteira" 
+							               itemLabel="#{carteira.descricao}" 
+							               itemValue="#{carteira}" />
+						</p:selectOneMenu>
 								
+                        <p:column>                        
+                        	<p:commandButton icon="fa fa-check" 
+                                             title="Ok"
+                                             ajax="false"
+                                             process="@none"                                             
+                                             update="@none">
+
+ 								<p:fileDownload value="#{controleBoleto.file}"/>
+                                             
+                        	</p:commandButton>                        
+                        </p:column>  
+                        								
+					</p:panelGrid>
+				</p:dialog>
+												
 			</h:form>		
 		</section>		
 	</ui:define>

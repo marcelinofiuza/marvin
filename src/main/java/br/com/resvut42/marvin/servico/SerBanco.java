@@ -175,4 +175,17 @@ public class SerBanco {
 			throw new Exception("Necessário excluir os periodos antes!");
 		}
 	}
+	
+	/****************************************************************************
+	 * Registro numero do proximo arquivo
+	 ****************************************************************************/
+	public void proximoArquivo(Banco banco){
+		Long seqArquivo = banco.getSeqArquivo();
+		if (seqArquivo == null) {
+			seqArquivo = new Long(0);
+		}
+		seqArquivo++;		
+		banco.setSeqArquivo(seqArquivo);
+		repBanco.save(banco);
+	}	
 }

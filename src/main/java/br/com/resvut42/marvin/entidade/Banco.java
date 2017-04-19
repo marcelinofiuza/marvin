@@ -77,6 +77,8 @@ public class Banco implements Serializable {
 	@JoinColumn(name = "idBanco")
 	private List<Carteira> carteiras = new ArrayList<Carteira>();
 
+	private Long seqArquivo;	
+	
 	public Long getIdBanco() {
 		return idBanco;
 	}
@@ -203,7 +205,15 @@ public class Banco implements Serializable {
 		carteira.setBanco(this);
 		this.carteiras.add(carteira);
 	}
+	
+	public Long getSeqArquivo() {
+		return seqArquivo;
+	}
 
+	public void setSeqArquivo(Long seqArquivo) {
+		this.seqArquivo = seqArquivo;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

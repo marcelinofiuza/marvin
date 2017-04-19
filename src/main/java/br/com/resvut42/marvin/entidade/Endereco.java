@@ -48,7 +48,7 @@ public class Endereco {
 		this.cep = cep;
 	}
 
-	public String getTipoLogradouro() {
+	public String getTipoLogradouro() {		
 		return tipoLogradouro;
 	}
 

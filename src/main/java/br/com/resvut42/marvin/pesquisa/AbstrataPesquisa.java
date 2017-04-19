@@ -5,6 +5,11 @@ import java.util.Map;
 
 import org.primefaces.context.RequestContext;
 
+/****************************************************************************
+ * Classe Abstrata para gerar arquivo de Pesquisa
+ * 
+ * @author: Bob-Odin - 22/03/2017
+ ****************************************************************************/
 public abstract class AbstrataPesquisa {
 
 	/****************************************************************************
