@@ -145,7 +145,7 @@ public class BoletoItem implements Serializable {
 		totalItem = totalItem.add(valor3);		
 		return totalItem;		
 	}
-	
+		
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -292,6 +292,7 @@
 		                        </p:column>                            
 		                        <p:inputTextarea id="historico" rows="5" cols="50" maxlength="250"
 		                                         value="#{controleBancoLcto.bancoLcto.historico}"
+		                                         onblur="value=value.toUpperCase()"
 		                                         counter="display"
 		                                         counterTemplate="({0})"
 		                                         required="true"/>

@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
@@ -34,10 +35,12 @@ import br.com.resvut42.marvin.entidade.Carteira;
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.Cobranca;
 import br.com.resvut42.marvin.entidade.Conta;
+import br.com.resvut42.marvin.entidade.Receber;
 import br.com.resvut42.marvin.enums.StatusBoleto;
 import br.com.resvut42.marvin.estrutura.CalculoBoleto;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerBoleto;
+import br.com.resvut42.marvin.servico.SerReceber;
 import br.com.resvut42.marvin.util.FacesMessages;
 import br.com.resvut42.marvin.util.R42Data;
 
@@ -72,6 +75,8 @@ public class ControleBoleto implements Serializable {
 	SerBoleto serBoleto;
 	@Autowired
 	SerBanco serBanco;
+	@Autowired
+	SerReceber serReceber;
 	@Autowired
 	FacesMessages mensagens;
 
@@ -222,6 +227,9 @@ public class ControleBoleto implements Serializable {
 		conta = boletoEdicao.getConta();
 		listaBoletoItem.clear();
 		listaBoletoItem.addAll(boletoEdicao.getItens());
+		if (boletoSelect.getStatusBoleto() != StatusBoleto.ABERTO){
+			mensagens.warning("Apenas registros em aberto pode ser alterados!");
+		}
 	}
 
 	/****************************************************************************
@@ -229,10 +237,14 @@ public class ControleBoleto implements Serializable {
 	 ****************************************************************************/
 	public void excluir() {
 		try {
-			serBoleto.excluir(boletoSelect);
-			boletoSelect = null;
-			listar();
-			mensagens.info("Registro excluido com sucesso!");
+			if (boletoSelect.getStatusBoleto() == StatusBoleto.ABERTO) {
+				serBoleto.excluir(boletoSelect);
+				boletoSelect = null;
+				listar();
+				mensagens.info("Registro excluido com sucesso!");
+			} else {
+				mensagens.error("Apenas registro em aberto pode ser excluido");
+			}
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}
@@ -266,70 +278,137 @@ public class ControleBoleto implements Serializable {
 	 * Processo para definir a carteira geração do cnab
 	 ****************************************************************************/
 	public void novoArquivo() {
-		carteira = new Carteira();
+		if (boletoSelect.getStatusBoleto() != StatusBoleto.PROVISIONADO){			
+			mensagens.error("Boletos não provisionados");
+			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));			
+		} else {
+			RequestContext.getCurrentInstance().execute("PF('wgDadosCnab').show()");
+			carteira = new Carteira();
+		}
 	}
 
 	/****************************************************************************
 	 * Processo para gerar os dados do arquivo cnab
 	 ****************************************************************************/
-	public void geraCnab(PrintWriter arquivo) throws Exception{
-		
+	public void geraCnab(PrintWriter arquivo) throws Exception {
+
 		BaseCnab cnab = Cnab.getLayout(boletoSelect.getBanco().getFebraban(), "400");
 
-		if(cnab != null){
+		if (cnab != null) {
 			cnab.setBoleto(boletoSelect);
 			cnab.setCarteira(carteira);
 			cnab.gerarArquivo(arquivo);
 			serBanco.proximoArquivo(boletoSelect.getBanco());
-		}else{
+		} else {
 			throw new Exception("Não encontrado layout CNAB para esse banco");
 		}
-							
+
 	}
-	
-	
+
 	/****************************************************************************
 	 * Processo para gerar novo arquivo cnab
 	 ****************************************************************************/
 	public StreamedContent getFile() {
-		
+
 		RequestContext.getCurrentInstance().execute("PF('wgDadosCnab').hide();");
-		
-		String hoje = R42Data.dataToString(new Date()).replaceAll("/", "");			
+
+		String hoje = R42Data.dataToString(new Date()).replaceAll("/", "");
 		StreamedContent file = null;
 		String arquivo = "CB000000.TXT";
-		String arqSaida = "CB"+hoje.substring(0, 4)+".REM";
-		
-		try{
-			
-			//Crio o arquivo
+		String arqSaida = "CB" + hoje.substring(0, 4) + ".REM";
+
+		try {
+
+			// Crio o arquivo
 			File f = new File(arquivo);
 			FileWriter arq = new FileWriter(f);
 			PrintWriter gravarArq = new PrintWriter(arq);
-			
-			geraCnab(gravarArq);					
+
+			geraCnab(gravarArq);
 			arq.close();
 
-			//Passo ele para o StreamedContent (file)
+			// Passo ele para o StreamedContent (file)
 			InputStream stream = new FileInputStream(arquivo);
 			file = new DefaultStreamedContent(stream, "image/txt", arqSaida);
 
-			//Deleto o arquivo
+			// Deleto o arquivo
 			f.delete();
-			
+
 		} catch (FileNotFoundException e) {
 			mensagens.error(e.getMessage());
 			e.printStackTrace();
-		} catch (IOException e){
+		} catch (IOException e) {
 			mensagens.error(e.getMessage());
 			e.printStackTrace();
-		}  catch (Exception e){
+		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}
-		
+
 		return file;
-    }	
+	}
+
+	/****************************************************************************
+	 * Gera titulos a receber
+	 ****************************************************************************/
+	public void gerarTitulos() {
+
+		if (boletoSelect.getStatusBoleto() == StatusBoleto.PROVISIONADO){			
+			mensagens.error("Boleto já provisionado!");			
+		} else {			
+			List<Receber> listaReceber = new ArrayList<Receber>();
+			try {
+				for (BoletoItem boletoItem : boletoSelect.getItens()) {
+	
+					String documento = boletoSelect.getIdBoleto().toString();
+					documento = documento + StringUtils.leftPad(boletoItem.getIdItem().toString(), 10, "0");
+	
+					String historico = "VALOR REFERENTE A EMISSAO DO BOLETO " + documento
+							+" "+ boletoItem.getCliente().getRazaoSocial();
+	
+					Receber receber = new Receber();
+					receber.setBoleto(boletoSelect);
+					receber.setBoletoItem(boletoItem);
+					receber.setCliente(boletoItem.getCliente());
+					receber.setConta(boletoSelect.getConta());
+					receber.setLancamento(boletoSelect.getLancamento());
+					receber.setDocumento(documento);
+					receber.setQuitado(false);
+					receber.setValor(boletoItem.getTotalItem());
+					receber.setVencimento(boletoItem.getVencimento());
+					receber.setHistorico(historico);
+					listaReceber.add(receber);
+				}
+	
+				serReceber.salvar(listaReceber);
+				boletoSelect.setStatusBoleto(StatusBoleto.PROVISIONADO);
+				serBoleto.salvar(boletoSelect);
+				mensagens.info("Títulos provisionados com sucesso!");
+				boletoSelect = null;
+			} catch (Exception e) {
+				mensagens.error(e.getMessage());
+			}
+		}
 		
+		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
+
+	}
+
+	/****************************************************************************
+	 * Estornar títulos provisionados
+	 ****************************************************************************/
+	public void estornarTitulos() {
+		try {			
+			List<Receber> listaReceber = serReceber.listarPorBoleto(boletoSelect);
+			serReceber.excluir(listaReceber);
+			boletoSelect.setStatusBoleto(StatusBoleto.ABERTO);
+			serBoleto.salvar(boletoSelect);
+			mensagens.info("Títulos estornados com sucesso!");
+			boletoSelect = null;			
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+		}		
+	}
+	
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
@@ -393,5 +472,5 @@ public class ControleBoleto implements Serializable {
 	public void setCarteira(Carteira carteira) {
 		this.carteira = carteira;
 	}
-	    	
+
 }

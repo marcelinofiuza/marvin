@@ -106,17 +106,36 @@
                         <span class="ui-separator">
                             <span class="fa fa-fw fa-ellipsis-v"/>
                         </span>
+                        <p:commandButton    id="bto-provisionarTitulos" 
+                                            title="Provisionar Títulos" 
+                                            icon="fa fa-sign-in"  
+                                            process="@this" 
+                                            update="tabela" 
+                                            disabled="#{controleBoleto.boletoSelect == null}"
+                                            actionListener="#{controleBoleto.gerarTitulos}">
+                                            <p:confirm icon="fa fa-warning" header="Titulos a Receber" message="Confirma a geração dos títulos?" />
+                        </p:commandButton> 
+                        <p:commandButton    id="bto-estornarTitulos" 
+                                            title="Estornar Títulos" 
+                                            icon="fa fa-sign-out"  
+                                            process="@this" 
+                                            update="tabela" 
+                                            disabled="#{controleBoleto.boletoSelect == null}"
+                                            actionListener="#{controleBoleto.estornarTitulos}">
+                                            <p:confirm icon="fa fa-warning" header="Titulos a Receber" message="Confirma o estorno dos títulos?" />
+                        </p:commandButton> 
+                        <span class="ui-separator">
+                            <span class="fa fa-fw fa-ellipsis-v"/>
+                        </span>                                                                       
                         <p:commandButton    id="bto-cnab" 
                                             title="Gerar Arquivo CNAB" 
                                             icon="fa fa-download"  
                                             process="@this" 
                                             update="cnab:dialogoCnab"
-                                            oncomplete="PF('wgDadosCnab').show()" 
                                             disabled="#{controleBoleto.boletoSelect == null}"
                                             actionListener="#{controleBoleto.novoArquivo}">
                                             <p:resetInput target="cnab:dialogoCnab" />
-                        </p:commandButton>                        
-                                                 				
+                        </p:commandButton>                                                 				
 					</p:toolbarGroup>			
 							
 					<p:toolbarGroup align="right">
@@ -158,7 +177,7 @@
 					<p:column headerText="Status" width="150">
 						<h:outputText value="#{boleto.statusBoleto.descricao}"/>
 					</p:column>		
-					<p:column>
+					<p:column headerText="Conta">
 						<h:outputText value="#{boleto.conta.ideDescricao}"/>
 					</p:column>			
 	                <p:column headerText="Valor Total" width="200">
@@ -191,6 +210,7 @@
                                              action="#{controleBoleto.salvar}"  
                                              process="dialogo"
                                              update="panel"
+                                             disabled="#{controleBoleto.boletoEdicao.statusBoleto.descricao != 'Aberto'}"
                                              oncomplete="if(!args.validationFailed) PF('wgDados').hide()" />
                         	<span class="ui-separator">
                             	<span class="fa fa-fw fa-ellipsis-v"/>
@@ -201,6 +221,7 @@
 	                                         actionListener="#{controleBoleto.abrirDialogoCobranca}"
 	                                         process="@this" 
 	                                         update="dialogoCobranca" 
+	                                         disabled="#{controleBoleto.boletoEdicao.statusBoleto.descricao != 'Aberto'}"
 	                                         oncomplete="PF('wgDadosCobranca').show()"/>
            
                         </p:toolbarGroup>
