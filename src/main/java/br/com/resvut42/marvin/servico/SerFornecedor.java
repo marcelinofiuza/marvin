@@ -87,5 +87,19 @@ public class SerFornecedor {
 		}
 
 	}
+	
+	/****************************************************************************
+	 * Retornar uma lista de fornecedor filtrando por Like RazaoSocial e fantasia
+	 ****************************************************************************/
+	public List<Fornecedor> listarPorRazaoSocialOuFantasia(String razaoSocial, String fantasia) {
+		return repFornecedor.findByRazaoSocialContainingAndFantasiaContaining(razaoSocial, fantasia);
+	}
+
+	/****************************************************************************
+	 * Retornar um fornecedor buscando pela fantasia
+	 ****************************************************************************/
+	public Fornecedor buscarPorFantasia(String fantasia) {
+		return repFornecedor.findByFantasia(fantasia);
+	}
 
 }
