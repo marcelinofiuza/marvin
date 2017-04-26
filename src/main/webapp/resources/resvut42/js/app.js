@@ -1,4 +1,6 @@
-//Configuração do Calendar do Primefaces em portugues
+/*******************************************************
+ * Configuração do Calendar do Primefaces em portugues
+ ******************************************************/
 PrimeFaces.locales['pt_BR'] = {
 	closeText : 'Fechar',
 	prevText : 'Anterior',

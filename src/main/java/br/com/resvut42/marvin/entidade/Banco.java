@@ -103,6 +103,10 @@ public class Banco implements Serializable {
 		this.febraban = febraban;
 	}
 
+	public String getIdeDescricao(){
+		return idBanco+" - "+descricao;
+	}
+		
 	public String getDescricao() {
 		return descricao;
 	}

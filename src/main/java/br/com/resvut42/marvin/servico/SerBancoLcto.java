@@ -25,7 +25,7 @@ public class SerBancoLcto {
 	/****************************************************************************
 	 * Retorna se existe algum lançamento já efetuado
 	 ****************************************************************************/
-	public boolean exiteLcto() {
+	public boolean existeLcto() {
 		if (repBancoLcto.count() > 0) {
 			return true;
 		} else {

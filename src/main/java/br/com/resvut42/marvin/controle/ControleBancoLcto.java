@@ -91,9 +91,16 @@ public class ControleBancoLcto implements Serializable {
 	 ****************************************************************************/
 	public void excluir() {
 		try {
-			serBancoLcto.excluir(lctoSelect);
-			resgataPeriodo();
-			mensagens.info("Registro excluido com sucesso!");
+			if(lctoSelect.getOrigemLcto() == OrigemLcto.TRF ||
+			   lctoSelect.getOrigemLcto() == OrigemLcto.BCO){
+			
+				serBancoLcto.excluir(lctoSelect);
+				resgataPeriodo();
+				mensagens.info("Registro excluido com sucesso!");
+				
+			} else {
+				mensagens.error("Exclusão deve ser feito na origem do lançamento!");
+			}
 		} catch (Exception e) {
 			mensagens.error(e.getMessage());
 		}

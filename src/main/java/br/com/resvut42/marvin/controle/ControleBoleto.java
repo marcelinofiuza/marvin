@@ -372,7 +372,6 @@ public class ControleBoleto implements Serializable {
 					receber.setConta(boletoSelect.getConta());
 					receber.setLancamento(boletoSelect.getLancamento());
 					receber.setDocumento(documento);
-					receber.setQuitado(false);
 					receber.setValor(boletoItem.getTotalItem());
 					receber.setVencimento(boletoItem.getVencimento());
 					receber.setHistorico(historico);

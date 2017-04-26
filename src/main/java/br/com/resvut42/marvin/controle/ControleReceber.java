@@ -16,9 +16,15 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import br.com.resvut42.marvin.entidade.Banco;
+import br.com.resvut42.marvin.entidade.BancoLcto;
+import br.com.resvut42.marvin.entidade.BancoPeriodo;
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.entidade.Receber;
+import br.com.resvut42.marvin.enums.DebitoCredito;
+import br.com.resvut42.marvin.enums.OrigemLcto;
+import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerReceber;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -37,13 +43,20 @@ public class ControleReceber implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private List<Receber> listaReceber = new ArrayList<Receber>();
+	private List<BancoLcto> baixas = new ArrayList<BancoLcto>();
 	private Receber receber = new Receber();
 	private Receber receberSelect;
 	private Cliente cliente;
 	private Conta conta;
+	private BancoLcto bancoLcto = new BancoLcto();
+	private Banco banco;
 
+	private boolean salvarTitulo = true;
+	
 	@Autowired
 	SerReceber serReceber;
+	@Autowired
+	SerBanco serBanco;
 	@Autowired
 	FacesMessages mensagens;
 
@@ -75,33 +88,45 @@ public class ControleReceber implements Serializable {
 	/****************************************************************************
 	 * Novo o lançamento a receber
 	 ****************************************************************************/
-	public void novoLancamento() {
+	public void novoLancamento() {	
+		salvarTitulo = true;
+		conta = new Conta();
 		receber = new Receber();
 		receber.setCliente(cliente);
 		receber.setLancamento(new Date());
 		receber.setValor(new BigDecimal(0));
-		receber.setQuitado(false);
 		receberSelect = null;
+		baixas = new ArrayList<BancoLcto>();
 	}
 
 	/****************************************************************************
 	 * Novo o lançamento a receber
 	 ****************************************************************************/
 	public void editLancamento() {
+		salvarTitulo = true;
 		receber = receberSelect;
-		conta = receberSelect.getConta();		
+		conta = receberSelect.getConta();
+		baixas = receberSelect.getBaixas();
+		if (receber.getBoleto() != null) {
+			salvarTitulo = false;
+			mensagens.warning("Título gerado por boleto!");
+		}
+		if (receber.getBaixas() != null && !receber.getBaixas().isEmpty()) {
+			salvarTitulo = false;
+			mensagens.warning("Título já está com baixa!");
+		}		
 	}
-	
+
 	/****************************************************************************
 	 * Excluir registro selecionado
 	 ****************************************************************************/
 	public void excluir() {
 		try {
-			if(receberSelect.getBoleto() == null) {
+			if (receberSelect.getBoleto() == null) {
 				serReceber.excluir(receberSelect);
 				confirmaCliente();
 				mensagens.info("Registro excluido com sucesso!");
-			}else{
+			} else {
 				mensagens.error("Título deve ser estornado pelo Boleto!");
 			}
 		} catch (Exception e) {
@@ -110,7 +135,7 @@ public class ControleReceber implements Serializable {
 		receberSelect = null;
 		RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 	}
-	
+
 	/****************************************************************************
 	 * Resgata o Cliente selecionado no dialogo
 	 ****************************************************************************/
@@ -135,6 +160,82 @@ public class ControleReceber implements Serializable {
 		conta = (Conta) event.getObject();
 	}
 
+	/****************************************************************************
+	 * Preparar Nova baixa
+	 ****************************************************************************/
+	public void novaBaixa() {
+		bancoLcto = new BancoLcto();
+		bancoLcto.setReceber(receberSelect);
+		banco = new Banco();		
+		if(receberSelect.getBoleto() != null){
+			banco = receberSelect.getBoleto().getBanco();
+		}
+		String historico = "RECEBIMENTO " +
+							receberSelect.getCliente().getRazaoSocial() +
+							" DUPLICATA " +
+							receberSelect.getDocumento();
+		
+		bancoLcto.setDataLcto(new Date());
+		bancoLcto.setValorBase(receberSelect.getSaldo());
+		bancoLcto.setHistorico(historico);
+	}
+	
+	/****************************************************************************
+	 * Salvar a baixa lançamento a receber
+	 ****************************************************************************/
+	public void salvarBaixa() {
+		try {			
+			BancoPeriodo periodo = serBanco.selecionaPeriodo(banco, bancoLcto.getDataLcto());
+			if(periodo != null){		
+				
+				bancoLcto.setBancoPeriodo(periodo);
+				bancoLcto.setConta(receberSelect.getCliente().getConta());
+				bancoLcto.setOrigemLcto(OrigemLcto.DCR);
+				bancoLcto.setTipoLcto(DebitoCredito.CREDITO);
+								
+				receberSelect.addBaixa(bancoLcto);
+				serReceber.salvar(receberSelect);
+				
+				confirmaCliente();
+				receberSelect = null;
+				RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
+			}else{
+				FacesContext.getCurrentInstance().validationFailed();
+				mensagens.error("Banco sem periodo aberto para o lançamento!");				
+			}
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().validationFailed();
+			mensagens.error(e.getMessage());
+		}		
+	}
+
+	/****************************************************************************
+	 * Resgata o Banco selecionado no dialogo
+	 ****************************************************************************/
+	public void bancoSelecionado(SelectEvent event) {
+		banco = (Banco) event.getObject();
+	}
+	
+	/****************************************************************************
+	 * Estorna baixa do titulo
+	 ****************************************************************************/	
+	public void estornarBaixa(BancoLcto baixa){
+		try {			
+			serReceber.estornarBaixa(receberSelect, baixa.getIdLcto());	
+			receberSelect = null;
+
+			confirmaCliente();
+			mensagens.info("Estorno efetuado com sucesso!");
+			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:toolbar", "frm:tabela"));
+			RequestContext.getCurrentInstance().execute("PF('wgDadosLancamento').hide();");
+					
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().validationFailed();
+			mensagens.error(e.getMessage());
+		}		
+	}
+	
 	/****************************************************************************
 	 * Gets e Sets do controle
 	 ****************************************************************************/
@@ -177,6 +278,34 @@ public class ControleReceber implements Serializable {
 
 	public void setReceberSelect(Receber receberSelect) {
 		this.receberSelect = receberSelect;
+	}
+
+	public BancoLcto getBancoLcto() {
+		return bancoLcto;
+	}
+
+	public void setBancoLcto(BancoLcto bancoLcto) {
+		this.bancoLcto = bancoLcto;
+	}
+
+	public Banco getBanco() {
+		return banco;
+	}
+
+	public void setBanco(Banco banco) {
+		this.banco = banco;
+	}
+
+	public boolean isSalvarTitulo() {
+		return salvarTitulo;
+	}
+
+	public List<BancoLcto> getBaixas() {
+		return baixas;
+	}
+
+	public void setBaixas(List<BancoLcto> baixas) {
+		this.baixas = baixas;
 	}
 
 }

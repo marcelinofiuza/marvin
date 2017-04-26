@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMax;
@@ -62,8 +63,6 @@ public class Receber implements Serializable {
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date vencimento;
 
-	private boolean quitado;
-
 	@NotNull(message = "Informar o valor do documento!")
 	@DecimalMin(value = "0.01", message = "Não pode ser menor que 0,01")
 	@DecimalMax(value = "99999999.99", message = "Máximo deve ser 99.999.999,99")	
@@ -79,8 +78,17 @@ public class Receber implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "idReceber")
+	@OrderBy("dataLcto")
 	private List<BancoLcto> baixas = new ArrayList<BancoLcto>();
 		
+	public boolean isQuitado() {
+		if(getSaldo().compareTo(new BigDecimal(0))==0){
+			return true;
+		}else{
+			return false;
+		}
+	}	
+	
 	public Long getIdReceber() {
 		return idReceber;
 	}
@@ -137,14 +145,6 @@ public class Receber implements Serializable {
 		this.vencimento = vencimento;
 	}
 
-	public boolean isQuitado() {
-		return quitado;
-	}
-
-	public void setQuitado(boolean quitado) {
-		this.quitado = quitado;
-	}
-
 	public BigDecimal getValor() {
 		return valor;
 	}
@@ -177,6 +177,11 @@ public class Receber implements Serializable {
 		this.baixas = baixas;
 	}
 
+	public void addBaixa(BancoLcto bancoLcto){
+		bancoLcto.setReceber(this);
+		this.baixas.add(bancoLcto);
+	}
+	
 	public BigDecimal getRecebido() {
 		BigDecimal totalRecebido = new BigDecimal(0);
 		for (BancoLcto bancoLcto : baixas) {
@@ -185,9 +190,28 @@ public class Receber implements Serializable {
 		return totalRecebido;
 	}
 
+	public BigDecimal getAcrescimos() {
+		BigDecimal totalAcrescimos = new BigDecimal(0);
+		for (BancoLcto bancoLcto : baixas) {
+			totalAcrescimos = totalAcrescimos.add(bancoLcto.getJuros());
+			totalAcrescimos = totalAcrescimos.add(bancoLcto.getMulta());
+		}
+		return totalAcrescimos;
+	}	
+	
+	public BigDecimal getDescontos() {
+		BigDecimal totalDescontos = new BigDecimal(0);
+		for (BancoLcto bancoLcto : baixas) {
+			totalDescontos = totalDescontos.add(bancoLcto.getDesconto());
+		}
+		return totalDescontos;
+	}		
+	
 	public BigDecimal getSaldo() {
 		BigDecimal saldo = new BigDecimal(0);
 		saldo = valor.subtract(getRecebido());
+		saldo = saldo.subtract(getDescontos());
+		saldo = saldo.add(getAcrescimos());
 		return saldo;
 	}	
 	

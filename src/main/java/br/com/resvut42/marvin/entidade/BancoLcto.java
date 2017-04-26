@@ -67,16 +67,28 @@ public class BancoLcto implements Serializable {
 
 	private Boolean cheque;
 
+	@NotNull(message = "Informar o valor do Lançamento!")
+	@DecimalMin(value = "0.00", message = "Não pode ser menor que 0,00")
+	@DecimalMax(value = "99999999.99", message = "Máximo deve ser 99.999.999,99")	
 	@Transient
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal valorBase;
 
+	@NotNull(message = "Informar o valor do Lançamento!")
+	@DecimalMin(value = "0.00", message = "Não pode ser menor que 0,00")
+	@DecimalMax(value = "99999999.99", message = "Máximo deve ser 99.999.999,99")	
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal juros;
 
+	@NotNull(message = "Informar o valor do Lançamento!")
+	@DecimalMin(value = "0.00", message = "Não pode ser menor que 0,00")
+	@DecimalMax(value = "99999999.99", message = "Máximo deve ser 99.999.999,99")	
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal multa;
 
+	@NotNull(message = "Informar o valor do Lançamento!")
+	@DecimalMin(value = "0.00", message = "Não pode ser menor que 0,00")
+	@DecimalMax(value = "99999999.99", message = "Máximo deve ser 99.999.999,99")	
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal desconto;
 
@@ -172,12 +184,16 @@ public class BancoLcto implements Serializable {
 
 	public BigDecimal getValorBase() {
 		valorBase = valorLcto;
-		valorBase.add(desconto);
-		valorBase.subtract(juros);
-		valorBase.subtract(multa);
+		valorBase = valorBase.add(desconto);
+		valorBase = valorBase.subtract(juros);
+		valorBase = valorBase.subtract(multa);
 		return valorBase;
 	}
 
+	public void setValorBase(BigDecimal valorBase){
+		this.valorLcto = valorBase;
+	}
+	
 	public BigDecimal getJuros() {
 		return juros;
 	}
