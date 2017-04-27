@@ -57,8 +57,7 @@ public class SerReceber {
 	/****************************************************************************
 	 * Metodo para Validar antes de Salvar
 	 ****************************************************************************/
-	public void validarSalvar(Receber receber) throws Exception {
-		
+	public void validarSalvar(Receber receber) throws Exception {		
 		try {
 	
 			BigDecimal totalBase = new BigDecimal(0);
