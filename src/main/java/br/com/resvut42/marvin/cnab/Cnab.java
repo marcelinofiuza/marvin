@@ -13,7 +13,7 @@ public class Cnab {
 		BaseCnab cnab = null;
 		
 		if(febraban.getCodigo().equals("237") && layout.equals("400")){
-			return new CnabBradesco();
+			return new Cnab237400();
 		}
 		
 		return cnab;
