@@ -117,6 +117,10 @@ public class BancoLcto implements Serializable {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "idReceber")
 	private Receber receber;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "idPagar")
+	private Pagar pagar;
 	
 	public BancoLcto() {
 		this.valorBase = new BigDecimal(0);
@@ -268,6 +272,14 @@ public class BancoLcto implements Serializable {
 
 	public void setReceber(Receber receber) {
 		this.receber = receber;
+	}
+	
+	public Pagar getPagar() {
+		return pagar;
+	}
+
+	public void setPagar(Pagar pagar) {
+		this.pagar = pagar;
 	}
 
 	@Override
