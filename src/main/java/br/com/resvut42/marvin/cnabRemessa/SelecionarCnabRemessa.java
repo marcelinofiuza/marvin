@@ -1,4 +1,4 @@
-package br.com.resvut42.marvin.cnab;
+package br.com.resvut42.marvin.cnabRemessa;
 
 import br.com.resvut42.marvin.enums.Febraban;
 import br.com.resvut42.marvin.enums.LayoutCnab;
@@ -8,10 +8,10 @@ import br.com.resvut42.marvin.enums.LayoutCnab;
  * 
  * @author: Bob-Odin - 17/04/2017
  ****************************************************************************/
-public class Cnab {
+public class SelecionarCnabRemessa {
 
-	public static BaseCnab getLayout(Febraban febraban, LayoutCnab layoutCnab){		
-		BaseCnab cnab = null;
+	public static CnabRemessa getLayout(Febraban febraban, LayoutCnab layoutCnab){		
+		CnabRemessa cnab = null;
 		
 		if(febraban == Febraban.F_237 && layoutCnab == LayoutCnab.L400){
 			return new Cnab237400();

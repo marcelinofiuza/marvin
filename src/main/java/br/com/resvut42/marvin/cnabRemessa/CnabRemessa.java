@@ -1,4 +1,4 @@
-package br.com.resvut42.marvin.cnab;
+package br.com.resvut42.marvin.cnabRemessa;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -17,7 +17,7 @@ import br.com.resvut42.marvin.util.R42Util;
  * 
  * @author: Bob-Odin - 17/04/2017
  ****************************************************************************/
-public abstract class BaseCnab {
+public abstract class CnabRemessa {
 
 	protected Boleto boleto;
 	protected Carteira carteira;

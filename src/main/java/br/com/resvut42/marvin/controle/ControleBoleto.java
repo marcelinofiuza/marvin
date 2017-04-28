@@ -26,8 +26,8 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.resvut42.marvin.cnab.BaseCnab;
-import br.com.resvut42.marvin.cnab.Cnab;
+import br.com.resvut42.marvin.cnabRemessa.CnabRemessa;
+import br.com.resvut42.marvin.cnabRemessa.SelecionarCnabRemessa;
 import br.com.resvut42.marvin.entidade.Banco;
 import br.com.resvut42.marvin.entidade.Boleto;
 import br.com.resvut42.marvin.entidade.BoletoItem;
@@ -292,7 +292,7 @@ public class ControleBoleto implements Serializable {
 	 ****************************************************************************/
 	public void geraCnab(PrintWriter arquivo) throws Exception {
 
-		BaseCnab cnab = Cnab.getLayout(boletoSelect.getBanco().getFebraban(), carteira.getLayoutCnab());
+		CnabRemessa cnab = SelecionarCnabRemessa.getLayout(boletoSelect.getBanco().getFebraban(), carteira.getLayoutCnab());
 
 		if (cnab != null) {
 			cnab.setBoleto(boletoSelect);
