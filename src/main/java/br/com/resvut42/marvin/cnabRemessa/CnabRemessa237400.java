@@ -10,9 +10,9 @@ import br.com.resvut42.marvin.util.R42Util;
  * 
  * @author: Bob-Odin - 17/04/2017
  ****************************************************************************/
-public class Cnab237400 extends CnabRemessa {
+public class CnabRemessa237400 extends CnabRemessa {
 
-	public Cnab237400() {
+	public CnabRemessa237400() {
 		this.boleto = null;
 		this.carteira = null;
 		this.empresa = R42Util.resgataEmpresa();

@@ -14,7 +14,7 @@ public class SelecionarCnabRemessa {
 		CnabRemessa cnab = null;
 		
 		if(febraban == Febraban.F_237 && layoutCnab == LayoutCnab.L400){
-			return new Cnab237400();
+			return new CnabRemessa237400();
 		}
 		
 		return cnab;
