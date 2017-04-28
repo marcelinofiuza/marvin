@@ -13,6 +13,7 @@ import br.com.resvut42.marvin.entidade.Conta;
 import br.com.resvut42.marvin.entidade.Contato;
 import br.com.resvut42.marvin.entidade.Endereco;
 import br.com.resvut42.marvin.enums.Febraban;
+import br.com.resvut42.marvin.enums.LayoutCnab;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerConta;
 import br.com.resvut42.marvin.util.R42Util;
@@ -123,6 +124,7 @@ public class MigrarBanco {
 					carteira1.setConta(bc1cdconta.toPlainString());
 					carteira1.setCodMestre(bc1cdmest.toPlainString());
 					carteira1.setCodCarteira(bc1cdcart.toPlainString());
+					carteira1.setLayoutCnab(LayoutCnab.L400);
 					banco.addCarteira(carteira1);
 				}
 
@@ -133,7 +135,8 @@ public class MigrarBanco {
 					carteira2.setConta(bc1cd2cont.toPlainString());
 					carteira2.setCodMestre(bc1cd2mest.toPlainString());
 					carteira2.setCodCarteira(bc1cd2cart.toPlainString());
-					banco.addCarteira(carteira2);
+					carteira2.setLayoutCnab(LayoutCnab.L400);
+					banco.addCarteira(carteira2);					
 				}
 
 				serBanco.salvar(banco);

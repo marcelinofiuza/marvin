@@ -55,4 +55,8 @@ public class ControleEnums implements Serializable {
 	public DiasMes[] getDiasMes(){
 		return DiasMes.values();
 	}
+	
+	public LayoutCnab[] getLayoutCnab(){
+		return LayoutCnab.values();
+	}
 }

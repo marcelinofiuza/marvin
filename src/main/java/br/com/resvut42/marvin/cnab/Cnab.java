@@ -1,6 +1,7 @@
 package br.com.resvut42.marvin.cnab;
 
 import br.com.resvut42.marvin.enums.Febraban;
+import br.com.resvut42.marvin.enums.LayoutCnab;
 
 /****************************************************************************
  * Classe para definir layout Cnab a ser utilizado
@@ -9,10 +10,10 @@ import br.com.resvut42.marvin.enums.Febraban;
  ****************************************************************************/
 public class Cnab {
 
-	public static BaseCnab getLayout(Febraban febraban, String layout){		
+	public static BaseCnab getLayout(Febraban febraban, LayoutCnab layoutCnab){		
 		BaseCnab cnab = null;
 		
-		if(febraban.getCodigo().equals("237") && layout.equals("400")){
+		if(febraban == Febraban.F_237 && layoutCnab == LayoutCnab.L400){
 			return new Cnab237400();
 		}
 		

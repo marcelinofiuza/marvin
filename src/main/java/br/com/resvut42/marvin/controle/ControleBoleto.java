@@ -292,7 +292,7 @@ public class ControleBoleto implements Serializable {
 	 ****************************************************************************/
 	public void geraCnab(PrintWriter arquivo) throws Exception {
 
-		BaseCnab cnab = Cnab.getLayout(boletoSelect.getBanco().getFebraban(), "400");
+		BaseCnab cnab = Cnab.getLayout(boletoSelect.getBanco().getFebraban(), carteira.getLayoutCnab());
 
 		if (cnab != null) {
 			cnab.setBoleto(boletoSelect);

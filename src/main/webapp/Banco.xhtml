@@ -577,6 +577,9 @@
 	                    <p:column headerText="Cod. Mestre" width="100">
 	                        <h:outputText value="#{carteira.codMestre}"/>
 	                    </p:column>
+	                    <p:column headerText="Layout" width="100">
+	                        <h:outputText value="#{carteira.layoutCnab.descricao}"/>
+	                    </p:column>	                    
 	                    <p:column headerText="#" width="50">
                             <p:commandButton icon="fa fa-trash" 
                                              title="Remover" 
@@ -627,6 +630,14 @@
 						<p:inputText id="codMestre" size="7" maxlength="7" 
 									 value="#{controleBanco.bancoCarteira.codMestre}"
 									 onblur="value=value.toUpperCase()" />
+									 			
+						<p:outputLabel value="Layout Cnab" for="layout" />
+						<p:selectOneMenu id="layout" value="#{controleBanco.bancoCarteira.layoutCnab}">
+							<f:selectItems value="#{controleEnums.layoutCnab}" 
+							               var="layoutCnab" 
+							               itemLabel="#{layoutCnab.descricao}" 
+							               itemValue="#{layoutCnab}" />
+						</p:selectOneMenu>									 			
 									 									 									                                  
                         <p:commandButton id="btoCarteira-ok" 
                                          title="Ok" 

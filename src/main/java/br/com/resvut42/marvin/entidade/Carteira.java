@@ -5,11 +5,15 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import br.com.resvut42.marvin.enums.LayoutCnab;
 
 /****************************************************************************
  * Entidade Carteira para geração de Boletos Desenvolvido por :
@@ -43,6 +47,10 @@ public class Carteira implements Serializable {
 
 	@Column(length = 7)
 	private String codMestre;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(length = 4)	
+	private LayoutCnab layoutCnab;
 
 	public Long getIdCarteira() {
 		return idCarteira;
@@ -98,6 +106,14 @@ public class Carteira implements Serializable {
 
 	public void setCodMestre(String codMestre) {
 		this.codMestre = codMestre;
+	}
+	
+	public LayoutCnab getLayoutCnab() {
+		return layoutCnab;
+	}
+
+	public void setLayoutCnab(LayoutCnab layoutCnab) {
+		this.layoutCnab = layoutCnab;
 	}
 
 	@Override

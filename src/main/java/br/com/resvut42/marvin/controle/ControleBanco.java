@@ -53,7 +53,7 @@ public class ControleBanco implements Serializable {
 	private boolean periodoValido;
 
 	private List<Carteira> listaBancoCarteira;
-	private Carteira bancoCarteira;
+	private Carteira bancoCarteira = new Carteira();
 
 	@Autowired
 	SerBanco serBanco;
