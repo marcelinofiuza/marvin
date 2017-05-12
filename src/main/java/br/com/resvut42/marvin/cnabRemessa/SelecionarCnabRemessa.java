@@ -4,7 +4,7 @@ import br.com.resvut42.marvin.enums.Febraban;
 import br.com.resvut42.marvin.enums.LayoutCnab;
 
 /****************************************************************************
- * Classe para definir layout Cnab a ser utilizado
+ * Classe para definir layout Cnab de Remessa a ser utilizado
  * 
  * @author: Bob-Odin - 17/04/2017
  ****************************************************************************/

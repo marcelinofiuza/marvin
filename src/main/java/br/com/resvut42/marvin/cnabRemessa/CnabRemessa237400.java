@@ -6,7 +6,7 @@ import br.com.resvut42.marvin.entidade.BoletoItem;
 import br.com.resvut42.marvin.util.R42Util;
 
 /****************************************************************************
- * Classe para geração arquivo CNAB Bradesco
+ * Classe para geração arquivo CNAB Bradesco 400
  * 
  * @author: Bob-Odin - 17/04/2017
  ****************************************************************************/

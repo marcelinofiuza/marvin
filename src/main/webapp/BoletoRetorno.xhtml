@@ -1,0 +1,203 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+	            xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	            xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	            xmlns:p="http://primefaces.org/ui"
+	            template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<section class="r42-pagina">
+		
+			<h:form id="frm">
+				
+				<!-- Mensagem form -->
+				<p:growl id="msg-frm" showDetail="true" />
+				
+				<!-- Barra Ferramentas -->
+				<p:toolbar styleClass="r42-toolbar" id="toolbar">
+					<p:toolbarGroup align="left">
+						<p:commandButton    id="bto-novo" 
+											title="Arquivo Retorno" 
+											icon="fa fa-upload" 
+											process="@this" 
+											update="arquivo" 
+											oncomplete="PF('wgArquivo').show()">
+											<p:resetInput target="arquivo" />
+						</p:commandButton>
+						<p:commandButton    id="bto-cabec" 
+											title="Cabecalho" 
+											icon="fa fa-twitch" 
+											process="@this" 
+											update="dialogoCabecalho" 
+											disabled="#{controleBoletoRetorno.cabecalho == null}"
+											oncomplete="PF('wgDadosCabecalho').show()">
+											<p:resetInput target="dialogoCabecalho" />
+						</p:commandButton>
+
+					</p:toolbarGroup>
+					
+					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
+						<p:outputLabel value="Retorno CNAB"/>
+					</p:toolbarGroup>
+					
+				</p:toolbar>
+                              
+				<!-- Dialogo seleção do arquivo -->
+				<p:dialog header="Arquivo de Retorno" 
+				          widgetVar="wgArquivo" 
+				          id="arquivo" 
+				          modal="true" 
+				          resizable="false"
+					      responsive="true">
+				
+					<p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+				
+  					<p:fileUpload id="fileUpload" 
+  							      mode="advanced"
+              				      label="Escolher" 
+              				      uploadLabel="Enviar" 
+              				      cancelLabel="Cancelar"
+    							  allowTypes="/(\.|\/)(ret|RET)$/" 
+    							  invalidFileMessage="Esse não é um arquivo de retorno"   
+    							  sizeLimit="10240" 
+    							  invalidSizeMessage="O tamanho máximo permitido é de 10KB."     							  
+  								  fileUploadListener="#{controleBoletoRetorno.upload}"
+  								  update="tabela toolbar"
+  								  oncomplete="if(!args.validationFailed) PF('wgArquivo').hide()"/>								
+				</p:dialog>				
+				
+				<!-- Listagem dos dados -->
+				<p:dataTable value="#{controleBoletoRetorno.itens}" 
+				             var="item" 
+				             id="tabela" 
+				             reflow="true" 
+				             rows="15" paginator="true"
+					         paginatorPosition="top"  
+					         emptyMessage="Itens de Boleto">
+					         
+					<!-- Colunas -->
+					<p:column width="20">
+						<p:rowToggler />
+					</p:column>						
+					<p:column headerText="N° Boleto" width="200">
+						<h:outputText value="#{item.numeroBoleto}" />
+					</p:column>
+					<p:column headerText="Vencimento" width="80">
+	                	<h:outputText value="#{item.vctoRetorno}">
+                        	<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	                    </h:outputText>
+	                </p:column>										         	                    
+					<p:column headerText="Pagamento" width="80">
+	                	<h:outputText value="#{item.dataPagamento}">
+                        	<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	                    </h:outputText>
+	                </p:column>
+					<p:column headerText="Valor Título" width="150">
+	                	<h:outputText value="#{item.valorTitulo}" style="float: right">
+                        	<f:convertNumber type="currency" />
+						</h:outputText>	                        
+	                </p:column>					         
+					<p:column headerText="Valor Acrescimo" width="150">
+	                	<h:outputText value="#{item.valorJuros}" style="float: right">
+                        	<f:convertNumber type="currency" />
+						</h:outputText>	                        
+	                </p:column>		
+					<p:column headerText="Valor Desconto" width="150">
+	                	<h:outputText value="#{item.valorDescontos}" style="float: right">
+                        	<f:convertNumber type="currency" />
+						</h:outputText>	                        
+	                </p:column>	                				  
+					<p:column headerText="Valor Pago" width="150">
+	                	<h:outputText value="#{item.valorPago}" style="float: right">
+                        	<f:convertNumber type="currency" />
+						</h:outputText>	                        
+	                </p:column>	    	                
+					<p:column headerText="Status" width="80">						
+						<h:outputText styleClass="ui-icon ui-icon-check" rendered="#{item.status == 'ok'}" title="ok-Pronto para Baixa"/>
+						<h:outputText styleClass="ui-icon ui-icon-notice" rendered="#{item.status == 'alerta'}" title="Atenção-Saldo Título" />						
+						<h:outputText styleClass="ui-icon ui-icon-closethick" rendered="#{item.status == 'erro'}" title="Erro-Não Localizado"/>						
+					</p:column>	
+					
+                    <p:rowExpansion>
+		            	<p:panelGrid id="rowExp" 
+		                			 columns="2" 
+		                             layout="grid" 
+		                             styleClass="panelgrid-noborder r42-panelgrid"
+		                             columnClasses="ui-grid-col-2, ui-grid-col-10">
+		            
+               				<h:outputText value="Cliente" />
+                			<h:outputText value="#{item.receber.cliente.razaoSocial}" />
+                			
+               				<h:outputText value="Documento" />
+                			<h:outputText value="#{item.receber.documento}" />                		            		                 
+
+							<h:outputText value="Lançamento" />
+	                		<h:outputText value="#{item.receber.lancamento}">
+                        		<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	                    	</h:outputText>
+	                    	
+	                    	<h:outputText value="Vencimento" />
+	                		<h:outputText value="#{item.receber.vencimento}">
+                        		<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	                    	</h:outputText>
+
+               				<h:outputText value="Valor" />
+	                		<h:outputText value="#{item.receber.valor}">
+                        		<f:convertNumber type="currency" />
+							</h:outputText>	               				
+
+               				<h:outputText value="Saldo" />
+	                		<h:outputText value="#{item.receber.saldo}">
+                        		<f:convertNumber type="currency" />
+							</h:outputText>	 
+
+               				<h:outputText value="Banco" />
+	                		<h:outputText value="#{item.receber.boleto.banco.ideDescricao}" />
+		                             
+						</p:panelGrid>
+					</p:rowExpansion>
+				</p:dataTable>
+				
+                <!-- Dialogo Cabeçalho -->
+                <p:dialog header="Cabeçalho Retorno " 
+                          styleClass="r42-dialogo2" 
+                          widgetVar="wgDadosCabecalho" 
+                          id="dialogoCabecalho" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+
+                    <p:panelGrid id="panelCarteira" 
+                                 columns="2" 
+                                 layout="grid" 
+                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                 columnClasses="ui-grid-col-3, ui-grid-col-9"> 
+					
+						<h:outputText value="Cod.Empresa" />
+	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.codigoEmpresa}" />
+
+						<h:outputText value="Nome Empresa" />
+	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.nomeEmpresa}" />					
+
+						<h:outputText value="Febraban" />
+	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.febraban.nome}" />
+	                						
+						<h:outputText value="Layout" />
+	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.layoutCnab.descricao}" />					
+					
+						<h:outputText value="Gravação" />
+	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.dataGravacao}">
+                        	<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	                    </h:outputText>
+	                    	
+	                    <h:outputText value="Crédito" />
+	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.dataCredito}">
+                        	<f:convertDateTime type="date" pattern="dd/MM/yyyy"/>
+	                    </h:outputText>
+	                    						
+					</p:panelGrid>                          
+				</p:dialog>				
+			</h:form>
+		</section>
+	</ui:define>
+</ui:composition>

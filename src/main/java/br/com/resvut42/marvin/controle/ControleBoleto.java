@@ -45,7 +45,7 @@ import br.com.resvut42.marvin.util.FacesMessages;
 import br.com.resvut42.marvin.util.R42Data;
 
 /****************************************************************************
- * Classe controle para View da Tela do Banco
+ * Classe controle para View da Tela do Boleto
  * 
  * @author: Bob-Odin - 08/04/2017
  ****************************************************************************/
@@ -312,7 +312,7 @@ public class ControleBoleto implements Serializable {
 
 		RequestContext.getCurrentInstance().execute("PF('wgDadosCnab').hide();");
 
-		String hoje = R42Data.dataToString(new Date()).replaceAll("/", "");
+		String hoje = R42Data.dateToString(new Date()).replaceAll("/", "");
 		StreamedContent file = null;
 		String arquivo = "CB000000.TXT";
 		String arqSaida = "CB" + hoje.substring(0, 4) + ".REM";

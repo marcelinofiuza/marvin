@@ -26,8 +26,8 @@ public class SerReceber {
 	@Autowired
 	RepReceber repReceber;
 	@Autowired
-	SerBancoLcto serBancoLcto;	
-	
+	SerBancoLcto serBancoLcto;
+
 	/****************************************************************************
 	 * Metodo para Validar e salvar
 	 ****************************************************************************/
@@ -47,7 +47,7 @@ public class SerReceber {
 		try {
 			for (Receber receber : listaReceber) {
 				validarSalvar(receber);
-			}			
+			}
 			repReceber.save(listaReceber);
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
@@ -57,30 +57,30 @@ public class SerReceber {
 	/****************************************************************************
 	 * Metodo para Validar antes de Salvar
 	 ****************************************************************************/
-	public void validarSalvar(Receber receber) throws Exception {		
+	public void validarSalvar(Receber receber) throws Exception {
 		try {
-	
+
 			BigDecimal totalBase = new BigDecimal(0);
 
 			for (BancoLcto bancoLcto : receber.getBaixas()) {
-				//soma total base
+				// soma total base
 				totalBase = totalBase.add(bancoLcto.getValorBase());
-				//Valida o novo lancamento bancario
-				if(bancoLcto.getIdLcto() == null){
+				// Valida o novo lancamento bancario
+				if (bancoLcto.getIdLcto() == null) {
 					serBancoLcto.validarSalvar(bancoLcto);
-				}				
+				}
 			}
-			
-			//A soma do valor Base, não pode ser maior que o valor do título
-			if(totalBase.compareTo(receber.getValor()) > 0){
+
+			// A soma do valor Base, não pode ser maior que o valor do título
+			if (totalBase.compareTo(receber.getValor()) > 0) {
 				throw new Exception("Soma valor base não pode ser maior que valor do título");
 			}
-				
+
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
-		}			
+		}
 	}
-	
+
 	/****************************************************************************
 	 * Metodo para Validar e excluir
 	 ****************************************************************************/
@@ -111,45 +111,45 @@ public class SerReceber {
 	 * Validar a exclusão de receber
 	 ****************************************************************************/
 	public void validaExcluir(Receber receber) throws Exception {
-		//verifica se já existe baixa no titulo
-		if(receber.getBaixas().size() != 0){
-			throw new Exception("o documento "+receber.getDocumento()+" já está com baixa!");
+		// verifica se já existe baixa no titulo
+		if (receber.getBaixas().size() != 0) {
+			throw new Exception("o documento " + receber.getDocumento() + " já está com baixa!");
 		}
 	}
-	
+
 	/****************************************************************************
 	 * Estornar baixa de titulos
 	 ****************************************************************************/
 	public void estornarBaixa(Receber receber, Long idBaixa) throws Exception {
 
 		try {
-			
+
 			BancoLcto bancoLcto = null;
-			
-			//Verifica se o idBaixa está na lista de baixa do receber
+
+			// Verifica se o idBaixa está na lista de baixa do receber
 			boolean contem = false;
 			for (BancoLcto baixa : receber.getBaixas()) {
-				if(baixa.getIdLcto() == idBaixa){
-					bancoLcto = baixa;					
+				if (baixa.getIdLcto() == idBaixa) {
+					bancoLcto = baixa;
 					contem = true;
 					break;
 				}
 			}
-			if(!contem){
+			if (!contem) {
 				throw new Exception("Id não está na lista de baixas");
 			}
-			
-			//Verifica se o lançamento pode ser excluido
-			serBancoLcto.validarExcluir(bancoLcto);			
+
+			// Verifica se o lançamento pode ser excluido
+			serBancoLcto.validarExcluir(bancoLcto);
 			receber.getBaixas().remove(bancoLcto);
-			
-			repReceber.save(receber);			
+
+			repReceber.save(receber);
 			serBancoLcto.excluir(bancoLcto);
-			
+
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
-	}	
+	}
 
 	/****************************************************************************
 	 * Metodo para Listar lançamentos a receber por cliente
@@ -164,4 +164,12 @@ public class SerReceber {
 	public List<Receber> listarPorBoleto(Boleto boleto) {
 		return repReceber.findByBoleto(boleto);
 	}
+
+	/****************************************************************************
+	 * Metodo para buscar Receber por Boleto e BoletoItem
+	 ****************************************************************************/
+	public Receber buscarPorBoletoEBoletoItem(Long idBoleto, Long idItem) {
+		return repReceber.findByIdBoletoAndIdBoletoItem(idBoleto, idItem);
+	}
+
 }

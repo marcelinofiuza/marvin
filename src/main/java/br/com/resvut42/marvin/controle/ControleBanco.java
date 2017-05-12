@@ -206,8 +206,8 @@ public class ControleBanco implements Serializable {
 
 					periodoValido = false;
 					mensagens.error("Periodo informado está em conflito entre "
-							+ R42Data.dataToString(itemPeriodo.getDataInicio()) + " e "
-							+ R42Data.dataToString(itemPeriodo.getDataFinal()));
+							+ R42Data.dateToString(itemPeriodo.getDataInicio()) + " e "
+							+ R42Data.dateToString(itemPeriodo.getDataFinal()));
 					break;
 
 				}

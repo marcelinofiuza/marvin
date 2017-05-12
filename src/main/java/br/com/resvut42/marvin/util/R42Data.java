@@ -83,10 +83,34 @@ public class R42Data {
 	/****************************************************************************
 	 * Transforma Data em String (dd/MM/yyyy)
 	 ****************************************************************************/
-	public static String dataToString(Date data) {
+	public static String dateToString(Date data) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		return sdf.format(data.getTime());
+
+	}
+
+	/****************************************************************************
+	 * Transforma String em Data
+	 ****************************************************************************/
+	public static Date stringToDate(String data) throws Exception {
+
+		SimpleDateFormat sdf;
+		String novaData = R42Util.removePontos(data);
+
+		if (novaData.length() == 6) {
+			sdf = new SimpleDateFormat("ddMMyy");
+		} else if (novaData.length() == 8) {
+			sdf = new SimpleDateFormat("ddMMyyyy");
+		} else {
+			throw new Exception("A String não é uma data inválida");
+		}
+
+		try {
+			return sdf.parse(novaData);			
+		} catch (Exception e) {
+			throw new Exception("A String não é uma data inválida");
+		}
 
 	}
 
@@ -142,19 +166,19 @@ public class R42Data {
 		}
 
 		Date novaData = null;
-		String strData = dataToString(dataBase);
+		String strData = dateToString(dataBase);
 		String base = strData.substring(2);
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				
-		try{
-			novaData = sdf.parse(dia.toString()+base);			
-			strData = dataToString(novaData);
-			String basenova = strData.substring(2);			
-			if(!base.equalsIgnoreCase(basenova)){
+
+		try {
+			novaData = sdf.parse(dia.toString() + base);
+			strData = dateToString(novaData);
+			String basenova = strData.substring(2);
+			if (!base.equalsIgnoreCase(basenova)) {
 				novaData = fimMes(dataBase);
-			}						
-		}catch (Exception e) {
+			}
+		} catch (Exception e) {
 			novaData = fimMes(dataBase);
 		}
 

@@ -107,7 +107,7 @@ public class BancoPeriodo implements Serializable {
 	}
 
 	public String getDataPeriodo() {
-		return R42Data.dataToString(dataInicio) + " - " + R42Data.dataToString(dataFinal);
+		return R42Data.dateToString(dataInicio) + " - " + R42Data.dateToString(dataFinal);
 	}
 
 	public Date getDataFinal() {

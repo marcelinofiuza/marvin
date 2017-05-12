@@ -54,6 +54,9 @@ public abstract class CnabRemessa {
 		this.carteira = carteira;
 	}
 	
+	/****************************************************************************
+	 * Gera o arquivo de saida
+	 ****************************************************************************/	
 	public void gerarArquivo(PrintWriter arquivo){
 		this.arquivo = arquivo;		
 		header();
