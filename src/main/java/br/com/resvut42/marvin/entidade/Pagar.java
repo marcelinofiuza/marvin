@@ -44,7 +44,7 @@ public class Pagar implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idFornecedor")
 	private Fornecedor fornecedor;
-
+	
 	@Column(length = 15)
 	private String documento;
 
@@ -158,7 +158,7 @@ public class Pagar implements Serializable {
 		bancoLcto.setPagar(this);
 		this.baixas.add(bancoLcto);
 	}
-	
+
 	public BigDecimal getPago() {
 		BigDecimal totalPago = new BigDecimal(0);
 		for (BancoLcto bancoLcto : baixas) {

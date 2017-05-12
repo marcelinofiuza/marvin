@@ -1,0 +1,523 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/Layout.xhtml">
+
+	<ui:define name="content">
+		<section class="r42-pagina">
+		
+            <h:form id="frm">   
+                     
+                <!-- Mensagem Form -->
+                <p:growl id="msg-frm" showDetail="true"/>
+                
+             	<p:dialog header="Fornecedor"
+                          width="600" 
+                          widgetVar="wgSelecaoFornecedor" 
+                          id="selecaoFornecedor"
+                          closable="false" 
+                          modal="true"                        
+                          resizable="false"                   
+                          responsive="true">                
+
+                    <p:panelGrid id="panelSelecao"
+                                 columns="2" 
+                                 layout="grid" 
+                                 styleClass="panelgrid-noborder r42-panelgrid"
+                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+                            
+                        <p:outputLabel value="Fornecedor" for="fornecedor" />     
+                        <p:column>
+                            <p:inputText id="fornecedor" 
+                                         size="10"
+                                         value="#{controlePagar.fornecedor.idFornecedor}"
+                                         readonly="true"/>
+                                         
+                            <p:commandButton icon="fa fa-search" 
+                                             title="Pesquisar"
+                                             action="#{pesquisaFornecedor.abrirDialogo('pesquisaFornecedor')}"
+                                             process="@this"
+                                             update="@none">
+                                                 
+                                <p:ajax event="dialogReturn" 
+                                        listener="#{controlePagar.fornecedorSelecionado}"
+                                        process="@this"                                             
+                                        update="panelSelecao"/>
+                                            
+                            </p:commandButton>                                
+                        </p:column>
+                        
+                        <p:outputLabel value="Descrição" for="descricao" />                                                                             
+                        <p:inputText id="descricao" size="50"
+                                     value="#{controlePagar.fornecedor.razaoSocial}"
+                                     readonly="true"/>
+                        
+                        <p:column>
+                            <p:commandButton icon="fa fa-check" 
+                                             title="Ok"
+                                             process="panelSelecao"                                             
+                                             update="toolbar tabela"
+                                             action="#{controlePagar.confirmaFornecedor}"
+                                             disabled="#{controlePagar.fornecedor == null}"/>                        
+
+                            <p:commandButton icon="fa fa-close" 
+                                             title="Sair"
+                                             process="@this"                                        
+                                             action="Inicio.xhmtl?faces-redirect=true"/>
+                        </p:column>                        
+                        
+                    </p:panelGrid>                        
+                </p:dialog>                
+                  
+                <!-- Barra Ferramentas -->
+                <p:toolbar styleClass="r42-toolbar" id="toolbar">
+	                <p:toolbarGroup align="left">
+                        <p:commandButton    id="bto-novo" 
+                                            title="Novo" 
+                                            icon="fa fa-file-o"
+                                            actionListener="#{controlePagar.novoLancamento}"
+                                            process="@this" 
+                                            update="dialogoLancamento" 
+                                            oncomplete="PF('wgDadosLancamento').show()">
+                                            <p:resetInput target="dialogoLancamento" />
+                        </p:commandButton>
+                        <p:commandButton    id="bto-editar" 
+                                            title="Editar" 
+                                            icon="fa fa-pencil" 
+                                            process="@this" 
+                                            update="dialogoLancamento" 
+                                            oncomplete="PF('wgDadosLancamento').show()" 
+                                            disabled="#{controlePagar.pagarSelect == null}"
+                                            actionListener="#{controlePagar.editLancamento}">
+                                            <p:resetInput target="dialogoLancamento" />
+                        </p:commandButton> 
+                        <p:commandButton    id="bto-excluir" 
+                                            title="Excluir" 
+                                            icon="fa fa-trash" 
+                                            process="@this"
+                                            disabled="#{controlePagar.pagarSelect == null}" 
+                                            update="tabela msg-frm toolbar"
+                                            actionListener="#{controlePagar.excluir}">
+                                            <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Lançamento?" />
+                        </p:commandButton>
+                        <span class="ui-separator">
+                            <span class="fa fa-fw fa-ellipsis-v"/>
+                        </span>
+                        <p:commandButton    id="bto-baixa" 
+                                            title="Baixar" 
+                                            icon="fa fa-money" 
+                                            process="@this" 
+                                            disabled="#{controlePagar.pagarSelect == null}"
+                                            update="dialogoBaixa"
+                                            oncomplete="PF('wgDadosBaixa').show()" 
+                                            actionListener="#{controlePagar.novaBaixa}">
+                                            <p:resetInput target="dialogoBaixa" />
+                        </p:commandButton>                                                                           	                
+	                </p:toolbarGroup>
+	                
+                    <p:toolbarGroup align="right">
+                        <p:outputLabel value="#{controlePagar.fornecedor.idFornecedor}."/>
+                        <p:outputLabel value="#{controlePagar.fornecedor.razaoSocial}"/>
+                        <p:spacer height="10"/>
+                        <p:commandButton    id="bto-troca" 
+                                            title="Selecionar Fornecedor" 
+                                            icon="fa fa-refresh"
+                                            oncomplete="PF('wgSelecaoFornecedor').show();"/>                        
+                    </p:toolbarGroup>	                
+                </p:toolbar>
+                 
+                <!-- Listagem dos dados -->
+                <p:dataTable value="#{controlePagar.listaPagar}" 
+                             var="pagar" 
+                             id="tabela" 
+                             reflow="true" 
+                             rows="15" 
+                             paginator="true"
+                             paginatorPosition="top"   
+                             selectionMode="single" 
+                             rowKey="#{pagar.idPagar}"
+                             selection="#{controlePagar.pagarSelect}"                              
+                             emptyMessage="Nenhum Lançamento encontrado">
+                             
+                    <!-- Evento ajax, que atuliza a barra de ferramentas, quando marca/desmarca uma linha --> 
+                    <p:ajax event="rowSelect" update=":frm:toolbar" />
+                    <p:ajax event="rowUnselect" update=":frm:toolbar" />
+                    
+                    <!-- Colunas -->
+                    <p:column headerText="Documento" width="100">
+                        <h:outputText value="#{pagar.documento}" />
+                    </p:column>                     
+                    <p:column headerText="Lançamento" width="80">
+                        <h:outputText value="#{pagar.lancamento}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>   
+                        </h:outputText>
+                    </p:column>      
+                    <p:column headerText="Vencimento" width="80">
+                        <h:outputText value="#{pagar.vencimento}">
+                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>   
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Valor">
+                        <h:outputText value="#{pagar.valor}" style="float: right">
+                            <f:convertNumber type="currency" currencySymbol=""/>
+                        </h:outputText>
+                    </p:column>                    
+                    <p:column headerText="Acrescimos">
+                        <h:outputText value="#{pagar.acrescimos}" style="float: right">
+                            <f:convertNumber type="currency" currencySymbol=""/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Descontos">
+                        <h:outputText value="#{pagar.descontos}" style="float: right">
+                            <f:convertNumber type="currency" currencySymbol=""/>
+                        </h:outputText>
+                    </p:column>                                                            
+                    <p:column headerText="Recebido">
+                        <h:outputText value="#{pagar.recebido}" style="float: right">
+                            <f:convertNumber type="currency" currencySymbol=""/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Saldo">
+                        <h:outputText value="#{pagar.saldo}" style="float: right">
+                            <f:convertNumber type="currency" currencySymbol=""/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Boleto" width="80">
+                        <h:outputText value="#{pagar.boleto.idBoleto}" />
+                    </p:column>                      
+                    <p:column headerText="Boleto Item" width="80">
+                        <h:outputText value="#{pagar.boletoItem.idItem}" />
+                    </p:column>                         
+                    <p:column headerText="Quitado" width="50">
+                        <p:selectBooleanCheckbox value="#{pagar.quitado}" disabled="true" />
+                    </p:column>                                                                                                                                    
+                </p:dataTable>
+                    
+                <!-- Dialogo de Lançamento -->
+                <p:dialog styleClass="r42-dialogo" 
+                          header="Lançamento" 
+                          widgetVar="wgDadosLancamento" 
+                          id="dialogoLancamento" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+                    
+                    <!-- Barra de Ferramentas dialogo-->
+                    <p:defaultCommand target="bto-salvar" scope="dialogoLancamento" />
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton id="bto-salvar" 
+                                             title="Salvar" 
+                                             icon="fa fa-save" 
+                                             action="#{controlePagar.salvar}" 
+                                             process="dialogoLancamento"
+                                             update="panelLancamento"
+                                             disabled="#{!controlePagar.salvarTitulo}"
+                                             oncomplete="if(!args.validationFailed) PF('wgDadosLancamento').hide()" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />                    
+
+                    <!-- Dados Dialogo -->                    
+                    <p:tabView id="panelLancamento">
+                        
+                        <!-- Aba Dados Lançamento -->
+                        <p:tab title="Duplicata">                                            
+		                    <p:panelGrid columns="2" 
+		                                 layout="grid" 
+		                                 styleClass="panelgrid-noborder r42-panelgrid"
+		                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+		                                 
+								<p:outputLabel value="Documento" for="documento"/>
+                                <p:inputText id="documento" size="15" maxlength="15" 
+		                                     value="#{controlePagar.pagar.documento}"
+		                                     onblur="value=value.toUpperCase()"
+		                                     required="true"/>										                                 
+		                                 
+		                        <p:outputLabel value="Lançamento" for="lancamento"/>
+		                        <p:calendar id="lancamento" size="10"
+		                                    locale="pt_BR"
+		                                    value="#{controlePagar.pagar.lancamento}"
+		                                    pattern="dd/MM/yyyy" mask="99/99/9999"
+		                                    showOn="button"
+		                                    required="true"/>
+
+		                        <p:outputLabel value="Vencimento" for="vencimento"/>
+		                        <p:calendar id="vencimento" size="10"
+		                                    locale="pt_BR"
+		                                    value="#{controlePagar.pagar.vencimento}"
+		                                    pattern="dd/MM/yyyy" mask="99/99/9999"
+		                                    showOn="button"
+		                                    required="true"/>
+		                                    		                   
+		                        <p:outputLabel value="Valor" for="valor"/>		                        
+		                        <p:inputNumber id="valor" size="20"
+		                                       value="#{controlePagar.pagar.valor}"
+		                                       decimalSeparator=","
+		                                       thousandSeparator="."
+		                                       required="true"/>
+		                                       
+		                        <p:outputLabel value="Conta Contábil" for="conta"/>                              
+		                        <p:column>                                
+		                            <p:inputText id="conta" size="10"
+		                                         value="#{controlePagar.conta.idConta}"
+		                                         readonly="true"
+		                                         required="true"/>
+		
+		                            <p:commandButton icon="fa fa-search" 
+		                                             title="Pesquisar"
+		                                             action="#{pesquisaConta.abrirDialogo('pesquisaConta')}"
+		                                             process="@this"
+		                                             update="@none">
+		                                                 
+		                                <p:ajax event="dialogReturn" 
+		                                        listener="#{controlePagar.contaSelecionada}"
+		                                        process="@this"                                             
+		                                        update="conta contaDescricao"/>
+		                                            
+		                            </p:commandButton>
+		                            <p:spacer width="10"/>                                                                         
+		                            <p:inputText id="contaDescricao" size="50"
+		                                         value="#{controlePagar.conta.descricao}"
+		                                         readonly="true"/>                                
+		                        </p:column>
+		                        		                                       
+		                        <p:column>
+		                            <p:outputLabel value="Histórico" for="historico"/>
+		                            <p:spacer/>
+		                            <h:outputText id="display" />
+		                        </p:column>                            
+		                        <p:inputTextarea id="historico" rows="5" cols="50" maxlength="250"
+		                                         value="#{controlePagar.pagar.historico}"
+		                                         onblur="value=value.toUpperCase()"
+		                                         counter="display"
+		                                         counterTemplate="({0})"
+		                                         required="true"/>
+
+							</p:panelGrid>
+						</p:tab>
+						
+						<!-- Aba lista de Baixas -->
+                        <p:tab title="Baixas">
+							<!-- Listagem dos dados -->
+							<p:dataTable value="#{controlePagar.baixas}" 
+							             var="baixa" 
+							             id="tabBaixas" 
+							             reflow="true" 
+							             rows="5"
+								         paginator="true" 
+								         paginatorPosition="top" 
+								         emptyMessage="Nenhuma Baixa">
+								         
+								<!-- Colunas -->
+						        <p:column width="20">
+						            <p:rowToggler />
+						        </p:column>
+			                    <p:column headerText="Data" width="80">
+			                        <h:outputText value="#{baixa.dataLcto}">
+			                            <f:convertDateTime type="date" pattern="dd/MM/yyyy"/>   
+			                        </h:outputText>
+			                    </p:column> 							         
+			                    <p:column headerText="Documento" width="100">
+			                        <h:outputText value="#{baixa.documento}" />
+			                    </p:column>  								         
+			                    <p:column headerText="Valor Base">
+			                        <h:outputText value="#{baixa.valorBase}" style="float: right">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </p:column> 								         
+			                    <p:column headerText="Juros">
+			                        <h:outputText value="#{baixa.juros}" style="float: right">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </p:column> 	
+			                    <p:column headerText="Multa">
+			                        <h:outputText value="#{baixa.multa}" style="float: right">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </p:column>
+			                    <p:column headerText="Desconto">
+			                        <h:outputText value="#{baixa.desconto}" style="float: right">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </p:column> 	
+			                    <p:column headerText="Valor Lcto">
+			                        <h:outputText value="#{baixa.valorLcto}" style="float: right">
+			                            <f:convertNumber type="currency" currencySymbol=""/>
+			                        </h:outputText>
+			                    </p:column>
+			                    
+			                    <!-- Detalhes da linha -->
+                                <p:rowExpansion>
+		                            <p:panelGrid id="rowExp" 
+		                                         columns="2" 
+		                                         layout="grid" 
+		                                         styleClass="panelgrid-noborder r42-panelgrid"
+		                                         columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+		                                <p:outputLabel value="Banco" style="font-weight: bold"/>
+		                                <p:outputLabel value="#{baixa.bancoPeriodo.banco.ideDescricao}" />
+
+		                                <p:outputLabel value="Conta" style="font-weight: bold"/>
+		                                <p:outputLabel value="#{baixa.conta.ideDescricao}" />
+		                                		                                		                                         
+		                                <p:outputLabel value="Histórico" style="font-weight: bold"/>
+		                                <p:outputLabel value="#{baixa.historico}" />                                     
+		                                
+										<p:commandButton icon="fa fa-trash" 
+									    	             title="Estornar" 
+									        	         action="#{controlePagar.estornarBaixa(baixa)}" 
+									            	     process="@this">
+                                            <p:confirm icon="fa fa-warning" header="Estorno" message="Confirma o estorno da Baixa?" />
+                        				</p:commandButton>
+										             	                                         
+									</p:panelGrid>
+								</p:rowExpansion>			                     			                    		                     			                    							         
+							</p:dataTable>                        	                        
+                        </p:tab> 
+                        
+					</p:tabView>							                    
+            	</p:dialog>    
+            	
+                <!-- Dialogo de Baixa -->
+                <p:dialog styleClass="r42-dialogo" 
+                          header="Baixas" 
+                          widgetVar="wgDadosBaixa" 
+                          id="dialogoBaixa" 
+                          modal="true" 
+                          resizable="false"
+                          responsive="true">
+                    
+                    <!-- Barra de Ferramentas dialogo-->
+                    <p:defaultCommand target="bto-salvarBaixa" scope="dialogoBaixa" />
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton id="bto-salvarBaixa" 
+                                             title="Salvar" 
+                                             icon="fa fa-save" 
+                                             action="#{controlePagar.salvarBaixa}" 
+                                             process="dialogoBaixa"
+                                             update="panelBaixa"
+                                             oncomplete="if(!args.validationFailed) PF('wgDadosBaixa').hide()" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:messages showDetail="false" autoUpdate="true" closable="true" />                    
+
+                    <!-- Dados Dialogo -->                    
+                    <p:tabView id="panelBaixa">
+                        
+                        <!-- Aba Dados Baixa -->
+                        <p:tab title="Baixa">                                            
+		                    <p:panelGrid columns="2" 
+		                                 layout="grid" 
+		                                 styleClass="panelgrid-noborder r42-panelgrid"
+		                                 columnClasses="ui-grid-col-3, ui-grid-col-9">
+		                        		                        			                        
+                                <p:outputLabel value="Banco" for="banco"/>                              
+                                <p:column>                                
+                                    <p:inputText id="banco" size="10"
+                                                 value="#{controlePagar.banco.idBanco}"
+                                                 readonly="true"
+                                                 required="true"/>
+        
+                                    <p:commandButton icon="fa fa-search" 
+                                                     title="Pesquisar"
+                                                     action="#{pesquisaBanco.abrirDialogo('pesquisaBanco')}"
+                                                     process="@this"
+                                                     update="@none">
+                                                         
+                                        <p:ajax event="dialogReturn" 
+                                                listener="#{controlePagar.bancoSelecionado}"
+                                                process="@this"                                             
+                                                update="banco bancoDescricao"/>
+                                                    
+                                    </p:commandButton>
+                                    <p:spacer width="10"/>                                                                         
+                                    <p:inputText id="bancoDescricao" size="50"
+                                                 value="#{controlePagar.banco.descricao}"
+                                                 readonly="true"/>                                
+                                </p:column>
+		                        
+                                <p:outputLabel value="Data Baixa" for="dataBaixa"/>
+                                <p:calendar id="dataBaixa" size="10"
+                                            locale="pt_BR"
+                                            value="#{controlePagar.bancoLcto.dataLcto}"
+                                            pattern="dd/MM/yyyy" mask="99/99/9999"
+                                            showOn="button"
+                                            required="true"/>		                        
+		                        
+                                <p:outputLabel value="Documento" for="documento"/>
+                                <p:inputText id="documento" size="15" maxlength="15" 
+                                             value="#{controlePagar.bancoLcto.documento}"
+                                             onblur="value=value.toUpperCase()"
+                                             required="true"/>		
+                                             
+		                        <p:outputLabel value="Valor Base" for="valorBase"/>
+		                        <p:inputNumber id="valorBase" size="20"
+		                                       value="#{controlePagar.bancoLcto.valorBase}"
+		                                       decimalSeparator=","
+		                                       thousandSeparator="."
+		                                       required="true">
+		                        	<p:ajax update="valorLcto valorBase" />               
+		                        </p:inputNumber>  
+		                                                                                                            
+		                        <p:outputLabel value="Juros" for="juros"/>
+		                        <p:inputNumber id="juros" size="20"
+		                                       value="#{controlePagar.bancoLcto.juros}"
+		                                       decimalSeparator=","
+		                                       thousandSeparator="."
+		                                       required="true">
+		                        	<p:ajax update="valorLcto valorBase" />		                                       
+		                        </p:inputNumber>
+		                                       
+		                        <p:outputLabel value="Multa" for="multa"/>
+		                        <p:inputNumber id="multa" size="20"
+		                                       value="#{controlePagar.bancoLcto.multa}"
+		                                       decimalSeparator=","
+		                                       thousandSeparator="."
+		                                       required="true">
+		                        	<p:ajax update="valorLcto valorBase" />               
+		                        </p:inputNumber>  		                                       
+		                                       
+		                        <p:outputLabel value="Desconto" for="desconto"/>
+		                        <p:inputNumber id="desconto" size="20"
+		                                       value="#{controlePagar.bancoLcto.desconto}"
+		                                       decimalSeparator=","
+		                                       thousandSeparator="."
+		                                       required="true">
+		                        	<p:ajax update="valorLcto valorBase" />               
+		                        </p:inputNumber>  		                                       
+		                                       		                                      
+		                        <p:outputLabel value="Valor Lcto" for="valorLcto"/>
+		                        <p:inputNumber id="valorLcto" size="20"
+		                                       value="#{controlePagar.bancoLcto.valorLcto}"
+		                                       decimalSeparator=","
+		                                       thousandSeparator=".">
+		                        	<p:ajax update="valorLcto valorBase" />               
+		                        </p:inputNumber>  		                     
+		                                       		                          
+		                        <p:column>
+		                            <p:outputLabel value="Histórico" for="historico"/>
+		                            <p:spacer/>
+		                            <h:outputText id="display" />
+		                        </p:column>                            
+		                        <p:inputTextarea id="historico" rows="5" cols="50" maxlength="250"
+		                                         value="#{controlePagar.bancoLcto.historico}"
+		                                         onblur="value=value.toUpperCase()"
+		                                         counter="display"
+		                                         counterTemplate="({0})"
+		                                         required="true"/>		                                       		                          
+		                                       		                                       		                                       		                                       		                                 
+							</p:panelGrid>
+						</p:tab>
+					</p:tabView>							                    
+            	</p:dialog>
+            	              	                          
+        	</h:form>		
+		</section>
+	</ui:define>
+</ui:composition>
