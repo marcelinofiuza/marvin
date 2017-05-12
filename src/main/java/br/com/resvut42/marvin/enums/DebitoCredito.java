@@ -7,8 +7,8 @@ package br.com.resvut42.marvin.enums;
  ****************************************************************************/
 public enum DebitoCredito {
 	
-	DEBITO("Débito",-1.0),	
-	CREDITO("Crédito",1.0);
+	DEBITO("Pagamento",-1.0),	
+	CREDITO("Recebimento",1.0);
 
 	private String descricao;
 	private Double multiplicador;
