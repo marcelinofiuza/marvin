@@ -70,7 +70,7 @@ public class ControlePagar implements Serializable {
 	 ****************************************************************************/
 	@PostConstruct
 	public void init() {
-		RequestContext.getCurrentInstance().execute("PF('wgSelecaoCliente').show();");
+		RequestContext.getCurrentInstance().execute("PF('wgSelecaoFornecedor').show();");
 	}
 	
 	/****************************************************************************
