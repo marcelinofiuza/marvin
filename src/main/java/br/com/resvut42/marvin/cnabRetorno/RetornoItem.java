@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import br.com.resvut42.marvin.entidade.Receber;
+import br.com.resvut42.marvin.enums.StatusRetorno;
 
 public class RetornoItem {
 
@@ -119,14 +120,14 @@ public class RetornoItem {
 		this.receber = receber;
 	}
 
-	public String getStatus() {
+	public StatusRetorno getStatus() {
 		if (receber == null) {
-			return "erro";
+			return StatusRetorno.ERRO;
 		} else {
 			if(receber.getSaldo().compareTo(valorTitulo) < 0){
-				return "alerta";
+				return StatusRetorno.ALERTA;
 			}else{
-				return "ok";
+				return StatusRetorno.OK;
 			}
 		}
 	}

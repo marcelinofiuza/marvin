@@ -134,5 +134,10 @@ public abstract class CnabRetorno {
 		return valorConvertido;
 	}
 	
-	
+	/****************************************************************************
+	 * Nome do arquivo de entrada
+	 ****************************************************************************/
+	protected String getNomeArquivo(){
+		return this.uploadedFile.getFileName();
+	}
 }

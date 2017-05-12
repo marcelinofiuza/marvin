@@ -33,6 +33,14 @@
 											oncomplete="PF('wgDadosCabecalho').show()">
 											<p:resetInput target="dialogoCabecalho" />
 						</p:commandButton>
+						<p:commandButton    id="bto-baixa" 
+											title="Baixar" 
+											icon="fa fa-money"  
+											process="@this" 
+											update="tabela" 
+											disabled="#{controleBoletoRetorno.cabecalho == null}"
+											action="#{controleBoletoRetorno.baixarTitulos}">
+						</p:commandButton>
 
 					</p:toolbarGroup>
 					
@@ -113,9 +121,9 @@
 						</h:outputText>	                        
 	                </p:column>	    	                
 					<p:column headerText="Status" width="80">						
-						<h:outputText styleClass="ui-icon ui-icon-check" rendered="#{item.status == 'ok'}" title="ok-Pronto para Baixa"/>
-						<h:outputText styleClass="ui-icon ui-icon-notice" rendered="#{item.status == 'alerta'}" title="Atenção-Saldo Título" />						
-						<h:outputText styleClass="ui-icon ui-icon-closethick" rendered="#{item.status == 'erro'}" title="Erro-Não Localizado"/>						
+						<h:outputText styleClass="ui-icon ui-icon-check" rendered="#{item.status == 'OK'}" title="ok-Pronto para Baixa"/>
+						<h:outputText styleClass="ui-icon ui-icon-notice" rendered="#{item.status == 'ALERTA'}" title="Atenção-Saldo Título" />						
+						<h:outputText styleClass="ui-icon ui-icon-closethick" rendered="#{item.status == 'ERRO'}" title="Erro-Não Localizado"/>						
 					</p:column>	
 					
                     <p:rowExpansion>
@@ -172,7 +180,10 @@
                                  layout="grid" 
                                  styleClass="panelgrid-noborder r42-panelgrid"
                                  columnClasses="ui-grid-col-3, ui-grid-col-9"> 
-					
+
+						<h:outputText value="Arquivo" />
+	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.arquivo}" />
+	                						
 						<h:outputText value="Cod.Empresa" />
 	                	<h:outputText value="#{controleBoletoRetorno.cabecalho.codigoEmpresa}" />
 

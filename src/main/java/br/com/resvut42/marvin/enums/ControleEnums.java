@@ -47,16 +47,20 @@ public class ControleEnums implements Serializable {
 	public DebitoCredito[] getDebitoCredito() {
 		return DebitoCredito.values();
 	}
-	
-	public OrigemLcto[] getOrigemLcto(){
+
+	public OrigemLcto[] getOrigemLcto() {
 		return OrigemLcto.values();
 	}
-	
-	public DiasMes[] getDiasMes(){
+
+	public DiasMes[] getDiasMes() {
 		return DiasMes.values();
 	}
-	
-	public LayoutCnab[] getLayoutCnab(){
+
+	public LayoutCnab[] getLayoutCnab() {
 		return LayoutCnab.values();
+	}
+
+	public StatusRetorno[] getStatusRetorno() {
+		return StatusRetorno.values();
 	}
 }

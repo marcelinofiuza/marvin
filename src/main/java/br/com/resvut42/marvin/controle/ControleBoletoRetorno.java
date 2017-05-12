@@ -3,12 +3,14 @@ package br.com.resvut42.marvin.controle;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import br.com.resvut42.marvin.entidade.BancoPeriodo;
 import br.com.resvut42.marvin.entidade.Receber;
 import br.com.resvut42.marvin.enums.DebitoCredito;
 import br.com.resvut42.marvin.enums.OrigemLcto;
+import br.com.resvut42.marvin.enums.StatusRetorno;
 import br.com.resvut42.marvin.servico.SerBanco;
 import br.com.resvut42.marvin.servico.SerReceber;
 import br.com.resvut42.marvin.util.FacesMessages;
@@ -65,10 +68,12 @@ public class ControleBoletoRetorno implements Serializable {
 			// TODO Auto-generated catch block
 			FacesContext.getCurrentInstance().validationFailed();
 			mensagens.error(e.getMessage());
+			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			FacesContext.getCurrentInstance().validationFailed();
 			mensagens.error(e.getMessage());
+			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm"));
 		}
 	}
 
@@ -91,33 +96,64 @@ public class ControleBoletoRetorno implements Serializable {
 		try {
 			listaReceber = new ArrayList<Receber>();
 			for (RetornoItem retornoItem : itens) {
-				
-				Receber receber = retornoItem.getReceber();				
+
+				if (retornoItem.getStatus() != StatusRetorno.OK) {
+					continue;
+				}
+
+				Receber receber = retornoItem.getReceber();
 				Banco banco = receber.getBoleto().getBanco();
-				
+
 				BancoPeriodo periodo = serBanco.selecionaPeriodo(banco, retornoItem.getDataPagamento());
-				
+
 				if (periodo != null) {
+
+					String historico = "RECEBIMENTO " + 
+									   receber.getCliente().getRazaoSocial() + 
+									   " DUPLICATA "
+									   + receber.getDocumento();
 
 					BancoLcto bancoLcto = new BancoLcto();
 					bancoLcto.setBancoPeriodo(periodo);
+					bancoLcto.setCheque(false);
 					bancoLcto.setConta(receber.getCliente().getConta());
+					bancoLcto.setDataLcto(retornoItem.getVctoRetorno());
+					bancoLcto.setDocumento(cabecalho.getArquivo());
+					bancoLcto.setHistorico(historico);
+					bancoLcto.setValorBase(retornoItem.getValorTitulo());
+					bancoLcto.setDesconto(retornoItem.getValorDescontos());
+					bancoLcto.setJuros(retornoItem.getValorJuros());
+					bancoLcto.setValorLcto(retornoItem.getValorPago());
 					bancoLcto.setOrigemLcto(OrigemLcto.DCR);
 					bancoLcto.setTipoLcto(DebitoCredito.CREDITO);
-					
-					
-					
-					
+
+					receber.addBaixa(bancoLcto);
+					listaReceber.add(receber);
+
 				} else {
 					FacesContext.getCurrentInstance().validationFailed();
 					mensagens.error("Banco sem periodo aberto para o lançamento!");
+					RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm"));
 					break;
 				}
 			}
 
+			if (listaReceber.size() > 0) {
+				serReceber.salvar(listaReceber);
+				mensagens.info("Titulos baixados com sucesso!");				
+				cabecalho = null;
+				itens = null;				
+			} else {
+				FacesContext.getCurrentInstance().validationFailed();
+				mensagens.error("Nenhum boleto pode ser baixado!");
+			}
+
+			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm","frm:toolbar","frm:tabela"));
+
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().validationFailed();
 			mensagens.error(e.getMessage());
+			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm"));
 		}
 	}
 

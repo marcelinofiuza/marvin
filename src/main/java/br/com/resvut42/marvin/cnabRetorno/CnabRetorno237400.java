@@ -30,6 +30,7 @@ public class CnabRetorno237400 extends CnabRetorno {
 
 				if (linha.substring(0, 1).equals("0")) {
 					String buffer = String.valueOf(linha.length());
+					cabecalho.setArquivo(getNomeArquivo());
 					cabecalho.setCodigoEmpresa(linha.substring(26, 46));
 					cabecalho.setNomeEmpresa(linha.substring(46, 76));
 					cabecalho.setFebraban(converteFebraban(linha.substring(76, 79)));

@@ -164,6 +164,7 @@ public class Pagar implements Serializable {
 		for (BancoLcto bancoLcto : baixas) {
 			totalPago = totalPago.add(bancoLcto.getValorLctoConvertido());
 		}
+		totalPago = totalPago.multiply(new BigDecimal(-1));
 		return totalPago;
 	}
 
