@@ -183,13 +183,7 @@
                         <h:outputText value="#{pagar.saldo}" style="float: right">
                             <f:convertNumber type="currency" currencySymbol=""/>
                         </h:outputText>
-                    </p:column>
-                    <p:column headerText="Boleto" width="80">
-                        <h:outputText value="#{pagar.boleto.idBoleto}" />
-                    </p:column>                      
-                    <p:column headerText="Boleto Item" width="80">
-                        <h:outputText value="#{pagar.boletoItem.idItem}" />
-                    </p:column>                         
+                    </p:column>                       
                     <p:column headerText="Quitado" width="50">
                         <p:selectBooleanCheckbox value="#{pagar.quitado}" disabled="true" />
                     </p:column>                                                                                                                                    
