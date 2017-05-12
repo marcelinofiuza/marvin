@@ -187,7 +187,7 @@ public class ControlePagar implements Serializable {
 				
 				bancoLcto.setBancoPeriodo(periodo);
 				bancoLcto.setConta(pagarSelect.getFornecedor().getConta());
-				bancoLcto.setOrigemLcto(OrigemLcto.DCR);
+				bancoLcto.setOrigemLcto(OrigemLcto.DCP);
 				bancoLcto.setTipoLcto(DebitoCredito.DEBITO);
 								
 				pagarSelect.addBaixa(bancoLcto);

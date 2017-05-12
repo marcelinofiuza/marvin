@@ -70,7 +70,7 @@ public class Pagar implements Serializable {
 	private String historico;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "idReceber")
+	@JoinColumn(name = "idPagar")
 	@OrderBy("dataLcto")
 	private List<BancoLcto> baixas = new ArrayList<BancoLcto>();
 
