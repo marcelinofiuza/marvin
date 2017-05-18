@@ -442,14 +442,18 @@
                                             value="#{controlePagar.bancoLcto.dataLcto}"
                                             pattern="dd/MM/yyyy" mask="99/99/9999"
                                             showOn="button"
-                                            required="true"/>		                        
+                                            required="true"/>	                                                     
 		                        
                                 <p:outputLabel value="Documento" for="documento"/>
-                                <p:inputText id="documento" size="15" maxlength="15" 
-                                             value="#{controlePagar.bancoLcto.documento}"
-                                             onblur="value=value.toUpperCase()"
-                                             required="true"/>		
-                                             
+                                    <p:inputText id="documento" size="15" maxlength="15" 
+		                                         value="#{controlePagar.bancoLcto.documento}"
+		                                         onblur="value=value.toUpperCase()"
+		                                         required="true"/>
+		                                         
+		                        <p:outputLabel value="Cheque" for="chequePagar"/>
+		                        	<p:selectBooleanCheckbox id="chequePagar"
+                                                             value="#{controlePagar.bancoLcto.cheque}"/>
+		                                                                                      
 		                        <p:outputLabel value="Valor Base" for="valorBase"/>
 		                        <p:inputNumber id="valorBase" size="20"
 		                                       value="#{controlePagar.bancoLcto.valorBase}"

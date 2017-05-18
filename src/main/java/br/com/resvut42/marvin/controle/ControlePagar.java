@@ -55,6 +55,7 @@ public class ControlePagar implements Serializable {
 	private Conta conta;
 	private BancoLcto bancoLcto = new BancoLcto();
 	private Banco banco;
+	private boolean displayCheque = false;
 	
 	private boolean salvarTitulo = true;
 	
@@ -167,7 +168,7 @@ public class ControlePagar implements Serializable {
 		bancoLcto.setPagar(pagarSelect);
 		banco = new Banco();		
 		
-		String historico = "RECEBIMENTO " +
+		String historico = "PAGAMENTO " +
 							pagarSelect.getFornecedor().getRazaoSocial() +
 							" DUPLICATA " +
 							pagarSelect.getDocumento();
@@ -231,6 +232,17 @@ public class ControlePagar implements Serializable {
 			FacesContext.getCurrentInstance().validationFailed();
 			mensagens.error(e.getMessage());
 		}		
+	}
+	
+	/****************************************************************************
+	 * Evento quando é feita alteração no tipo de lançamento
+	 ****************************************************************************/
+	public void changeTipoLcto() {
+		bancoLcto.setCheque(false);
+		displayCheque = false;
+		if (bancoLcto.getTipoLcto() == DebitoCredito.DEBITO) {
+			displayCheque = true;
+		}
 	}
 	
 	/****************************************************************************
@@ -331,6 +343,10 @@ public class ControlePagar implements Serializable {
 
 	public void setMensagens(FacesMessages mensagens) {
 		this.mensagens = mensagens;
+	}
+	
+	public boolean isDisplayCheque() {
+		return displayCheque;
 	}
 	
 	
