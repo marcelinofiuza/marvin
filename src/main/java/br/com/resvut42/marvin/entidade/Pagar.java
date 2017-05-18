@@ -187,7 +187,7 @@ public class Pagar implements Serializable {
 	
 	public BigDecimal getSaldo() {
 		BigDecimal saldo = new BigDecimal(0);
-		saldo = valor.add(getPago());
+		saldo = valor.subtract(getPago());
 		saldo = saldo.subtract(getDescontos());
 		saldo = saldo.add(getAcrescimos());
 		return saldo;
