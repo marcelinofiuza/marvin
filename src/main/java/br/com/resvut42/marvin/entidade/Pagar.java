@@ -55,7 +55,7 @@ public class Pagar implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date vencimento;
-
+	
 	@NotNull(message = "Informar o valor do documento!")
 	@DecimalMin(value = "0.01", message = "Não pode ser menor que 0,01")
 	@DecimalMax(value = "99999999.99", message = "Máximo deve ser 99.999.999,99")
@@ -186,7 +186,7 @@ public class Pagar implements Serializable {
 	
 	public BigDecimal getSaldo() {
 		BigDecimal saldo = new BigDecimal(0);
-		saldo = valor.subtract(getPago());
+		saldo = valor.add(getPago());
 		saldo = saldo.subtract(getDescontos());
 		saldo = saldo.add(getAcrescimos());
 		return saldo;
