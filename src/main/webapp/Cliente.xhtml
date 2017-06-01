@@ -48,6 +48,13 @@
 							                actionListener="#{controleCliente.excluir}">
 							                <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Cliente?" />
 						</p:commandButton>
+						<p:commandButton    id="bto-Relatorio" 
+											title="Relatorio" 
+											icon="fa fa-print" 
+											action="#{controleCliente.gerarRelatorio}"
+											process="@this">
+
+						</p:commandButton>						
 					</p:toolbarGroup>
 					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
 						<p:outputLabel value="Clientes"/>

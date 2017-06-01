@@ -2,6 +2,7 @@ package br.com.resvut42.marvin.util;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.text.DecimalFormat;
 
 import javax.servlet.http.HttpSession;
@@ -12,6 +13,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import br.com.resvut42.marvin.entidade.Empresa;
 import br.com.resvut42.marvin.enums.Estado;
+import br.com.resvut42.marvin.migracao.ControleMigracao;
 
 public class R42Util {
 	
@@ -189,8 +191,8 @@ public class R42Util {
 //		ClassLoader classLoader = new MigrarConta().getClass().getClassLoader();	
 //		File file = new File(classLoader.getResource(path).getFile());
 		
-		String path = "c:\\temp\\dbf\\"+arquivo;		
-		File file = new File(path);
+		URL url = new ControleMigracao().getClass().getClassLoader().getResource("dbf/"+arquivo);
+		File file = new File(url.getFile());
 		
 		try {		
 			DbfReader dbfReader = new DbfReader(file);

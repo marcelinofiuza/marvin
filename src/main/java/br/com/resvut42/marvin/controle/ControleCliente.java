@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.ClienteContatos;
 import br.com.resvut42.marvin.entidade.Conta;
+import br.com.resvut42.marvin.relatorio.Relatorio;
 import br.com.resvut42.marvin.servico.SerCliente;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -119,21 +120,15 @@ public class ControleCliente implements Serializable {
 		listaClienteContatos.add(clienteContatos);
 	}
 
-//	/****************************************************************************
-//	 * Buscar lista dos dados no banco
-//	 ****************************************************************************/
-//	public void buscar() {
-//
-//		List<Cliente> listaClientes = serCliente.listarTodos();
-//		if (!listaClientes.isEmpty()) {
-//			clienteSelect = listaClientes.get(0);
-//		} else {
-//			clienteSelect = new Cliente();
-//		}
-//
-//		RequestContext.getCurrentInstance().execute("PF('wgDados').show();");
-//
-//	}
+	/****************************************************************************
+	 * Gerar relatório de clientes
+	 ****************************************************************************/
+	public void gerarRelatorio() {
+
+		Relatorio relatorio = new Relatorio("Clientes");
+		relatorio.getRelatorio(getListaClientes());
+
+	}
 
 	/****************************************************************************
 	 * Remover contato
