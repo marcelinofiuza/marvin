@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import br.com.resvut42.marvin.entidade.Cliente;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -50,27 +51,31 @@ public class Relatorio {
 	 ************************************************************************/	
 	public void getRelatorio(List<Cliente> lista){
 		
-		baos = new ByteArrayOutputStream();
+		baos = new ByteArrayOutputStream();		
+	    String path = "/br/com/resvut42/marvin/jasper/";
 		
         try {
-        	        	
-        	stream = Relatorio.class.getResourceAsStream("/jasper/Clientes.jasper");
-        	JasperReport jasperReport = (JasperReport) JRLoader.loadObject(stream); 
+       	
+        	stream = this.getClass().getResourceAsStream(path+arquivoJasper+".jrxml");
+        	JasperReport jasperReport = JasperCompileManager.compileReport(stream);         	
 			JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, new JRBeanCollectionDataSource(lista));
-			JasperExportManager.exportReportToPdfStream(print, baos);
-			response.reset();
-			response.setContentType("application/pdf");
-			response.setContentLength(baos.size());
-			response.setHeader("Content-disposition", "inline; filename=relatorio.pdf");
-			response.getOutputStream().write(baos.toByteArray());
-			response.getOutputStream().flush();
-			response.getOutputStream().close();
-			context.responseComplete();
 			
+			JasperExportManager.exportReportToPdfFile(print, "c:/temp/"+arquivoJasper+".pdf");			
+			
+//			JasperExportManager.exportReportToPdfStream(print, baos);
+//			response.reset();
+//			response.setContentType("application/pdf");
+//			response.setContentLength(baos.size());
+//			response.setHeader("Content-disposition", "inline; filename=clientes.pdf");
+//			response.getOutputStream().write(baos.toByteArray());
+//			response.getOutputStream().flush();
+//			response.getOutputStream().close();
+//			context.responseComplete();
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	

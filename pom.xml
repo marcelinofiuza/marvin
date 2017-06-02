@@ -5,12 +5,12 @@
 	     
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.resvut42</groupId>
-	<artifactId>marvin</artifactId>
+	<artifactId>AdmCon</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>marvin</name>
-	<description>ERP-Marvin</description>
+	<name>AdmCon</name>
+	<description>ERP-AdmCon</description>
 
     <parent>
         <groupId>org.joinfaces</groupId>
@@ -85,21 +85,27 @@
             <scope>compile</scope>
         </dependency>
        
-       <!-- Jasper Report -->
+		<!-- JasperReport -->
+		<dependency>
+    		<groupId>net.sf.jasperreports</groupId>
+    		<artifactId>jasperreports</artifactId>
+    		<version>6.4.0</version>
+    		<scope>compile</scope>
+		</dependency>       
+
 		<dependency>
 		    <groupId>net.sf.jasperreports</groupId>
-		    <artifactId>jasperreports</artifactId>
-		    <version>6.3.1</version>
-		</dependency>       
+		    <artifactId>jasperreports-fonts</artifactId>
+		    <version>6.0.0</version>
+		</dependency>
                  
-        <!-- POI - Exportação de arquivos 
+        <!-- POI - Exportação de arquivos -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>3.15</version>
             <scope>compile</scope>
         </dependency>
-        -->
 
         <!-- Ler arquivo DBF -->                        
 		<dependency>
