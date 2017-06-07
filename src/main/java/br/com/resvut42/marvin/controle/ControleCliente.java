@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.ManagedBean;
 import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import br.com.resvut42.marvin.entidade.Cliente;
 import br.com.resvut42.marvin.entidade.ClienteContatos;
 import br.com.resvut42.marvin.entidade.Conta;
-import br.com.resvut42.marvin.relatorio.Relatorio;
+import br.com.resvut42.marvin.relatorio.RelCliente;
 import br.com.resvut42.marvin.servico.SerCliente;
 import br.com.resvut42.marvin.util.FacesMessages;
 
@@ -26,7 +26,7 @@ import br.com.resvut42.marvin.util.FacesMessages;
  * @author: Thayro Rodrigues - 03/04/2017
  ****************************************************************************/
 @Named
-@ViewScoped
+@ManagedBean
 public class ControleCliente implements Serializable {
 
 	/****************************************************************************
@@ -124,9 +124,14 @@ public class ControleCliente implements Serializable {
 	 * Gerar relatório de clientes
 	 ****************************************************************************/
 	public void gerarRelatorio() {
-
-		Relatorio relatorio = new Relatorio("Clientes");
-		relatorio.getRelatorio(getListaClientes());
+		try {
+			RelCliente relatorio = new RelCliente();
+			relatorio.setLista(getListaClientes());
+			relatorio.gerar();
+		} catch (Exception e) {
+			mensagens.error(e.getMessage());
+			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
+		}
 
 	}
 
@@ -139,7 +144,7 @@ public class ControleCliente implements Serializable {
 
 	/****************************************************************************
 	 * Prepara tela para novo cadastro
-	 ****************************************************************************/	
+	 ****************************************************************************/
 	public void novoCadastro() {
 		preparaTela();
 		clienteEdicao = new Cliente();

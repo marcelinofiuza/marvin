@@ -10,7 +10,7 @@
 
 			<!-- execução inicial-->
 			<f:metadata>
-				<f:viewAction action="#{controleCliente.listar}" />
+				<f:viewAction action="#{controleCliente.listar()}" />
 			</f:metadata> 
 
 			<h:form id="frm">
@@ -48,17 +48,24 @@
 							                actionListener="#{controleCliente.excluir}">
 							                <p:confirm icon="fa fa-warning" header="Exclusão de Registro" message="Confirma a exclusão do Cliente?" />
 						</p:commandButton>
-						<p:commandButton    id="bto-Relatorio" 
+                        <span class="ui-separator">
+                            <span class="fa fa-fw fa-ellipsis-v"/>
+                        </span>						
+						<p:commandButton    id="bto-relatorio" 
 											title="Relatorio" 
 											icon="fa fa-print" 
-											action="#{controleCliente.gerarRelatorio}"
+											actionListener="#{controleCliente.gerarRelatorio}"
+											onclick="this.form.target='_blank'"
+											ajax="false"
+											immediate="true"
 											process="@this">
-
-						</p:commandButton>						
+						</p:commandButton>												
 					</p:toolbarGroup>
+					
 					<p:toolbarGroup align="right" styleClass="r42-toolbar-right">
 						<p:outputLabel value="Clientes"/>
 					</p:toolbarGroup>
+					
 				</p:toolbar>
 				
 				<!-- Listagem dos dados -->
