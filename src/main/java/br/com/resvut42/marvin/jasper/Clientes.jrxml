@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-06-09T23:07:01 -->
+<!-- 2017-06-14T12:36:31 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_Landscape_1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8ac4aa7c-ab8a-4a44-82e1-70241fbcd5d8">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="empresa" class="java.lang.String"/>
-	<parameter name="cliente_contatos" class="java.lang.String"/>
-	<parameter name="estado" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
 	<field name="idCliente" class="java.lang.Long"/>
 	<field name="razaoSocial" class="java.lang.String"/>
 	<field name="endereco.cidade" class="java.lang.String"/>
-	<field name="uf" class="java.lang.String"/>
-	<field name="logradouro" class="java.lang.String"/>
-	<field name="telefone" class="java.lang.String"/>
+	<field name="endereco.uf" class="br.com.resvut42.marvin.enums.Estado"/>
+	<field name="endereco.logradouro" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -85,13 +82,6 @@
 				<text><![CDATA[Endereço]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="668" y="2" width="130" height="31" uuid="a70bd585-9791-42a8-b750-3c3662f006e5"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="14"/>
-				</textElement>
-				<text><![CDATA[Telefone]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="390" y="4" width="90" height="31" uuid="a5e5394a-2518-4827-81ea-e7187fe15235"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14"/>
@@ -124,25 +114,18 @@
 				<textFieldExpression><![CDATA[$F{endereco.cidade}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="492" y="6" width="169" height="30" uuid="cb69aa4c-5b32-4d03-887a-bee0bc590302"/>
+				<reportElement x="390" y="6" width="90" height="30" uuid="cb69aa4c-5b32-4d03-887a-bee0bc590302"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{uf}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{endereco.uf}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="668" y="6" width="130" height="30" uuid="9b9d5118-6423-4c99-b799-f9b4065b4362"/>
+				<reportElement x="492" y="6" width="168" height="30" uuid="9b9d5118-6423-4c99-b799-f9b4065b4362"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{logradouro}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="390" y="6" width="90" height="30" uuid="5195395b-0030-436e-92c4-403659e286d5"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{telefone}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{endereco.logradouro}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
