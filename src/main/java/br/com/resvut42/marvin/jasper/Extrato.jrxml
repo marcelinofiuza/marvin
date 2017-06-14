@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-06-14T11:10:11 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Extrato" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="41274c2b-d6f4-4018-bc7d-888bd476bae9">
+<!-- 2017-06-14T15:57:18 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_Landscape_1" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8ac4aa7c-ab8a-4a44-82e1-70241fbcd5d8">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="empresa" class="java.lang.String"/>
 	<parameter name="banco" class="java.lang.String"/>
 	<parameter name="periodo" class="java.lang.String"/>
@@ -15,46 +16,136 @@
 	<background>
 		<band splitType="Stretch"/>
 	</background>
-	<pageHeader>
-		<band height="80" splitType="Stretch">
+	<title>
+		<band height="100" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="800" height="100" backcolor="#0B0B6E" uuid="53375c35-08b6-4a9c-8b52-0d80d99268fe"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="292" y="68" width="208" height="30" forecolor="#FFFFFF" uuid="160c0e12-ad24-4eec-acb7-d5f15b5da763"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EXTRATO]]></text>
+			</staticText>
 			<textField>
-				<reportElement x="180" y="0" width="200" height="20" uuid="aa87f276-22ec-4a1b-96d4-8de3da86c348"/>
-				<textElement textAlignment="Center"/>
+				<reportElement x="100" y="3" width="200" height="25" forecolor="#FFFFFF" uuid="aa87f276-22ec-4a1b-96d4-8de3da86c348"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{empresa}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="180" y="20" width="200" height="18" uuid="4c91270d-3b3c-4ff7-9f27-63232e8016f4"/>
-				<textElement textAlignment="Center"/>
+				<reportElement x="20" y="30" width="200" height="20" forecolor="#FFFFFF" uuid="4c91270d-3b3c-4ff7-9f27-63232e8016f4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{banco}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="180" y="40" width="200" height="20" uuid="5ee5d1b1-e8f1-4a2d-a2b3-ffe3805fe92a"/>
-				<textElement textAlignment="Center"/>
+				<reportElement x="100" y="55" width="200" height="20" forecolor="#FFFFFF" uuid="5ee5d1b1-e8f1-4a2d-a2b3-ffe3805fe92a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{periodo}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="20" y="0" width="80" height="30" forecolor="#FFFFFF" uuid="e426a20e-dd4a-4659-992f-316d06baf031"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="50" width="70" height="30" forecolor="#FFFFFF" uuid="f8c85795-0d74-44f2-8658-05a1f903ecc6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Periodo:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="697" y="0" width="100" height="30" forecolor="#FFFFFF" uuid="50d964fc-5803-42b2-bb23-8555099b9546"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 		</band>
-	</pageHeader>
+	</title>
 	<columnHeader>
-		<band height="24" splitType="Stretch"/>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement x="14" y="3" width="126" height="30" uuid="5cce4497-6f33-453f-8511-e5bbf17b7dd7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="4" width="340" height="31" uuid="5838c9d5-3588-49be-b749-c3aa910fe814"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Historico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="500" y="4" width="130" height="31" uuid="955fdc15-2e4d-4152-985f-fb81c9fc43f1"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Valor Lcto]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="38" width="800" height="1" uuid="a38fb975-8118-4d7b-90df-acca6a8eadc6"/>
+			</line>
+			<staticText>
+				<reportElement x="640" y="4" width="130" height="31" uuid="a5e5394a-2518-4827-81ea-e7187fe15235"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+		</band>
 	</columnHeader>
 	<detail>
 		<band height="42" splitType="Stretch">
-			<textField>
-				<reportElement x="-5" y="0" width="85" height="30" uuid="18c54310-489d-4a08-a549-2cf343cddee3"/>
-				<textFieldExpression><![CDATA[$F{dataLcto}]]></textFieldExpression>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="13" y="6" width="127" height="30" uuid="c727b67b-df72-40a7-95bf-ccf99cea7205"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{dataLcto} != null ? $F{dataLcto}: "")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="1" width="255" height="30" uuid="82175814-bf18-4296-bc2d-25d45a674489"/>
+				<reportElement x="150" y="6" width="340" height="30" uuid="4a1dbb09-3c37-4676-91ab-fab206a3616a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{historico}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="335" y="1" width="115" height="30" uuid="a4b4a378-8b68-4521-be55-13c6a94fdf87"/>
+			<textField pattern="#,##0.00">
+				<reportElement x="500" y="6" width="130" height="30" uuid="e878675a-651e-49ba-8a13-e00f5fa1ffeb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{valorLctoConvertido}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="450" y="0" width="100" height="30" uuid="7f3c50f4-d968-4a20-84d9-3f6d87814a12"/>
+			<textField pattern="#,##0.00">
+				<reportElement x="640" y="6" width="130" height="30" uuid="cb69aa4c-5b32-4d03-887a-bee0bc590302"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="757" y="20" width="40" height="30" uuid="d754ce0f-954a-406e-a614-440bdbe461eb"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="800" height="1" uuid="b0472e20-ecc0-4fc2-9cea-2f82a79a9d82"/>
+			</line>
+		</band>
+	</pageFooter>
 </jasperReport>
