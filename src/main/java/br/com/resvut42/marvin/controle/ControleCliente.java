@@ -132,7 +132,6 @@ public class ControleCliente implements Serializable {
 			mensagens.error(e.getMessage());
 			RequestContext.getCurrentInstance().update(Arrays.asList("frm:msg-frm", "frm:tabela"));
 		}
-
 	}
 
 	/****************************************************************************

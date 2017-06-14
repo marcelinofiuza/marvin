@@ -3,7 +3,8 @@ body {
 	margin: 0;
 	font-size: 13px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	background-image: url("#{resource['resvut42/img/backgroundTamagu.png']}");
+	background-image:
+		url("#{resource['resvut42/img/backgroundTamagu.png']}");
 }
 
 /* Configuração Layout.xhtml */
@@ -55,9 +56,9 @@ body {
 }
 
 .r42-toolbar-right {
-    margin-top:5px; 
-    margin-bottom:5px; 
-    margin-right: 5px
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-right: 5px
 }
 
 .r42-dialogo {
@@ -67,21 +68,32 @@ body {
 }
 
 .r42-dialogo2 {
-    width: 60% !important;
-    height: 70% !important;
-    overflow: auto !important;
+	width: 60% !important;
+	height: 70% !important;
+	overflow: auto !important;
 }
 
-.r42-panelgrid{
-    margin-top: 5px;	
+.r42-panelgrid {
+	margin-top: 5px;
 }
 
-.r42-dashboard{
-    margin-top: 5px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    margin-right: 5px;
+.r42-dashboard {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
 }
+
+.r42-positivo {
+	float: right;
+	color: blue;
+}
+
+.r42-negativo {
+	float: right;
+	color: red;
+}
+
 /**************************/
 /*Configuração para mobile*/
 /**************************/
@@ -94,12 +106,12 @@ body {
 		height: 100% !important;
 		overflow: auto !important;
 	}
-    .r42-dialogo2 {
-        width: 100% !important;
-        height: 100% !important;
-        overflow: auto !important;
-    }	
+	.r42-dialogo2 {
+		width: 100% !important;
+		height: 100% !important;
+		overflow: auto !important;
+	}
 	.r42-panelgrid input {
 		width: 80%;
-	}	
+	}
 }
