@@ -33,7 +33,7 @@ public class SerConta {
 	 * Retorna se existe alguma conta cadastrada
 	 ****************************************************************************/	
 	public boolean existeConta(){
-		if(repConta.count() > 0){
+		if(!repConta.findAll().isEmpty()){
 			return true;
 		}else{
 			return false;
